@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/jquery-3.3.1.min.js"></script>
+    <script src="/controllers/options.js"></script>
+    <script src="/controllers/weightCalculationUtils.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Customize credibility parameters</h1>
+      <div class="row">
+        <div class="col-sm">    
+          <h2>Filters</h2>
+          <div>    
+            <p>Social</p>
+          </div>
+          <div>    
+            <p>Profanity proportion to text</p>
+          </div>
+          <div>    
+            <p>Spam detection</p>
+          </div>
+          <div>    
+            <p>Spelling detection</p>
+          </div>
+        </div>
+        <div class="col-sm">    
+          <h2>Weights</h2>
+          <div>    
+            <input type="text" id="SocialWeight" >
+          </div>
+          <div>    
+            <input type="text" id="ProfanityWeight" >
+          </div>
+          <div>    
+            <input type="text" id="SpamWeight" >
+          </div>
+          <div>    
+            <input type="text" id="SpellingWeight" >
+          </div>
+        </div>
+        <div class="col-sm">
+        </div> 
+      </div>
+      <input type="submit" id="SaveWeights" value="Save Weights">
+    </div>
+  </body>
+</html>

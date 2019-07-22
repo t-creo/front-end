@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+  <head>
+    <title> World Wide Web </title>
+    <script src="/jquery-3.3.1.min.js"></script>
+    <script src="/controllers/scraper.js"></script>
+    <script src="/controllers/popup.js"></script>
+    <script src="/libraries/bundle.js"></script>
+    <script src="/libraries/chromeFS.js"></script>
+    <script src="/libraries/profanityFilter.js"></script>
+    <script src="/libraries/spelling.js"></script>
+    <script src="/libraries/nspellfilter.js"></script>
+    <script src="/libraries/en_USDic.js"></script>
+ 
+    <script src="/controllers/weightCalculationUtils.js"></script>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <style>
+      .container {
+        width: 480px;
+        height: 240px;
+        padding: 10px;
+      }
+
+      #credibility{
+        font-size: 24px;
+        color: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="d-flex justify-content-center">World White Web</h2>
+      <div class="row">
+        <div class="col-9">
+          <div id="usrform" action="" method="get">
+            <div class="form-group">
+              <label class="labels" for="tweet">Text to Analyze</label>
+              <textarea
+                id="tweet"
+                class="form-control"
+                name="tweet"
+                rows="2"
+                cols="40"
+                form="usrform"
+              >I'm sorry professor, but I must not tell lies</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="form-group">
+            <label class="d-flex justify-content-center">Credibility</label>
+            <p id="credibility" class="d-flex justify-content-center">0%</p>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button
+          id="submitButton"
+          type="submit"
+          class="btn btn-primary"
+        >Verify</button>
+      </div>
+      <hr id="firstHorBar">
+      <h6 id="currentPage" class="d-flex justify-content-center">
+      </h6>
+      <div id="PageSensitiveButtons" class="d-flex justify-content-center">
+        <button
+          id="VerifyPageButton"
+          type="submit"
+          class="btn btn-primary"
+        >Verify Page Tweets</button>
+      </div>
+      <hr id="secondHorBar">
+    </div>
+  </body>
+</html>

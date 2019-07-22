@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "World White Web",
+  "version": "1.0",
+  "description": "Check for information credibility",
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "declarativeContent",
+    "storage",
+    "tabs"
+  ],
+  "options_page": "views/options.html",
+  "browser_action": {
+    "default_popup": "views/popup.html",
+    "default_icon": {
+      "16": "images/get_started16.png",
+      "32": "images/get_started32.png",
+      "48": "images/get_started48.png",
+      "128": "images/get_started128.png"
+    }
+  },
+  "icons": {
+    "16": "images/get_started16.png",
+    "32": "images/get_started32.png",
+    "48": "images/get_started48.png",
+    "128": "images/get_started128.png"
+  },
+  "content_scripts":[
+    {
+      "matches": ["https://*/*"],
+      "js": [
+        "/jquery-3.3.1.min.js",
+        "controllers/scraper.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    "controllers/weightCalculationUtils.js"
+  ]
+}
