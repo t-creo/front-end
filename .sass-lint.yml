@@ -1,0 +1,13 @@
+files:
+  include: 'src/sass/*.s+(a|c)ss'
+rules:
+  indentation:
+    - 2
+    -
+      size: 2
+  space-before-brace:
+    - 2
+  no-ids:
+    - 0
+  trailing-semicolon:
+    - 2
