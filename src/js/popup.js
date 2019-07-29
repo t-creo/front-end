@@ -1,6 +1,13 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+import SimpleSpamFilter from 'simple-spam-filter';
+import Filter from 'bad-words';
+import spelling from 'spelling';
+import $ from 'jquery';
+import dictionary from 'spelling/dictionaries/en_US';
+import { PreventInvalidWeightInputs, CalculateWeightProportion, getProportion } from './controllers/weightCalculationUtils';
+import './controllers/scraper';
+import '../sass/index.scss';
+
+
 window.addEventListener('load', function load(event)
 {
     document.getElementById('submitButton').onclick = getCredibility;
@@ -366,7 +373,6 @@ function GetSpamFilterValue(weight, text)
     //**************************************************//
     //console.log("SPAM FILTER STARTS");
     var spamFilterValue = 0;
-    var SimpleSpamFilter = require('simple-spam-filter');
 
     // These parameters are all optional
     var opts =
@@ -428,8 +434,7 @@ function GetProfanityFilterValue(weight, text)
     //**************************************************//
     //console.log("PROFANITY FILTER STARTS");
     var profanityFilterValue = 0;
-    var profanityFilter = require('bad-words');
-    var filterInstance = new profanityFilter();
+    var filterInstance = new Filter();
     var censoredText = filterInstance.clean(text);
     var wordsInText = StringToListOfWords(censoredText);
     var numberOfWordsInText = wordsInText.length;
@@ -465,15 +470,13 @@ function StringToListOfWords(text)
 }
 function countMisspelings(numberOfWordsInList, listOfWords)
 {
-    var spelling = require('spelling'),
-    dictionary = require('en_US.js');
 
     var dict = new spelling(dictionary);
     var misspelings = 0;
     var i = 0;
     while (i < numberOfWordsInList)
     {
-        dictResult = dict.lookup( listOfWords[i] );
+        const dictResult = dict.lookup( listOfWords[i] );
 
         if (!dictResult.found)
         {

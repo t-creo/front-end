@@ -3,8 +3,8 @@ function PreventInvalidWeightInputs(ListOfWeights)
 
     var CleanedWeightInput = ListOfWeights.slice();
     //Eliminate strings and NaNs
-    for (i = 0; i < ListOfWeights.length; i++) 
-    { 
+    for (let i = 0; i < ListOfWeights.length; i++)
+    {
         if (typeof (ListOfWeights[i]) == "string")
         {
             CleanedWeightInput[i] = parseFloat(ListOfWeights[i]);
@@ -16,10 +16,10 @@ function PreventInvalidWeightInputs(ListOfWeights)
     }
 
     //Eliminate negative numbers
-    for (i = 0; i < CleanedWeightInput.length; i++) 
-    { 
+    for (let i = 0; i < CleanedWeightInput.length; i++)
+    {
         if(CleanedWeightInput[i] < 0)
-        { 
+        {
             CleanedWeightInput[i] = 0;
         }
     }
@@ -28,8 +28,8 @@ function PreventInvalidWeightInputs(ListOfWeights)
     var OnlyOneWeight = false;
     var OnlyWeightOnListIndex = 0;
     var MoreThanOneWeight = false;
-    for (i = 0; i < CleanedWeightInput.length; i++) 
-    { 
+    for (let i = 0; i < CleanedWeightInput.length; i++)
+    {
         if (CleanedWeightInput[i] != 0)
         {
             AllAreZero = false;
@@ -49,19 +49,19 @@ function PreventInvalidWeightInputs(ListOfWeights)
     }
     if (AllAreZero)
     {
-        for (i = 0; i < CleanedWeightInput.length; i++) 
-        { 
+        for (let i = 0; i < CleanedWeightInput.length; i++)
+        {
             //console.log("Cleaned Weight Input length:" + CleanedWeightInput.length);
             CleanedWeightInput[i] = parseFloat((100/CleanedWeightInput.length).toFixed(2));
             //console.log("Cleaned Weight Input: " + CleanedWeightInput[i]);
         }
     }
-    else if (OnlyOneWeight)  
+    else if (OnlyOneWeight)
     {
-        for (i = 0; i < CleanedWeightInput.length; i++) 
-        { 
+        for (let i = 0; i < CleanedWeightInput.length; i++)
+        {
             if(i != OnlyWeightOnListIndex)
-            { 
+            {
                 CleanedWeightInput[i] = 0;
             }
             else
@@ -72,25 +72,25 @@ function PreventInvalidWeightInputs(ListOfWeights)
     }
     return CleanedWeightInput;
 }
-function CalculateWeightProportion(ListOfWeights) 
+function CalculateWeightProportion(ListOfWeights)
 {
 //    var IndexAndWeightPair = FindAndScaleFirstNonZeroWeightValue();
     var TotalSum = 0;
     var NumberOfWeights = 0;
 
-    for (i = 0; i < ListOfWeights.length; i++) 
-    { 
+    for (let i = 0; i < ListOfWeights.length; i++)
+    {
         TotalSum += ListOfWeights[i];
         if(ListOfWeights[i] != 0)
-        { 
+        {
             NumberOfWeights += 1;
         }
     }
 
     //console.log("Total Sum:" + TotalSum);
     var ScaledWeightProportionsList = ListOfWeights.slice();
-    for (i = 0; i < ListOfWeights.length; i++) 
-    { 
+    for (let i = 0; i < ListOfWeights.length; i++)
+    {
         ScaledWeightProportionsList[i] = (getProportion(ListOfWeights[i],TotalSum)*100).toFixed(2);
     }
     return ScaledWeightProportionsList;
@@ -102,3 +102,8 @@ function getProportion(partialQuantity, TotalQuantity)
 }
 
 
+export {
+    PreventInvalidWeightInputs,
+    CalculateWeightProportion,
+    getProportion
+}

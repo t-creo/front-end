@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import $ from 'jquery';
+import { PreventInvalidWeightInputs, CalculateWeightProportion, } from './controllers/weightCalculationUtils';
+import '../sass/index.scss';
+
 $(function(){
 
    chrome.storage.sync.get(['SocialWeight','ProfanityWeight','SpamWeight','SpellingWeight'], function(filterOptions) {
@@ -48,8 +52,8 @@ function UpdateWeights()
 function ExtractHTMLInputValuesFromIDList(HTMLObjectIDList) 
 {
     var InputValuesList = HTMLObjectIDList.slice();
-    for (i = 0; i < HTMLObjectIDList.length; i++) { 
-        CurrentWeight = parseFloat($(HTMLObjectIDList[i]).val()).toFixed(2);
+    for (let i = 0; i < HTMLObjectIDList.length; i++) { 
+        let CurrentWeight = parseFloat($(HTMLObjectIDList[i]).val()).toFixed(2);
         InputValuesList[i] = CurrentWeight;
         //console.log("CurrentWeight: "+CurrentWeight);
     } 
@@ -58,7 +62,7 @@ function ExtractHTMLInputValuesFromIDList(HTMLObjectIDList)
 function UpdateValuesForHTMLListOfInputs(HTMLObjectIDList,ValuesList) 
 {
 
-    for (i = 0; i < HTMLObjectIDList.length; i++) { 
+    for (let i = 0; i < HTMLObjectIDList.length; i++) { 
         //console.log("HTMLID : "+ HTMLObjectIDList[i]);
         $(HTMLObjectIDList[i]).val(ValuesList[i].toString());
         //console.log("NewHTMLInputValue: "+ ValuesList[i].toString());
