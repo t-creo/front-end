@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Mini proyecto de desarrollo de software de la Universidad Simón bolívar",
   "scripts": {
-    "build": "npm run check && NODE_ENV=production node utils/build.js",
+    "build": "npm run test && NODE_ENV=production node utils/build.js",
     "start": "NODE_ENV=development node utils/webserver.js",
-    "check": "sass-lint -v -q"
+    "test": "sass-lint -v -q && standard"
   },
   "repository": {
     "type": "git",
@@ -45,6 +45,7 @@
     "precss": "^4.0.0",
     "sass-lint": "^1.13.1",
     "sass-loader": "^7.1.0",
+    "standard": "^13.1.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
