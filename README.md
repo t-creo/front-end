@@ -11,6 +11,7 @@ MiniProyecto de Desarrollo de Software para la USBve.
 
 * Yuni Quintero
 * Germán Robayo
+* Nairelys Hernandez
 
 ## Tutores
 
