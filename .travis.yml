@@ -1,4 +1,4 @@
 language: node_js
 node_js:
   - "10.16.0"
-if: branch = master
+if: branch IN (master, develop)
