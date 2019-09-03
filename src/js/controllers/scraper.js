@@ -9,15 +9,29 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.sender === 'www' && request.instruction === 'scrap') {
       // Get Navbar values
-      var spans = document.querySelectorAll('span.ProfileNav-value[data-is-compact]')
+
+      // Get username VER CASO DE K Y M
+
+      var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
+
+      var followingPath = window.location.pathname + "/following"
+      var followersPath = window.location.pathname + "/followers"
+
+      var followingNum = Number(document.querySelector(`a[href="${followingPath}"]`).getAttribute("title").replace(/[,]/,""))
+
+      var followersNum = Number(document.querySelector(`a[href="${followersPath}"]`).getAttribute("title").replace(/[,]/,""))
+
+      // get # of tweets and likes
+
+      var quantity = document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(" ")[0] // "10K Tweets"
 
       // Get joined Date
-      var joinedDateString = document.getElementsByClassName('ProfileHeaderCard-joinDate')[0].getElementsByClassName('ProfileHeaderCard-joinDateText')[0].textContent
+      var joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
 
       // Get Verified value
-      var verifiedClass = document.getElementsByClassName('ProfileHeaderCard-name')[0].getElementsByClassName('Icon Icon--verified')
+      var verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
       var verifiedBool
-      if (verifiedClass.length > 0) {
+      if (verifiedClass) {
         verifiedBool = true
       } else {
         verifiedBool = false
@@ -46,13 +60,13 @@ chrome.runtime.onMessage.addListener(
       // Create following object
       var following = {
         name: 'following',
-        value: getDataCount(spans[1])
+        value: followingNum
       }
 
       // Create followers object
       var followers = {
         name: 'followers',
-        value: getDataCount(spans[2])
+        value: followersNum
       }
 
       // Create likes object
