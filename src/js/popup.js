@@ -21,9 +21,9 @@ chrome.contextMenus.onClicked.addListener(function (clickData) {
 $(document).ready(function () {
   chrome.tabs.getSelected(null, function (tab) {
     var tabUrl = tab.url
-    if (tabUrl.includes('https:// twitter.com')) {
+    if (tabUrl.includes('https://twitter.com')) {
       $('#currentPage').text('You are currently on Twitter')
-    } else if (tabUrl.includes('https:// www.facebook.com')) {
+    } else if (tabUrl.includes('https://www.facebook.com')) {
       $('#currentPage').text('You are currently on Facebook')
       $('#PageSensitiveButtons').remove()
     } else {

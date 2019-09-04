@@ -4,26 +4,40 @@ function getDataCount (span) {
   return span.getAttribute('data-count')
 }
 
+function formatNumber (string) {
+
+  if (string.includes('.')){
+    var x = string.replace(/[d+K]/,"00") // 28.5K -> 28.500
+    x = x.replace(/[d+M]/,"00000") // 28.5M -> 28.500000
+  }else{
+    var x = string.replace(/[d+K]/,"000") // 28K -> 28000
+    x = x.replace(/[d+M]/,"000000") // 28M -> 28000000
+  }
+  x = x.replace(/[,]/g,"")
+  x = x.replace(/[.]/g, "")
+  return Number(x)
+}
+
 // Listener to scrape the values in real time
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.sender === 'www' && request.instruction === 'scrap') {
       // Get Navbar values
 
-      // Get username VER CASO DE K Y M
+      // Get username 
 
       var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
 
       var followingPath = window.location.pathname + "/following"
       var followersPath = window.location.pathname + "/followers"
 
-      var followingNum = Number(document.querySelector(`a[href="${followingPath}"]`).getAttribute("title").replace(/[,]/,""))
+      var followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute("title"))
 
-      var followersNum = Number(document.querySelector(`a[href="${followersPath}"]`).getAttribute("title").replace(/[,]/,""))
+      var followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute("title"))
 
       // get # of tweets and likes
 
-      var quantity = document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(" ")[0] // "10K Tweets"
+      var quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(" ")[0]) // "10K Tweets"
 
       // Get joined Date
       var joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
@@ -54,7 +68,7 @@ chrome.runtime.onMessage.addListener(
       // Create tweets object
       var tweets = {
         name: 'tweets',
-        value: getDataCount(spans[0])
+        value: quantity
       }
 
       // Create following object
@@ -69,11 +83,11 @@ chrome.runtime.onMessage.addListener(
         value: followersNum
       }
 
-      // Create likes object
+      /*// Create likes object
       var likes = {
         name: 'likes',
         value: getDataCount(spans[3])
-      }
+      }*/
 
       // Create data structure to send to main context
       var data = {
@@ -81,8 +95,8 @@ chrome.runtime.onMessage.addListener(
         verified: verified,
         tweets: tweets,
         following: following,
-        followers: followers,
-        likes: likes
+        followers: followers
+        //likes: likes
       }
 
       // Show in console to be sure about values
