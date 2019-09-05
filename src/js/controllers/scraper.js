@@ -100,10 +100,11 @@ chrome.runtime.onMessage.addListener(
       }
 
       // Show in console to be sure about values
-      var tweetContainers = $(document).find('div.js-tweet-text-container')
+      var tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
+      tweetContainers = Array.from(tweetContainers)
       var tweetTexts = tweetContainers.slice()
       for (let i = 0; i < tweetContainers.length; i++) {
-        tweetTexts[i] = tweetContainers[i].children[0].innerText
+        tweetTexts[i] = tweetContainers[i].children[1].children[1].innerText
         if (!$(tweetContainers[i].children[1]).hasClass('Credibility-Ranking')) {
           $(tweetContainers[i]).append(`<div class="Credibility-Ranking">
             <p id=TweetNumber${i}></p>
