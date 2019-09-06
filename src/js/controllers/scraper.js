@@ -124,9 +124,105 @@ function formatNumber (string) {
 //   })
 
 chrome.runtime.onConnect.addListener((port) => {
-  port.onMessage.addListener((msg) => {
-    if (msg.function == 'html') {
-      port.postMessage({ response: 'nairelys' });
+  port.onMessage.addListener((request) => {
+    if (request.sender === 'www' && request.instruction === 'scrap') {
+            // Get Navbar values
+
+      // Get username 
+
+      var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
+
+      var followingPath = window.location.pathname + "/following"
+      var followersPath = window.location.pathname + "/followers"
+
+      var followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute("title"))
+
+      var followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute("title"))
+
+      // get # of tweets and likes
+
+      var quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(" ")[0]) // "10K Tweets"
+
+      // Get joined Date
+      var joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
+
+      // Get Verified value
+      var verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
+      var verifiedBool
+      if (verifiedClass) {
+        verifiedBool = true
+      } else {
+        verifiedBool = false
+      }
+
+      // Creating Objects for data transfer to popup
+
+      // Create verified object
+      var joinedDate = {
+        name: 'joinedDate',
+        value: joinedDateString
+      }
+
+      // Create verified object
+      var verified = {
+        name: 'verified',
+        value: verifiedBool
+      }
+
+      // Create tweets object
+      var tweets = {
+        name: 'tweets',
+        value: quantity
+      }
+
+      // Create following object
+      var following = {
+        name: 'following',
+        value: followingNum
+      }
+
+      // Create followers object
+      var followers = {
+        name: 'followers',
+        value: followersNum
+      }
+
+      /*// Create likes object
+      var likes = {
+        name: 'likes',
+        value: getDataCount(spans[3])
+      }*/
+
+      // Create data structure to send to main context
+      var data = {
+        joinedDate: joinedDate,
+        verified: verified,
+        tweets: tweets,
+        following: following,
+        followers: followers
+        //likes: likes
+      }
+       var tweetContainers = document.querySelectorAll("div[data-testid='tweet'] > div")
+
+       tweetContainers = Array.from(tweetContainers)
+       var tweetTexts = tweetContainers.slice()
+      alert(tweetContainers[0].children[1].innerText);
+      $(tweetContainers[1]).append("<div class='Credibility-Ranking'><p id=TweetNumber${i}>NAirelys tweet</p></div>")
+      //  $(tweetContainers[0]).append(`<div class="Credibility-Ranking">
+      //        <p id=TweetNumber${i}></p>
+      //      </div>`)
+           alert("hola");
+      // for (let i = 0; i < tweetContainers.length; i++) {
+      
+      //   tweetTexts[i] = tweetContainers[i].children[1].children[1].innerText
+      //   if (!$(tweetContainers[i].children[1]).hasClass('Credibility-Ranking')) {
+      //     $(tweetContainers[i]).append(`<div class="Credibility-Ranking">
+      //       <p id=TweetNumber${i}></p>
+      //     </div>`)
+      //   }
+      // }
+
+      port.postMessage(data);
     }
   });
 });

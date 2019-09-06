@@ -118,9 +118,9 @@ function ValidateTwitterTweets () {
 function connect() {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const port = chrome.tabs.connect(tabs[0].id);
-    port.postMessage({ function: 'html' });
+    port.postMessage({ sender: 'www', instruction: 'scrap' });
     port.onMessage.addListener((response) => {
-      alert("response");      
+      alert(JSON.stringify(response));      
     });
   });
 }
