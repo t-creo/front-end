@@ -202,27 +202,24 @@ chrome.runtime.onConnect.addListener((port) => {
         followers: followers
         //likes: likes
       }
-       var tweetContainers = document.querySelectorAll("div[data-testid='tweet'] > div")
-
+      
+     // port.postMessage(data);
+       var tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
        tweetContainers = Array.from(tweetContainers)
        var tweetTexts = tweetContainers.slice()
-      alert(tweetContainers[0].children[1].innerText);
-      $(tweetContainers[1]).append("<div class='Credibility-Ranking'><p id=TweetNumber${i}>NAirelys tweet</p></div>")
-      //  $(tweetContainers[0]).append(`<div class="Credibility-Ranking">
-      //        <p id=TweetNumber${i}></p>
-      //      </div>`)
-           alert("hola");
-      // for (let i = 0; i < tweetContainers.length; i++) {
+      for (let i = 0; i < tweetContainers.length; i++) {
       
-      //   tweetTexts[i] = tweetContainers[i].children[1].children[1].innerText
-      //   if (!$(tweetContainers[i].children[1]).hasClass('Credibility-Ranking')) {
-      //     $(tweetContainers[i]).append(`<div class="Credibility-Ranking">
-      //       <p id=TweetNumber${i}></p>
-      //     </div>`)
-      //   }
-      // }
+        tweetTexts[i] = tweetContainers[i].children[1].children[1].innerText
+        if (!$(tweetContainers[i].children[1]).hasClass('Credibility-Ranking')) {
+          $(tweetContainers[i]).append("<div class='Credibility-Ranking'><p id=TweetNumber${i}></p></div>")
+        }
+      }
 
-      port.postMessage(data);
+      port.postMessage({
+                data: data,
+                tweetTexts: tweetTexts,
+                tweetContainers: tweetContainers
+      });
     }
   });
 });

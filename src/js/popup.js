@@ -86,7 +86,7 @@ function ValidateTwitterTweets () {
   // Send Message asking for the scaped values
   chrome.tabs.executeScript(null, {
     file: 'popup.bundle.js',  }, () => {
-      connect() //this is where I call my function to establish a connection     });
+      connect()
   });
   // chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
   //   chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
