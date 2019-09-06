@@ -120,7 +120,22 @@ function connect() {
     const port = chrome.tabs.connect(tabs[0].id);
     port.postMessage({ sender: 'www', instruction: 'scrap' });
     port.onMessage.addListener((response) => {
-      alert(JSON.stringify(response));      
+      var credibilityList = []
+      var credibility
+      chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
+        for (let i = 0; i < response.tweetTexts.length; i++) {
+          if (response.tweetTexts[i] !== '') {
+
+            credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
+            credibilityList.push(credibility)
+          } else {
+            credibility = '--'
+            credibilityList.push(credibility)
+          }
+        }
+        port.postMessage({ sender: 'www', instruction: 'update', credList: credibilityList })
+
+      });
     });
   });
 }
@@ -132,6 +147,7 @@ function CalculateCredibility (text, filterOptions, hasSocial, response = undefi
   var SpellingWeight
   var ProfanityWeight
   if (hasSocial) {
+    
     SocialWeight = 10
     SpamWeight = 40
     SpellingWeight = 20
