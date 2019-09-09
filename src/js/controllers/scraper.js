@@ -6,15 +6,18 @@ function getDataCount (span) {
 
 function formatNumber (string) {
 
-  if (string.includes('.')){
-    var x = string.replace(/[d+K]/,"00") // 28.5K -> 28.500
-    x = x.replace(/[d+M]/,"00000") // 28.5M -> 28.500000
+  var x = string.replace(/[ ]/,"") // 20 K -> 20K
+
+  if (x.match(/^(\d+\.\dK|\d+\.\dM|\d+\,\dK|\d+\,\dM)$/) != null) {
+    x = x.replace(/[K]/, "00") // 20,2K -> 20,200 | 20.2K -> 20.200
+    x = x.replace(/[M]/, "00000") // 20,2M -> 20,200000 | 20.2M -> 20.200000
   }else{
-    var x = string.replace(/[d+K]/,"000") // 28K -> 28000
-    x = x.replace(/[d+M]/,"000000") // 28M -> 28000000
+    x = x.replace(/[K]/, "000") // 20K -> 20000
+    x = x.replace(/[M]/, "000000") // 20M -> 20000000
   }
-  x = x.replace(/[,]/g,"")
-  x = x.replace(/[.]/g, "")
+
+  x = x.replace(/[.,]/, "") // quita comas o puntos
+
   return Number(x)
 }
 
@@ -37,7 +40,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
       // get # of tweets and likes
 
-      var quantity = document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(" ")[0]// "10K Tweets"
+      var quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(" ")[0]) // "10K Tweets"
     
       // Get joined Date
       var joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
