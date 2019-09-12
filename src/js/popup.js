@@ -85,22 +85,21 @@ function getCredibility () {
 function ValidateTwitterTweets () {
   // Send Message asking for the scaped values
   chrome.tabs.executeScript(null, {
-    file: 'popup.bundle.js',  }, () => {
-      connect()
-  });
+    file: 'popup.bundle.js' }, () => {
+    connect()
+  })
 }
 
-function connect() {
+function connect () {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const port = chrome.tabs.connect(tabs[0].id);
-    port.postMessage({ sender: 'www', instruction: 'scrap' });
+    const port = chrome.tabs.connect(tabs[0].id)
+    port.postMessage({ sender: 'www', instruction: 'scrap' })
     port.onMessage.addListener((response) => {
       var credibilityList = []
       var credibility
       chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
         for (let i = 0; i < response.tweetTexts.length; i++) {
           if (response.tweetTexts[i] !== '') {
-
             credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
             credibilityList.push(credibility)
           } else {
@@ -109,10 +108,9 @@ function connect() {
           }
         }
         port.postMessage({ sender: 'www', instruction: 'update', credList: credibilityList })
-
-      });
-    });
-  });
+      })
+    })
+  })
 }
 
 function CalculateCredibility (text, filterOptions, hasSocial, response = undefined) {
@@ -122,7 +120,6 @@ function CalculateCredibility (text, filterOptions, hasSocial, response = undefi
   var SpellingWeight
   var ProfanityWeight
   if (hasSocial) {
-    
     SocialWeight = 10
     SpamWeight = 40
     SpellingWeight = 20
