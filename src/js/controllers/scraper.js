@@ -38,8 +38,8 @@ chrome.runtime.onConnect.addListener((port) => {
       var joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
 
       // Get Verified value
-      var verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
-      var verifiedBool
+      const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
+      let verifiedBool
       if (verifiedClass) {
         verifiedBool = true
       } else {
@@ -85,7 +85,7 @@ chrome.runtime.onConnect.addListener((port) => {
       } */
 
       // Create data structure to send to main context
-      var data = {
+      const data = {
         joinedDate: joinedDate,
         verified: verified,
         tweets: tweets,
@@ -93,16 +93,16 @@ chrome.runtime.onConnect.addListener((port) => {
         followers: followers
         // likes: likes
       }
-      var tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
+      let tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
       tweetContainers = Array.from(tweetContainers)
-      var tweetTexts = tweetContainers.slice()
-      for (let i = 0; i < tweetContainers.length; i++) {
-        tweetTexts[i] = tweetContainers[i].children[1].innerText
-        if (!$(tweetContainers[i].children[1]).hasClass('Credibility-Ranking')) {
-          $(tweetContainers[i].children[1]).addClass('Credibility-Ranking')
-          $(tweetContainers[i].children[1]).append("<div class='Credibility-Ranking'><p id=TweetNumber" + i + '>...</p></div>')
+
+      const tweetTexts = tweetContainers.map((tweetContainer, index) => {
+        if (!$(tweetContainer.children[1]).hasClass('Credibility-Ranking')) {
+          $(tweetContainer.children[1]).addClass('Credibility-Ranking')
+          $(tweetContainer.children[1]).append("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
         }
-      }
+        return tweetContainer.children[1].innerText
+      })
 
       port.postMessage({
         data: data,
@@ -116,11 +116,11 @@ chrome.runtime.onConnect.addListener((port) => {
 })
 
 function UpdateTweetCredibility (credibilityList) {
-  for (let i = 0; i < credibilityList.length; i++) {
-    if (credibilityList[i] !== '--') {
-      var Green = Math.floor(parseInt(credibilityList[i]) * (2.55))
-      var Red = 255 - Math.floor(parseInt(credibilityList[i]) * (2.55))
-      var GreenHex = Green.toString(16)
+  credibilityList.map((credibilityItem, index) => {
+    if (credibilityItem !== '--') {
+      const Green = Math.floor(parseInt(credibilityItem) * (2.55))
+      const Red = 255 - Math.floor(parseInt(credibilityItem) * (2.55))
+      let GreenHex = Green.toString(16)
 
       if (GreenHex.length < 2) {
         GreenHex = '0' + GreenHex
@@ -130,10 +130,10 @@ function UpdateTweetCredibility (credibilityList) {
         RedHex = '0' + RedHex
       }
       const FinalColor = '#' + (RedHex.toString(16)) + (GreenHex.toString(16)) + '00'
-      $('#TweetNumber' + i).text('WWW Credibility: ' + credibilityList[i] + '%')
-      $('#TweetNumber' + i).css('color', FinalColor)
+      $('#TweetNumber' + index).text('WWW Credibility: ' + credibilityItem + '%')
+      $('#TweetNumber' + index).css('color', FinalColor)
     } else {
-      $('#TweetNumber' + i).text('WWW Credibility: --')
+      $('#TweetNumber' + index).text('WWW Credibility: --')
     }
-  }
+  })
 }
