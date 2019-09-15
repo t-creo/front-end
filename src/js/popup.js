@@ -21,9 +21,9 @@ chrome.contextMenus.onClicked.addListener(function (clickData) {
 $(document).ready(function () {
   chrome.tabs.getSelected(null, function (tab) {
     var tabUrl = tab.url
-    if (tabUrl.includes('https:// twitter.com')) {
+    if (tabUrl.includes('https://twitter.com')) {
       $('#currentPage').text('You are currently on Twitter')
-    } else if (tabUrl.includes('https:// www.facebook.com')) {
+    } else if (tabUrl.includes('https://www.facebook.com')) {
       $('#currentPage').text('You are currently on Facebook')
       $('#PageSensitiveButtons').remove()
     } else {
@@ -84,29 +84,31 @@ function getCredibility () {
 
 function ValidateTwitterTweets () {
   // Send Message asking for the scaped values
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
-      if (response) {
-        var credibilityList = []
-        var credibility
-        chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
-          for (let i = 0; i < response.tweetTexts.length; i++) {
-            if (response.tweetTexts[i] !== '') {
-              credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
-              credibilityList.push(credibility)
-            } else {
-              credibility = '--'
-              credibilityList.push(credibility)
-            }
+  chrome.tabs.executeScript(null, {
+    file: 'popup.bundle.js' }, () => {
+    connect()
+  })
+}
+
+function connect () {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const port = chrome.tabs.connect(tabs[0].id)
+    port.postMessage({ sender: 'www', instruction: 'scrap' })
+    port.onMessage.addListener((response) => {
+      var credibilityList = []
+      var credibility
+      chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
+        for (let i = 0; i < response.tweetTexts.length; i++) {
+          if (response.tweetTexts[i] !== '') {
+            credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
+            credibilityList.push(credibility)
+          } else {
+            credibility = '--'
+            credibilityList.push(credibility)
           }
-          chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'update', credList: credibilityList }, function (confirmation) {
-            if (confirmation) {
-            } else {
-            }
-          })
-        })
-      } else {
-      }
+        }
+        port.postMessage({ sender: 'www', instruction: 'update', credList: credibilityList })
+      })
     })
   })
 }
