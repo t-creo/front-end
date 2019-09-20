@@ -97,7 +97,7 @@ chrome.runtime.onConnect.addListener((port) => {
       tweetContainers = Array.from(tweetContainers)
 
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
-        if (!$(tweetContainer.children[1]).hasClass('Credibility-Ranking')) {
+        if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
           $(tweetContainer.children[1]).addClass('Credibility-Ranking')
           $(tweetContainer.children[1]).append("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
         }
