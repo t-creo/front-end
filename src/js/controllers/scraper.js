@@ -1,5 +1,3 @@
-import $ from 'jquery'
-
 function formatNumber (string) {
   let x = string.replace(/ /, '') // 20 K -> 20K
 
@@ -98,8 +96,9 @@ chrome.runtime.onConnect.addListener((port) => {
 
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
-          $(tweetContainer.children[1]).addClass('Credibility-Ranking')
-          $(tweetContainer.children[1]).append("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
+          tweetContainer.children[1].classList.add('Credibility-Ranking')
+          const frag = document.createRange().createContextualFragment("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
+          tweetContainer.children[1].append(frag)
         }
         return tweetContainer.children[1].innerText
       })
@@ -130,10 +129,10 @@ function UpdateTweetCredibility (credibilityList) {
         RedHex = '0' + RedHex
       }
       const FinalColor = '#' + (RedHex.toString(16)) + (GreenHex.toString(16)) + '00'
-      $('#TweetNumber' + index).text('WWW Credibility: ' + credibilityItem + '%')
-      $('#TweetNumber' + index).css('color', FinalColor)
+      document.querySelector('#TweetNumber' + index).innerText = 'WWW Credibility: ' + credibilityItem + '%'
+      document.querySelector('#TweetNumber' + index).style.color = FinalColor
     } else {
-      $('#TweetNumber' + index).text('WWW Credibility: --')
+      document.querySelector('#TweetNumber' + index).innerText = 'WWW Credibility: --'
     }
   })
 }

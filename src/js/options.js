@@ -1,4 +1,3 @@
-import $ from 'jquery'
 import { PreventInvalidWeightInputs, CalculateWeightProportion } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
 
@@ -41,7 +40,7 @@ function UpdateWeights () {
 function ExtractHTMLInputValuesFromIDList (HTMLObjectIDList) {
   var InputValuesList = HTMLObjectIDList.slice()
   for (let i = 0; i < HTMLObjectIDList.length; i++) {
-    const CurrentWeight = parseFloat($(HTMLObjectIDList[i]).val()).toFixed(2)
+    const CurrentWeight = parseFloat(HTMLObjectIDList[i].value).toFixed(2)
     InputValuesList[i] = CurrentWeight
   }
   return InputValuesList
@@ -49,6 +48,6 @@ function ExtractHTMLInputValuesFromIDList (HTMLObjectIDList) {
 
 function UpdateValuesForHTMLListOfInputs (HTMLObjectIDList, ValuesList) {
   for (let i = 0; i < HTMLObjectIDList.length; i++) {
-    $(HTMLObjectIDList[i]).val(ValuesList[i].toString())
+    HTMLObjectIDList[i].value = ValuesList[i].toString()
   }
 }
