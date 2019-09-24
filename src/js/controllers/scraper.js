@@ -22,18 +22,18 @@ chrome.runtime.onConnect.addListener((port) => {
 
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
 
-      var followingPath = window.location.pathname + '/following'
-      var followersPath = window.location.pathname + '/followers'
+      let followingPath = window.location.pathname + '/following'
+      let followersPath = window.location.pathname + '/followers'
 
-      var followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
+      let followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
 
-      var followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
+      let followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
 
       // get # of tweets and likes
 
-      var quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
+      let quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
       // Get joined Date
-      var joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
+      let joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
 
       // Get Verified value
       const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
@@ -47,31 +47,31 @@ chrome.runtime.onConnect.addListener((port) => {
       // Creating Objects for data transfer to popup
 
       // Create verified object
-      var joinedDate = {
+      let joinedDate = {
         name: 'joinedDate',
         value: joinedDateString
       }
 
       // Create verified object
-      var verified = {
+      let verified = {
         name: 'verified',
         value: verifiedBool
       }
 
       // Create tweets object
-      var tweets = {
+      let tweets = {
         name: 'tweets',
         value: quantity
       }
 
       // Create following object
-      var following = {
+      let following = {
         name: 'following',
         value: followingNum
       }
 
       // Create followers object
-      var followers = {
+      let followers = {
         name: 'followers',
         value: followersNum
       }
