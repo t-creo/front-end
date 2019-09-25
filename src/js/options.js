@@ -1,20 +1,19 @@
-import $ from 'jquery'
 import { PreventInvalidWeightInputs, CalculateWeightProportion } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
 
-$(function () {
+document(function () {
   chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
-    $('#SocialWeight').val(filterOptions.SocialWeight)
-    $('#ProfanityWeight').val(filterOptions.ProfanityWeight)
-    $('#SpamWeight').val(filterOptions.SpamWeight)
-    $('#SpellingWeight').val(filterOptions.SpellingWeight)
+    document.querySelector('#SocialWeight').value = filterOptions.SocialWeight
+    document.querySelector('#ProfanityWeight').value = filterOptions.ProfanityWeight
+    document.querySelector('#SpamWeight').value = filterOptions.SpamWeight
+    document.querySelector('#SpellingWeight').value = filterOptions.SpellingWeight
   })
-  $('#SaveWeights').click(function () {
+  document.querySelector('#SaveWeights').onClick = function () { // o addeventlistener?
     UpdateWeights()
-    var SocialWeight = $('#SocialWeight').val()
-    var ProfanityWeight = $('#ProfanityWeight').val()
-    var SpamWeight = $('#SpamWeight').val()
-    var SpellingWeight = $('#SpellingWeight').val()
+    var SocialWeight = document.querySelector('#SocialWeight').value
+    var ProfanityWeight = document.querySelector('#ProfanityWeight').value
+    var SpamWeight = document.querySelector('#SpamWeight').value
+    var SpellingWeight = document.querySelector('#SpellingWeight').value
     if (SocialWeight) {
       chrome.storage.sync.set({ SocialWeight: SocialWeight })
     }
@@ -27,7 +26,7 @@ $(function () {
     if (SpellingWeight) {
       chrome.storage.sync.set({ SpellingWeight: SpellingWeight })
     }
-  })
+  }
 })
 
 function UpdateWeights () {
@@ -41,7 +40,7 @@ function UpdateWeights () {
 function ExtractHTMLInputValuesFromIDList (HTMLObjectIDList) {
   var InputValuesList = HTMLObjectIDList.slice()
   for (let i = 0; i < HTMLObjectIDList.length; i++) {
-    const CurrentWeight = parseFloat($(HTMLObjectIDList[i]).val()).toFixed(2)
+    const CurrentWeight = parseFloat(HTMLObjectIDList[i].value).toFixed(2)
     InputValuesList[i] = CurrentWeight
   }
   return InputValuesList
@@ -49,6 +48,6 @@ function ExtractHTMLInputValuesFromIDList (HTMLObjectIDList) {
 
 function UpdateValuesForHTMLListOfInputs (HTMLObjectIDList, ValuesList) {
   for (let i = 0; i < HTMLObjectIDList.length; i++) {
-    $(HTMLObjectIDList[i]).val(ValuesList[i].toString())
+    HTMLObjectIDList[i].value = ValuesList[i].toString()
   }
 }

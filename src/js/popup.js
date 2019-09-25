@@ -1,7 +1,6 @@
 import SimpleSpamFilter from 'simple-spam-filter'
 import Filter from 'bad-words'
 import Spelling from 'spelling'
-import $ from 'jquery'
 import dictionary from 'spelling/dictionaries/en_US'
 import { PreventInvalidWeightInputs, CalculateWeightProportion, getProportion } from './controllers/weightCalculationUtils'
 import './controllers/scraper'
@@ -18,18 +17,19 @@ chrome.contextMenus.onClicked.addListener(function (clickData) {
   }
 })
 
-$(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function (event) {
   chrome.tabs.getSelected(null, function (tab) {
     var tabUrl = tab.url
+    var elem = document.querySelector('#PageSensitiveButtons')
     if (tabUrl.includes('https://twitter.com')) {
-      $('#currentPage').text('You are currently on Twitter')
+      document.querySelector('#currentPage').innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
-      $('#currentPage').text('You are currently on Facebook')
-      $('#PageSensitiveButtons').remove()
+      document.querySelector('#currentPage').innerText = 'You are currently on Facebook'
+      elem.parentNode.removeChild(elem)
     } else {
-      $('#firstHorBar').remove()
-      $('#secondHorBar').remove()
-      $('#PageSensitiveButtons').remove()
+      document.querySelector('#firstHorBar').parentNode.removeChild(document.querySelector('#firstHorBar'))
+      document.querySelector('#secondHorBar').parentNode.removeChild(document.querySelector('#secondHorBar'))
+      elem.parentNode.removeChild(elem)
     }
   })
 })
@@ -44,11 +44,11 @@ function getCredibilityFromSelect (text) {
         if (tweet !== '') {
           credibility = CalculateCredibility(tweet, filterOptions, true, response)
           // Update credibility number
-          $('#tweet').val(text)
-          $('#credibility').text(credibility.toFixed(2) + '%')
+          document.querySelector('#tweet').value = text
+          document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
         } else {
-          $('#tweet').val(text)
-          $('#credibility').text('--')
+          document.querySelector('#tweet').value = text
+          document.querySelector('#credibility').innerText = '--'
         }
       })
     })
@@ -59,24 +59,24 @@ function getCredibility () {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
-      var tweet = $('#tweet').val()
+      var tweet = document.querySelector('#tweet').value
       var credibility = 0
       if (tweet !== '') {
         if (response) {
           chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
             credibility = CalculateCredibility(tweet, filterOptions, true, response)
             // Update credibility number
-            $('#credibility').text(credibility.toFixed(2) + '%')
+            document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
           })
         } else {
           chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
             credibility = CalculateCredibility(tweet, filterOptions, false)
             // Update credibility number
-            $('#credibility').text(credibility.toFixed(2) + '%')
+            document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
           })
         }
       } else {
-        $('#credibility').text('--')
+        document.querySelector('#credibility').innerText = '--'
       }
     })
   })

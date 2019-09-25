@@ -1,5 +1,3 @@
-import $ from 'jquery'
-
 function formatNumber (string) {
   let x = string.replace(/ /, '') // 20 K -> 20K
 
@@ -24,18 +22,18 @@ chrome.runtime.onConnect.addListener((port) => {
 
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
 
-      var followingPath = window.location.pathname + '/following'
-      var followersPath = window.location.pathname + '/followers'
+      const followingPath = window.location.pathname + '/following'
+      const followersPath = window.location.pathname + '/followers'
 
-      var followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
+      const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
 
-      var followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
+      const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
 
       // get # of tweets and likes
 
-      var quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
+      const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
       // Get joined Date
-      var joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
+      const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
 
       // Get Verified value
       const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
@@ -49,31 +47,31 @@ chrome.runtime.onConnect.addListener((port) => {
       // Creating Objects for data transfer to popup
 
       // Create verified object
-      var joinedDate = {
+      const joinedDate = {
         name: 'joinedDate',
         value: joinedDateString
       }
 
       // Create verified object
-      var verified = {
+      const verified = {
         name: 'verified',
         value: verifiedBool
       }
 
       // Create tweets object
-      var tweets = {
+      const tweets = {
         name: 'tweets',
         value: quantity
       }
 
       // Create following object
-      var following = {
+      const following = {
         name: 'following',
         value: followingNum
       }
 
       // Create followers object
-      var followers = {
+      const followers = {
         name: 'followers',
         value: followersNum
       }
@@ -97,9 +95,10 @@ chrome.runtime.onConnect.addListener((port) => {
       tweetContainers = Array.from(tweetContainers)
 
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
-        if (!$(tweetContainer.children[1]).hasClass('Credibility-Ranking')) {
-          $(tweetContainer.children[1]).addClass('Credibility-Ranking')
-          $(tweetContainer.children[1]).append("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
+        if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
+          tweetContainer.children[1].classList.add('Credibility-Ranking')
+          const frag = document.createRange().createContextualFragment("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
+          tweetContainer.children[1].append(frag)
         }
         return tweetContainer.children[1].innerText
       })
@@ -130,10 +129,10 @@ function UpdateTweetCredibility (credibilityList) {
         RedHex = '0' + RedHex
       }
       const FinalColor = '#' + (RedHex.toString(16)) + (GreenHex.toString(16)) + '00'
-      $('#TweetNumber' + index).text('WWW Credibility: ' + credibilityItem + '%')
-      $('#TweetNumber' + index).css('color', FinalColor)
+      document.querySelector('#TweetNumber' + index).innerText = 'WWW Credibility: ' + credibilityItem + '%'
+      document.querySelector('#TweetNumber' + index).style.color = FinalColor
     } else {
-      $('#TweetNumber' + index).text('WWW Credibility: --')
+      document.querySelector('#TweetNumber' + index).innerText = 'WWW Credibility: --'
     }
   })
 }
