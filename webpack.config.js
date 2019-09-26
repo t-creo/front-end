@@ -98,11 +98,15 @@ const options = {
       chunks: ['options']
     }),
     new WriteFilePlugin()
-  ]
+  ],
+  node: {
+    fs: "empty"
+  }
 }
 
 if (env.NODE_ENV === 'development') {
   options.devtool = 'cheap-module-source-map'
 }
+
 
 module.exports = options

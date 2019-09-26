@@ -1,3 +1,4 @@
+const http = require('../services/requests');
 function formatNumber (string) {
   let x = string.replace(/ /, '') // 20 K -> 20K
 
@@ -19,7 +20,12 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((request) => {
     if (request.sender === 'www' && request.instruction === 'scrap') {
       // Get username
-
+      http.get_health().then((response) => {
+        alert(response)
+      })
+      .catch(error =>{
+        alert(error)
+      });
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
 
       const followingPath = window.location.pathname + '/following'
