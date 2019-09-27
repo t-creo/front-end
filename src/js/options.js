@@ -3,7 +3,8 @@ import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL} from './constant.js'
 
 document.addEventListener('DOMContentLoaded', function() {
-  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+  //chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+  chrome.storage.sync.get(['weightSpam', 'weightBadWords', 'weightMisspelling', 'weightText', 'weightUser', 'weightSocial'], function (filterOptions) {
     document.querySelector('#weightSpam').value = filterOptions.weightSpam
     document.querySelector('#weightBadWords').value = filterOptions.weightBadWords
     document.querySelector('#weightMisspelling').value = filterOptions.weightMisspelling
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#weightUser').value = filterOptions.weightUser
     document.querySelector('#weightSocial').value = filterOptions.weightSocial
   })
-  document.querySelector('#SaveWeights').onClick = function () { // o addeventlistener?
+  document.querySelector("#SaveWeights").addEventListener("click", () => { // o addeventlistener?
     UpdateWeights()
     var weightSpam = document.querySelector('#weightSpam').value
     var weightBadWords = document.querySelector('#weightBadWords').value
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (weightSocial) {
       chrome.storage.sync.set({ weightSocial: weightSocial })
     }
-  }
+  })
 })
 
 function UpdateWeights () {
@@ -60,6 +61,6 @@ function ExtractHTMLInputValuesFromIDList (HTMLObjectIDList) {
 
 function UpdateValuesForHTMLListOfInputs (HTMLObjectIDList, ValuesList) {
   for (let i = 0; i < HTMLObjectIDList.length; i++) {
-    HTMLObjectIDList[i].value = ValuesList[i].toString()
+    document.querySelector(HTMLObjectIDList[i]).value = ValuesList[i].toString()
   }
 }
