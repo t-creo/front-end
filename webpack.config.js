@@ -6,7 +6,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
-
+const Dotenv = require('dotenv-webpack');
 // load the secrets
 const alias = {}
 
@@ -76,6 +76,7 @@ const options = {
     new CleanWebpackPlugin(['build']),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin(['NODE_ENV']),
+    new Dotenv(),
     new CopyWebpackPlugin([{
       from: 'src/manifest.json',
       transform: function (content, path) {

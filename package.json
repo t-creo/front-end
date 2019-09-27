@@ -28,7 +28,6 @@
     "axios": "^0.19.0",
     "bad-words": "^3.0.3",
     "bootstrap": "^4.3.1",
-    "dotenv": "^8.1.0",
     "simple-spam-filter": "0.0.2",
     "spelling": "^2.0.1"
   },
@@ -37,6 +36,7 @@
     "clean-webpack-plugin": "^1.0.0",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "2.1.0",
+    "dotenv-webpack": "^1.7.0",
     "file-loader": "3.0.1",
     "fs-extra": "7.0.1",
     "html-loader": "0.5.5",
