@@ -1,4 +1,3 @@
-const http = require('../services/requests');
 function formatNumber (string) {
   let x = string.replace(/ /, '') // 20 K -> 20K
 

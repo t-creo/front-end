@@ -6,7 +6,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
-const Dotenv = require('dotenv-webpack');
+const Dotenv = require('dotenv-webpack')
 // load the secrets
 const alias = {}
 
@@ -108,6 +108,5 @@ const options = {
 if (env.NODE_ENV === 'development') {
   options.devtool = 'cheap-module-source-map'
 }
-
 
 module.exports = options
