@@ -101,7 +101,7 @@ const options = {
     new WriteFilePlugin()
   ],
   node: {
-    fs: "empty"
+    fs: 'empty'
   }
 }
 
