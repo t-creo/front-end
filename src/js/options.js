@@ -1,36 +1,48 @@
 import { PreventInvalidWeightInputs, CalculateWeightProportion } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
+import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL} from './constant.js'
 
-document(function () {
-  chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
-    document.querySelector('#SocialWeight').value = filterOptions.SocialWeight
-    document.querySelector('#ProfanityWeight').value = filterOptions.ProfanityWeight
-    document.querySelector('#SpamWeight').value = filterOptions.SpamWeight
-    document.querySelector('#SpellingWeight').value = filterOptions.SpellingWeight
+document.addEventListener('DOMContentLoaded', function() {
+  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+    document.querySelector('#weightSpam').value = filterOptions.weightSpam
+    document.querySelector('#weightBadWords').value = filterOptions.weightBadWords
+    document.querySelector('#weightMisspelling').value = filterOptions.weightMisspelling
+    document.querySelector('#weightText').value = filterOptions.weightText
+    document.querySelector('#weightUser').value = filterOptions.weightUser
+    document.querySelector('#weightSocial').value = filterOptions.weightSocial
   })
   document.querySelector('#SaveWeights').onClick = function () { // o addeventlistener?
     UpdateWeights()
-    var SocialWeight = document.querySelector('#SocialWeight').value
-    var ProfanityWeight = document.querySelector('#ProfanityWeight').value
-    var SpamWeight = document.querySelector('#SpamWeight').value
-    var SpellingWeight = document.querySelector('#SpellingWeight').value
-    if (SocialWeight) {
-      chrome.storage.sync.set({ SocialWeight: SocialWeight })
+    var weightSpam = document.querySelector('#weightSpam').value
+    var weightBadWords = document.querySelector('#weightBadWords').value
+    var weightMisspelling = document.querySelector('#weightMisspelling').value
+    var weightText = document.querySelector('#weightText').value
+    var weightUser = document.querySelector('#weightUser').value
+    var weightSocial = document.querySelector('#weightSocial').value
+
+    if (weightSpam) {
+      chrome.storage.sync.set({ weightSpam: weightSpam })
     }
-    if (ProfanityWeight) {
-      chrome.storage.sync.set({ ProfanityWeight: ProfanityWeight })
+    if (weightBadWords) {
+      chrome.storage.sync.set({ weightBadWords: weightBadWords })
     }
-    if (SpamWeight) {
-      chrome.storage.sync.set({ SpamWeight: SpamWeight })
+    if (weightMisspelling) {
+      chrome.storage.sync.set({ weightMisspelling: weightMisspelling })
     }
-    if (SpellingWeight) {
-      chrome.storage.sync.set({ SpellingWeight: SpellingWeight })
+    if (weightText) {
+      chrome.storage.sync.set({ weightText: weightText })
+    }
+    if (weightUser) {
+      chrome.storage.sync.set({ weightUser: weightUser })
+    }
+    if (weightSocial) {
+      chrome.storage.sync.set({ weightSocial: weightSocial })
     }
   }
 })
 
 function UpdateWeights () {
-  var ListOfHTMLInputIDs = ['#SocialWeight', '#ProfanityWeight', '#SpamWeight', '#SpellingWeight']
+  var ListOfHTMLInputIDs = ['#weightSpam', '#weightBadWords', '#weightMisspelling', '#weightText', '#weightUser', '#weightSocial']
   var EnteredWeights = ExtractHTMLInputValuesFromIDList(ListOfHTMLInputIDs)
   EnteredWeights = PreventInvalidWeightInputs(EnteredWeights)
   var ProportionedWeights = CalculateWeightProportion(EnteredWeights)

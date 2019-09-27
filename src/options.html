@@ -4,36 +4,59 @@
   </head>
   <body>
     <div class="container">
-      <h1>Customize credibility parameters</h1>
+      <h1>Customize text credibility parameters</h1>
       <div class="row">
-        <div class="col-sm">
+        <div class="col-sm-6">
           <h2>Filters</h2>
-          <div>
-            <p>Social</p>
-          </div>
-          <div>
-            <p>Profanity proportion to text</p>
-          </div>
           <div>
             <p>Spam detection</p>
           </div>
           <div>
-            <p>Spelling detection</p>
+            <p>Bad words proportion to text</p>
+          </div>
+          <div>
+            <p>Misspelling detection</p>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h2>Weights</h2>
+          <div>
+            <input type="text" id="weightSpam" >
+          </div>
+          <div>
+            <input type="text" id="weightBadWords" >
+          </div>
+          <div>
+            <input type="text" id="weightMisspelling" >
           </div>
         </div>
         <div class="col-sm">
+        </div>
+      </div>
+      <h1>Customize tweet credibility parameters</h1>
+      <div class="row">
+        <div class="col-sm-6">
+          <h2>Filters</h2>
+          <div>
+            <p>Text credibility</p>
+          </div>
+          <div>
+            <p>User credibility</p>
+          </div>
+          <div>
+            <p>Social credibility</p>
+          </div>
+        </div>
+        <div class="col-sm-6">
           <h2>Weights</h2>
           <div>
-            <input type="text" id="SocialWeight" >
+            <input type="text" id="weightText" >
           </div>
           <div>
-            <input type="text" id="ProfanityWeight" >
+            <input type="text" id="weightUser" >
           </div>
           <div>
-            <input type="text" id="SpamWeight" >
-          </div>
-          <div>
-            <input type="text" id="SpellingWeight" >
+            <input type="text" id="weightSocial" >
           </div>
         </div>
         <div class="col-sm">

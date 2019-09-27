@@ -5,6 +5,7 @@ import dictionary from 'spelling/dictionaries/en_US'
 import { PreventInvalidWeightInputs, CalculateWeightProportion, getProportion } from './controllers/weightCalculationUtils'
 import './controllers/scraper'
 import '../sass/index.scss'
+import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL} from './constant.js'
 
 window.addEventListener('load', function load (event) {
   document.getElementById('submitButton').onclick = getCredibility
@@ -39,7 +40,7 @@ function getCredibilityFromSelect (text) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
       var credibility = 0
-      chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
+      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         let tweet
         if (tweet !== '') {
           credibility = CalculateCredibility(tweet, filterOptions, true, response)
@@ -63,13 +64,13 @@ function getCredibility () {
       var credibility = 0
       if (tweet !== '') {
         if (response) {
-          chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
+          chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
             credibility = CalculateCredibility(tweet, filterOptions, true, response)
             // Update credibility number
             document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
           })
         } else {
-          chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
+          chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
             credibility = CalculateCredibility(tweet, filterOptions, false)
             // Update credibility number
             document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
@@ -97,7 +98,7 @@ function connect () {
     port.onMessage.addListener((response) => {
       var credibilityList = []
       var credibility
-      chrome.storage.sync.get(['SocialWeight', 'ProfanityWeight', 'SpamWeight', 'SpellingWeight'], function (filterOptions) {
+      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         for (let i = 0; i < response.tweetTexts.length; i++) {
           if (response.tweetTexts[i] !== '') {
             credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
