@@ -1,5 +1,5 @@
 function PreventInvalidWeightInputs (ListOfWeights) {
-  var CleanedWeightInput = ListOfWeights.slice()
+  const CleanedWeightInput = ListOfWeights.slice()
   // Eliminate strings and NaNs
   for (let i = 0; i < ListOfWeights.length; i++) {
     if (typeof (ListOfWeights[i]) === 'string') {
@@ -17,10 +17,10 @@ function PreventInvalidWeightInputs (ListOfWeights) {
     }
   }
   // Check number of zeroes
-  var AllAreZero = true
-  var OnlyOneWeight = false
-  var OnlyWeightOnListIndex = 0
-  var MoreThanOneWeight = false
+  let AllAreZero = true
+  let OnlyOneWeight = false
+  let OnlyWeightOnListIndex = 0
+  let MoreThanOneWeight = false
   for (let i = 0; i < CleanedWeightInput.length; i++) {
     if (CleanedWeightInput[i] !== 0) {
       AllAreZero = false
@@ -52,21 +52,17 @@ function PreventInvalidWeightInputs (ListOfWeights) {
 }
 
 function CalculateWeightProportion (ListOfWeights) {
-  var TotalSum = 0
+  let TotalSum = 0
 
   for (let i = 0; i < ListOfWeights.length; i++) {
-    TotalSum += ListOfWeights[i]
+    TotalSum += +ListOfWeights[i]
   }
 
-  var ScaledWeightProportionsList = ListOfWeights.slice()
-  for (let i = 0; i < ListOfWeights.length; i++) {
-    ScaledWeightProportionsList[i] = (getProportion(ListOfWeights[i], TotalSum) * 100).toFixed(2)
-  }
-  return ScaledWeightProportionsList
+  return TotalSum === 1
 }
 
 function getProportion (partialQuantity, TotalQuantity) {
-  var proportion = (partialQuantity / TotalQuantity)
+  const proportion = (partialQuantity / TotalQuantity)
   return proportion
 }
 

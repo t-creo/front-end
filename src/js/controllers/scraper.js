@@ -123,7 +123,7 @@ function UpdateTweetCredibility (credibilityList) {
       if (GreenHex.length < 2) {
         GreenHex = '0' + GreenHex
       }
-      var RedHex = Red.toString(16)
+      let RedHex = Red.toString(16)
       if (RedHex.length < 2) {
         RedHex = '0' + RedHex
       }
