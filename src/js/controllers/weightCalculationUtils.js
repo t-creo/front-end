@@ -52,21 +52,17 @@ function PreventInvalidWeightInputs (ListOfWeights) {
 }
 
 function CalculateWeightProportion (ListOfWeights) {
-  var TotalSum = 0
+  let TotalSum = 0
 
   for (let i = 0; i < ListOfWeights.length; i++) {
     TotalSum += +ListOfWeights[i]
   }
 
-  /* var ScaledWeightProportionsList = ListOfWeights.slice()
-  for (let i = 0; i < ListOfWeights.length; i++) {
-    ScaledWeightProportionsList[i] = (getProportion(ListOfWeights[i], TotalSum)).toFixed(2)
-  } */
   return TotalSum === 1
 }
 
 function getProportion (partialQuantity, TotalQuantity) {
-  var proportion = (partialQuantity / TotalQuantity)
+  const proportion = (partialQuantity / TotalQuantity)
   return proportion
 }
 
