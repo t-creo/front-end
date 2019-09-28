@@ -55,14 +55,14 @@ function CalculateWeightProportion (ListOfWeights) {
   var TotalSum = 0
 
   for (let i = 0; i < ListOfWeights.length; i++) {
-    TotalSum += ListOfWeights[i]
+    TotalSum += +ListOfWeights[i]
   }
 
-  var ScaledWeightProportionsList = ListOfWeights.slice()
+  /* var ScaledWeightProportionsList = ListOfWeights.slice()
   for (let i = 0; i < ListOfWeights.length; i++) {
-    ScaledWeightProportionsList[i] = (getProportion(ListOfWeights[i], TotalSum) * 100).toFixed(2)
-  }
-  return ScaledWeightProportionsList
+    ScaledWeightProportionsList[i] = (getProportion(ListOfWeights[i], TotalSum)).toFixed(2)
+  } */
+  return TotalSum == 1
 }
 
 function getProportion (partialQuantity, TotalQuantity) {
