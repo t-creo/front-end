@@ -19,7 +19,6 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((request) => {
     if (request.sender === 'www' && request.instruction === 'scrap') {
       // Get username
-
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
 
       const followingPath = window.location.pathname + '/following'

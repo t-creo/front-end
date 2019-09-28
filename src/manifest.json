@@ -8,7 +8,8 @@
     "contextMenus",
     "declarativeContent",
     "storage",
-    "tabs"
+    "tabs",
+    "http://localhost/*"
   ],
   "options_page": "options.html",
   "browser_action": {
