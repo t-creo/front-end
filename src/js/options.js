@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
   })
   document.querySelector('#SaveWeights').addEventListener('click', () => { // o addeventlistener?
     UpdateWeights()
-    var weightSpam = document.querySelector('#weightSpam').value
-    var weightBadWords = document.querySelector('#weightBadWords').value
-    var weightMisspelling = document.querySelector('#weightMisspelling').value
-    var weightText = document.querySelector('#weightText').value
-    var weightUser = document.querySelector('#weightUser').value
-    var weightSocial = document.querySelector('#weightSocial').value
+    const weightSpam = document.querySelector('#weightSpam').value
+    const weightBadWords = document.querySelector('#weightBadWords').value
+    const weightMisspelling = document.querySelector('#weightMisspelling').value
+    const weightText = document.querySelector('#weightText').value
+    const weightUser = document.querySelector('#weightUser').value
+    const weightSocial = document.querySelector('#weightSocial').value
 
     if (weightSpam) {
       chrome.storage.sync.set({ weightSpam: weightSpam })
@@ -42,12 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function UpdateWeights () {
-  var listOfHTMLInputIDs = ['#weightSpam', '#weightBadWords', '#weightMisspelling', '#weightText', '#weightUser', '#weightSocial']
-  var listOfHTMLInputIDsText = ['#weightSpam', '#weightBadWords', '#weightMisspelling']
-  var listOfHTMLInputIDsTweet = ['#weightText', '#weightUser', '#weightSocial']
-  var enteredWeights = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDs)
-  var enteredWeightsText = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsText)
-  var enteredWeightsTweet = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsTweet)
+  const listOfHTMLInputIDs = ['#weightSpam', '#weightBadWords', '#weightMisspelling', '#weightText', '#weightUser', '#weightSocial']
+  const listOfHTMLInputIDsText = ['#weightSpam', '#weightBadWords', '#weightMisspelling']
+  const listOfHTMLInputIDsTweet = ['#weightText', '#weightUser', '#weightSocial']
+  const enteredWeights = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDs)
+  const enteredWeightsText = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsText)
+  const enteredWeightsTweet = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsTweet)
   if (CalculateWeightProportion(enteredWeightsText) && CalculateWeightProportion(enteredWeightsTweet)) {
     UpdateValuesForHTMLListOfInputs(listOfHTMLInputIDs, enteredWeights)
   } else {
@@ -61,7 +61,7 @@ function UpdateWeights () {
 }
 
 function ExtractHTMLInputValuesFromIDList (HTMLObjectIDList) {
-  var InputValuesList = HTMLObjectIDList.slice()
+  const InputValuesList = HTMLObjectIDList.slice()
   for (let i = 0; i < HTMLObjectIDList.length; i++) {
     const CurrentWeight = parseFloat(document.querySelector(HTMLObjectIDList[i]).value).toFixed(2)
     InputValuesList[i] = CurrentWeight

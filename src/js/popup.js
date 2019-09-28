@@ -20,8 +20,8 @@ chrome.contextMenus.onClicked.addListener(function (clickData) {
 
 document.addEventListener('DOMContentLoaded', function (event) {
   chrome.tabs.getSelected(null, function (tab) {
-    var tabUrl = tab.url
-    var elem = document.querySelector('#PageSensitiveButtons')
+    const tabUrl = tab.url
+    const elem = document.querySelector('#PageSensitiveButtons')
     if (tabUrl.includes('https://twitter.com')) {
       document.querySelector('#currentPage').innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
@@ -39,7 +39,7 @@ function getCredibilityFromSelect (text) {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
-      var credibility = 0
+      let credibility = 0
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         let tweet
         if (tweet !== '') {
@@ -60,8 +60,8 @@ function getCredibility () {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
-      var tweet = document.querySelector('#tweet').value
-      var credibility = 0
+      const tweet = document.querySelector('#tweet').value
+      let credibility = 0
       if (tweet !== '') {
         if (response) {
           chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
@@ -96,8 +96,8 @@ function connect () {
     const port = chrome.tabs.connect(tabs[0].id)
     port.postMessage({ sender: 'www', instruction: 'scrap' })
     port.onMessage.addListener((response) => {
-      var credibilityList = []
-      var credibility
+      const credibilityList = []
+      let credibility
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         for (let i = 0; i < response.tweetTexts.length; i++) {
           if (response.tweetTexts[i] !== '') {
@@ -115,11 +115,11 @@ function connect () {
 }
 
 function CalculateCredibility (text, filterOptions, hasSocial, response = undefined) {
-  var credibility = 0
-  var SocialWeight
-  var SpamWeight
-  var SpellingWeight
-  var ProfanityWeight
+  let credibility = 0
+  let SocialWeight
+  let SpamWeight
+  let SpellingWeight
+  let ProfanityWeight
   if (hasSocial) {
     SocialWeight = 10
     SpamWeight = 40
@@ -155,9 +155,9 @@ function CalculateCredibility (text, filterOptions, hasSocial, response = undefi
     if (filterOptions.SocialWeight != null) {
       ProfanityWeight = filterOptions.ProfanityWeight
     }
-    var ListOfNonSocialWeights = CalculateWeightProportion(PreventInvalidWeightInputs([SpamWeight, SpellingWeight, ProfanityWeight]))
-    var TotalWeightSum = parseFloat(ListOfNonSocialWeights[0]) + parseFloat(ListOfNonSocialWeights[1]) + parseFloat(ListOfNonSocialWeights[2])
-    var DifferenceFromHundred = (100 - TotalWeightSum).toFixed(2)
+    const ListOfNonSocialWeights = CalculateWeightProportion(PreventInvalidWeightInputs([SpamWeight, SpellingWeight, ProfanityWeight]))
+    const TotalWeightSum = parseFloat(ListOfNonSocialWeights[0]) + parseFloat(ListOfNonSocialWeights[1]) + parseFloat(ListOfNonSocialWeights[2])
+    const DifferenceFromHundred = (100 - TotalWeightSum).toFixed(2)
     ListOfNonSocialWeights[0] = parseFloat(ListOfNonSocialWeights[0]) + parseFloat(DifferenceFromHundred)
     credibility += GetSpamFilterValue(ListOfNonSocialWeights[0], text)
     credibility += GetSpellingFilterValue(ListOfNonSocialWeights[1], text)
@@ -173,27 +173,27 @@ function GetSocialFilterValue (weight, data) {
   // The number of followers is rated between 0 to 100.
   // the closer to 5 million followers,the closer to 100 the followersValue is
   // the closer to 0 followers, the closer to 0 the followersValue is
-  var followersValue = getSocialFactorSubWeightedValue(100, data.followers.value, 5000000)
+  const followersValue = getSocialFactorSubWeightedValue(100, data.followers.value, 5000000)
 
   // followingVSFollowersProportion should be a number close to 1 if there is way more followers than followings
   // and should be a number close to 0 on the contrary
-  var followingAndFollowersTotal = parseFloat(data.followers.value) + parseFloat(data.following.value)
-  var followingVSFollowersProportion = getProportion(data.followers.value, followingAndFollowersTotal)
+  const followingAndFollowersTotal = parseFloat(data.followers.value) + parseFloat(data.following.value)
+  const followingVSFollowersProportion = getProportion(data.followers.value, followingAndFollowersTotal)
 
   // followersValue is multiplied by followingAndFollowersTotal, this way, if the followingVSfollowersProportion is close
   // to 1, there is almost no decuction to the total social Value, if it is closer to 0, then there is a big
   // deduction to the social Value
-  var followingVSFollowerAnalysisResult = (followersValue.toFixed(2)) * (Math.ceil(followingVSFollowersProportion))
+  const followingVSFollowerAnalysisResult = (followersValue.toFixed(2)) * (Math.ceil(followingVSFollowersProportion))
 
   // The result is subweighted
-  var followingVSFollowerResultSubWeighted = getSocialFactorSubWeightedValue(
+  const followingVSFollowerResultSubWeighted = getSocialFactorSubWeightedValue(
     50,
     followingVSFollowerAnalysisResult,
     100
   )
 
   // Verified account analysis (25%)
-  var VerifiedAccountAnalysisResult
+  let VerifiedAccountAnalysisResult
 
   if (data.verified.value) {
     VerifiedAccountAnalysisResult = 100
@@ -201,40 +201,40 @@ function GetSocialFilterValue (weight, data) {
     VerifiedAccountAnalysisResult = 0
   }
 
-  var VerifiedAccountSubWeighted = getSocialFactorSubWeightedValue(
+  const VerifiedAccountSubWeighted = getSocialFactorSubWeightedValue(
     25.00,
     VerifiedAccountAnalysisResult,
     100
   )
 
   // Account Age (25%)
-  var wordsInJoinedDateString = data.joinedDate.value.split(' ')
-  var numberOfWords = wordsInJoinedDateString.length
-  var i = 0
-  var YearJoined
+  const wordsInJoinedDateString = data.joinedDate.value.split(' ')
+  const numberOfWords = wordsInJoinedDateString.length
+  let i = 0
+  let YearJoined
   while ((i < numberOfWords) && (!Number.isInteger(YearJoined))) {
     YearJoined = parseInt(wordsInJoinedDateString[i])
     i++
   }
-  var CurrentYear = parseInt((new Date()).getFullYear())
-  var TwitterCreationYear = 2006
-  var AccountAge = (CurrentYear - YearJoined)
-  var MaxAccountAge = (CurrentYear - TwitterCreationYear)
-  var AccountAgeAnalysisResult = getSocialFactorSubWeightedValue(100, AccountAge, MaxAccountAge)
-  var AccountAgeSubWeighted = getSocialFactorSubWeightedValue(
+  const CurrentYear = parseInt((new Date()).getFullYear())
+  const TwitterCreationYear = 2006
+  const AccountAge = (CurrentYear - YearJoined)
+  const MaxAccountAge = (CurrentYear - TwitterCreationYear)
+  const AccountAgeAnalysisResult = getSocialFactorSubWeightedValue(100, AccountAge, MaxAccountAge)
+  const AccountAgeSubWeighted = getSocialFactorSubWeightedValue(
     25.00,
     AccountAgeAnalysisResult,
     100
   )
 
   // Final social filter calculation
-  var totalSocialValue = VerifiedAccountSubWeighted + followingVSFollowerResultSubWeighted + AccountAgeSubWeighted
+  const totalSocialValue = VerifiedAccountSubWeighted + followingVSFollowerResultSubWeighted + AccountAgeSubWeighted
   const totalSocialValueWeighted = weightedFilterValue(totalSocialValue, weight)
   return totalSocialValueWeighted
 }
 
 function getSocialFactorSubWeightedValue (subWeight, rawData, maxCredibility) {
-  var Value = 0
+  let Value = 0
   if (rawData > maxCredibility) {
     Value = maxCredibility
   } else {
@@ -247,16 +247,16 @@ function GetSpamFilterValue (weight, text) {
   // ************************************************** //
   //                   Spam Filter                      //
   // ************************************************** //
-  var spamFilterValue = 0
+  let spamFilterValue = 0
 
   // These parameters are all optional
-  var opts = {
+  const opts = {
     minWords: 5,
     maxPercentCaps: 30,
     maxNumSwearWords: 2
   }
-  var spamFilter = new SimpleSpamFilter(opts)
-  var isSpam = spamFilter.isSpam(text)
+  const spamFilter = new SimpleSpamFilter(opts)
+  const isSpam = spamFilter.isSpam(text)
 
   // Determine SPAM Filter internal value
   if (!isSpam) {
@@ -266,7 +266,7 @@ function GetSpamFilterValue (weight, text) {
   }
 
   // Add SPAM Filter Value to credibility
-  var spamWeightedValue = weightedFilterValue(spamFilterValue, weight)
+  const spamWeightedValue = weightedFilterValue(spamFilterValue, weight)
   return spamWeightedValue
 }
 
@@ -274,15 +274,15 @@ function GetSpellingFilterValue (weight, text) {
   // ************************************************** //
   //               Spelling Filter                      //
   // ************************************************** //
-  var spellingFilterValue = 0
-  var wordsInText = StringToListOfWords(text)
-  var numberOfWordsInText = wordsInText.length
+  let spellingFilterValue = 0
+  const wordsInText = StringToListOfWords(text)
+  const numberOfWordsInText = wordsInText.length
 
   // Find and count misspellings in cleaned elements
-  var spellingCount = countMisspelings(numberOfWordsInText, wordsInText)
+  const spellingCount = countMisspelings(numberOfWordsInText, wordsInText)
 
   // Get misspelling proportion to text lenght
-  var spellingProportion = getProportion(spellingCount, numberOfWordsInText)
+  const spellingProportion = getProportion(spellingCount, numberOfWordsInText)
 
   // Determine spelling filter internal value
   spellingFilterValue = propotionToValue(spellingProportion)
@@ -296,17 +296,17 @@ function GetProfanityFilterValue (weight, text) {
   // ************************************************** //
   //               Profanity Filter                     //
   // ************************************************** //
-  var profanityFilterValue = 0
-  var filterInstance = new Filter()
-  var censoredText = filterInstance.clean(text)
-  var wordsInText = StringToListOfWords(censoredText)
-  var numberOfWordsInText = wordsInText.length
+  let profanityFilterValue = 0
+  const filterInstance = new Filter()
+  const censoredText = filterInstance.clean(text)
+  const wordsInText = StringToListOfWords(censoredText)
+  const numberOfWordsInText = wordsInText.length
 
   // Find and count profanities in cleaned elements
-  var profanityCount = countProfanities(numberOfWordsInText, wordsInText)
+  const profanityCount = countProfanities(numberOfWordsInText, wordsInText)
 
   // Get profanity proportion to text lenght
-  var profanityProportion = getProportion(profanityCount, numberOfWordsInText)
+  const profanityProportion = getProportion(profanityCount, numberOfWordsInText)
 
   // Determine profanity filter internal value
   profanityFilterValue = propotionToValue(profanityProportion)
@@ -325,9 +325,9 @@ function StringToListOfWords (text) {
 }
 
 function countMisspelings (numberOfWordsInList, listOfWords) {
-  var dict = new Spelling(dictionary)
-  var misspelings = 0
-  var i = 0
+  const dict = new Spelling(dictionary)
+  let misspelings = 0
+  let i = 0
   while (i < numberOfWordsInList) {
     const dictResult = dict.lookup(listOfWords[i])
 
@@ -342,8 +342,8 @@ function countMisspelings (numberOfWordsInList, listOfWords) {
 
 function countProfanities (numberOfWordsInList, listOfWords) {
   // Counts the number of censored words in a list of words extracted from a text
-  var profanityCount = 0
-  var i = 0
+  let profanityCount = 0
+  let i = 0
   while (i < numberOfWordsInList) {
     if (isCensored(listOfWords[i])) {
       profanityCount += 1
@@ -355,9 +355,9 @@ function countProfanities (numberOfWordsInList, listOfWords) {
 
 function isCensored (word) {
   // Checks if the letters of a word are all *
-  var wordLength = word.length
-  var wordIsCensored = true
-  var i = 0
+  const wordLength = word.length
+  let wordIsCensored = true
+  let i = 0
   while ((i < wordLength) && (wordIsCensored)) {
     if (word[i] !== '*') {
       wordIsCensored = false
@@ -368,12 +368,12 @@ function isCensored (word) {
 }
 
 function propotionToValue (proportion) {
-  var textCleanliness = 100
+  let textCleanliness = 100
   textCleanliness -= proportion * 100
   return textCleanliness
 }
 
 function weightedFilterValue (internalFilterValue, filterWeight) {
-  var weightedValue = (internalFilterValue / 100) * filterWeight
+  const weightedValue = (internalFilterValue / 100) * filterWeight
   return weightedValue
 }
