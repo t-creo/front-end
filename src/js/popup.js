@@ -5,7 +5,7 @@ import dictionary from 'spelling/dictionaries/en_US'
 import { PreventInvalidWeightInputs, CalculateWeightProportion, getProportion } from './controllers/weightCalculationUtils'
 import './controllers/scraper'
 import '../sass/index.scss'
-import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL} from './constant.js'
+import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant.js'
 
 window.addEventListener('load', function load (event) {
   document.getElementById('submitButton').onclick = getCredibility

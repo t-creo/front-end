@@ -62,7 +62,7 @@ function CalculateWeightProportion (ListOfWeights) {
   for (let i = 0; i < ListOfWeights.length; i++) {
     ScaledWeightProportionsList[i] = (getProportion(ListOfWeights[i], TotalSum)).toFixed(2)
   } */
-  return TotalSum == 1
+  return TotalSum === 1
 }
 
 function getProportion (partialQuantity, TotalQuantity) {

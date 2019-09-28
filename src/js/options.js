@@ -1,8 +1,8 @@
 import { CalculateWeightProportion } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
-import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL} from './constant.js'
+import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant.js'
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
     document.querySelector('#weightSpam').value = filterOptions.weightSpam
     document.querySelector('#weightBadWords').value = filterOptions.weightBadWords
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#weightUser').value = filterOptions.weightUser
     document.querySelector('#weightSocial').value = filterOptions.weightSocial
   })
-  document.querySelector("#SaveWeights").addEventListener("click", () => { // o addeventlistener?
+  document.querySelector('#SaveWeights').addEventListener('click', () => { // o addeventlistener?
     UpdateWeights()
     var weightSpam = document.querySelector('#weightSpam').value
     var weightBadWords = document.querySelector('#weightBadWords').value
@@ -42,20 +42,20 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 function UpdateWeights () {
-  var ListOfHTMLInputIDs = ['#weightSpam', '#weightBadWords', '#weightMisspelling', '#weightText', '#weightUser', '#weightSocial']
-  var ListOfHTMLInputIDs_text = ['#weightSpam', '#weightBadWords', '#weightMisspelling']
-  var ListOfHTMLInputIDs_tweet = ['#weightText', '#weightUser', '#weightSocial']
-  var EnteredWeights = ExtractHTMLInputValuesFromIDList(ListOfHTMLInputIDs)
-  var EnteredWeights_text = ExtractHTMLInputValuesFromIDList(ListOfHTMLInputIDs_text)
-  var EnteredWeights_tweet = ExtractHTMLInputValuesFromIDList(ListOfHTMLInputIDs_tweet)
-  if (CalculateWeightProportion(EnteredWeights_text) && CalculateWeightProportion(EnteredWeights_tweet)) {
-    UpdateValuesForHTMLListOfInputs(ListOfHTMLInputIDs, EnteredWeights)
+  var listOfHTMLInputIDs = ['#weightSpam', '#weightBadWords', '#weightMisspelling', '#weightText', '#weightUser', '#weightSocial']
+  var listOfHTMLInputIDsText = ['#weightSpam', '#weightBadWords', '#weightMisspelling']
+  var listOfHTMLInputIDsTweet = ['#weightText', '#weightUser', '#weightSocial']
+  var enteredWeights = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDs)
+  var enteredWeightsText = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsText)
+  var enteredWeightsTweet = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsTweet)
+  if (CalculateWeightProportion(enteredWeightsText) && CalculateWeightProportion(enteredWeightsTweet)) {
+    UpdateValuesForHTMLListOfInputs(listOfHTMLInputIDs, enteredWeights)
   } else {
-    if (!CalculateWeightProportion(EnteredWeights_text)) {
-      alert('Text credibility parameters must add to 1')
+    if (!CalculateWeightProportion(enteredWeightsText)) {
+      window.alert('Text credibility parameters must add to 1')
     }
-    if (!CalculateWeightProportion(EnteredWeights_tweet)) {
-      alert('Tweet credibility parameters must add to 1')
+    if (!CalculateWeightProportion(enteredWeightsTweet)) {
+      window.alert('Tweet credibility parameters must add to 1')
     }
   }
 }
