@@ -52,6 +52,20 @@ function PreventInvalidWeightInputs (ListOfWeights) {
 }
 
 function CalculateWeightProportion (ListOfWeights) {
+  var TotalSum = 0
+
+  for (let i = 0; i < ListOfWeights.length; i++) {
+    TotalSum += ListOfWeights[i]
+  }
+
+  var ScaledWeightProportionsList = ListOfWeights.slice()
+  for (let i = 0; i < ListOfWeights.length; i++) {
+    ScaledWeightProportionsList[i] = (getProportion(ListOfWeights[i], TotalSum) * 100).toFixed(2)
+  }
+  return ScaledWeightProportionsList
+}
+
+function VerifySum (ListOfWeights) {
   let TotalSum = 0
 
   for (let i = 0; i < ListOfWeights.length; i++) {
@@ -69,5 +83,6 @@ function getProportion (partialQuantity, TotalQuantity) {
 export {
   PreventInvalidWeightInputs,
   CalculateWeightProportion,
+  VerifySum,
   getProportion
 }

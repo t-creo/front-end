@@ -1,4 +1,4 @@
-import { CalculateWeightProportion } from './controllers/weightCalculationUtils'
+import { VerifySum } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant.js'
 
@@ -48,13 +48,13 @@ function UpdateWeights () {
   const enteredWeights = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDs)
   const enteredWeightsText = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsText)
   const enteredWeightsTweet = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDsTweet)
-  if (CalculateWeightProportion(enteredWeightsText) && CalculateWeightProportion(enteredWeightsTweet)) {
+  if (VerifySum(enteredWeightsText) && VerifySum(enteredWeightsTweet)) {
     UpdateValuesForHTMLListOfInputs(listOfHTMLInputIDs, enteredWeights)
   } else {
-    if (!CalculateWeightProportion(enteredWeightsText)) {
+    if (!VerifySum(enteredWeightsText)) {
       window.alert('Text credibility parameters must add to 1')
     }
-    if (!CalculateWeightProportion(enteredWeightsTweet)) {
+    if (!VerifySum(enteredWeightsTweet)) {
       window.alert('Tweet credibility parameters must add to 1')
     }
   }
