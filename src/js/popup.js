@@ -6,6 +6,7 @@ import { PreventInvalidWeightInputs, CalculateWeightProportion, getProportion } 
 import './controllers/scraper'
 import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant.js'
+import getCalculatePlainText from './services/requests.js'
 
 window.addEventListener('load', function load (event) {
   document.getElementById('submitButton').onclick = getCredibility
@@ -39,7 +40,7 @@ function getCredibilityFromSelect (text) {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
-      let credibility = 0
+      const credibility = 0
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         let tweet
         if (tweet !== '') {
@@ -61,24 +62,18 @@ function getCredibility () {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
       const tweet = document.querySelector('#tweet').value
-      let credibility = 0
-      if (tweet !== '') {
-        if (response) {
-          chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
-            credibility = CalculateCredibility(tweet, filterOptions, true, response)
-            // Update credibility number
-            document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
+      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
+        getCalculatePlainText({
+          text: tweet,
+          weightBadWords: filterOptions.weightBadWords,
+          weightMisspelling: filterOptions.weightMisspelling,
+          weightSpam: filterOptions.weightSpam
+        })
+          .then(function (credibility) {
+            document.querySelector('#credibility').innerText =
+            credibility.credibility.toFixed(2) + '%'
           })
-        } else {
-          chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
-            credibility = CalculateCredibility(tweet, filterOptions, false)
-            // Update credibility number
-            document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
-          })
-        }
-      } else {
-        document.querySelector('#credibility').innerText = '--'
-      }
+      })
     })
   })
 }
@@ -159,11 +154,10 @@ function CalculateCredibility (text, filterOptions, hasSocial, response = undefi
     const TotalWeightSum = parseFloat(ListOfNonSocialWeights[0]) + parseFloat(ListOfNonSocialWeights[1]) + parseFloat(ListOfNonSocialWeights[2])
     const DifferenceFromHundred = (100 - TotalWeightSum).toFixed(2)
     ListOfNonSocialWeights[0] = parseFloat(ListOfNonSocialWeights[0]) + parseFloat(DifferenceFromHundred)
-    credibility += GetSpamFilterValue(ListOfNonSocialWeights[0], text)
-    credibility += GetSpellingFilterValue(ListOfNonSocialWeights[1], text)
-    credibility += GetProfanityFilterValue(ListOfNonSocialWeights[2], text)
+    // credibility += GetSpamFilterValue(ListOfNonSocialWeights[0], text)
+    // credibility += GetSpellingFilterValue(ListOfNonSocialWeights[1], text)
+    // credibility += GetProfanityFilterValue(ListOfNonSocialWeights[2], text)
   }
-
   return credibility
 }
 
