@@ -43,6 +43,19 @@ chrome.runtime.onConnect.addListener((port) => {
         verifiedBool = false
       }
 
+      // get tweet id
+      const times = document.querySelectorAll("div[data-testid='tweet'] time")
+      const tweetId = []
+
+      for (let i = 0; i < times.length; i++) {
+        const x = times[i].parentElement.getAttribute('href')
+        if (x) {
+          tweetId.push(x.split('/')[3])
+        }
+      }
+      console.log(tweetId)
+
+
       // Creating Objects for data transfer to popup
 
       // Create verified object
