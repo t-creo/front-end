@@ -71,7 +71,7 @@ function getCredibility () {
           .then(function (credibility) {
             document.querySelector('#credibility').innerText =
             credibility.credibility.toFixed(2) + '%'
-          })
+          }).catch(e => console.log(e))
       })
     })
   })
