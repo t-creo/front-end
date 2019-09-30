@@ -40,11 +40,10 @@ function getCredibilityFromSelect (text) {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
-      const credibility = 0
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         let tweet
         if (tweet !== '') {
-          credibility = CalculateCredibility(tweet, filterOptions, true, response)
+          const credibility = CalculateCredibility(tweet, filterOptions, true, response)
           // Update credibility number
           document.querySelector('#tweet').value = text
           document.querySelector('#credibility').innerText = credibility.toFixed(2) + '%'
