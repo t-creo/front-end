@@ -6,7 +6,7 @@ import { PreventInvalidWeightInputs, CalculateWeightProportion, getProportion } 
 import './controllers/scraper'
 import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant.js'
-import { getCalculatePlainText } from './services/requests.js'
+import { getCalculatePlainText, getCalculateTwitterTweets } from './services/requests.js'
 
 window.addEventListener('load', function load (event) {
   document.getElementById('submitButton').onclick = getCredibility
@@ -90,19 +90,36 @@ function connect () {
     const port = chrome.tabs.connect(tabs[0].id)
     port.postMessage({ sender: 'www', instruction: 'scrap' })
     port.onMessage.addListener((response) => {
-      const credibilityList = []
-      let credibility
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
-        for (let i = 0; i < response.tweetTexts.length; i++) {
-          if (response.tweetTexts[i] !== '') {
-            credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
-            credibilityList.push(credibility)
-          } else {
-            credibility = '--'
-            credibilityList.push(credibility)
-          }
-        }
-        port.postMessage({ sender: 'www', instruction: 'update', credList: credibilityList })
+        Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
+          tweetId: tweetId,
+          weightBadWords: filterOptions.weightBadWords,
+          weightMisspelling: filterOptions.weightMisspelling,
+          weightSpam: filterOptions.weightSpam,
+          weightText: filterOptions.weightText,
+          weightUser: filterOptions.weightUser,
+          weightSocial: filterOptions.weightSocial
+        })))
+          .then(values => {
+            port.postMessage({
+              sender: 'www',
+              instruction: 'update',
+              credList: values.map(credibility => credibility.credibility)
+            })
+        })
+          .catch(error => {
+            alert(JSON.stringify(error))
+          })
+
+        // for (let i = 0; i < response.tweetTexts.length; i++) {
+        //   if (response.tweetTexts[i] !== '') {
+        //     credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
+        //     credibilityList.push(credibility)
+        //   } else {
+        //     credibility = '--'
+        //     credibilityList.push(credibility)
+        //   }
+        // }
       })
     })
   })
