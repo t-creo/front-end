@@ -55,7 +55,6 @@ chrome.runtime.onConnect.addListener((port) => {
       }
       console.log(tweetId)
 
-
       // Creating Objects for data transfer to popup
 
       // Create verified object
