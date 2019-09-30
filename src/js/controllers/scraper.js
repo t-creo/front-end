@@ -1,18 +1,18 @@
-function formatNumber (string) {
-  let x = string.replace(/ /, '') // 20 K -> 20K
+// function formatNumber (string) {
+//   let x = string.replace(/ /, '') // 20 K -> 20K
 
-  if (x.match(/^(\d+\.\dK|\d+\.\dM|\d+,\dK|\d+,\dM)$/) != null) {
-    x = x.replace(/K/, '00') // 20,2K -> 20,200 | 20.2K -> 20.200
-    x = x.replace(/M/, '00000') // 20,2M -> 20,200000 | 20.2M -> 20.200000
-  } else {
-    x = x.replace(/K/, '000') // 20K -> 20000
-    x = x.replace(/M/, '000000') // 20M -> 20000000
-  }
+//   if (x.match(/^(\d+\.\dK|\d+\.\dM|\d+,\dK|\d+,\dM)$/) != null) {
+//     x = x.replace(/K/, '00') // 20,2K -> 20,200 | 20.2K -> 20.200
+//     x = x.replace(/M/, '00000') // 20,2M -> 20,200000 | 20.2M -> 20.200000
+//   } else {
+//     x = x.replace(/K/, '000') // 20K -> 20000
+//     x = x.replace(/M/, '000000') // 20M -> 20000000
+//   }
 
-  x = x.replace(/[.,]/, '') // quita comas o puntos
+//   x = x.replace(/[.,]/, '') // quita comas o puntos
 
-  return Number(x)
-}
+//   return Number(x)
+// }
 
 // Listener to scrape the values in real time
 chrome.runtime.onConnect.addListener((port) => {

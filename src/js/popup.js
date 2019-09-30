@@ -106,20 +106,10 @@ function connect () {
               instruction: 'update',
               credList: values.map(credibility => credibility.credibility)
             })
-        })
-          .catch(error => {
-            alert(JSON.stringify(error))
           })
-
-        // for (let i = 0; i < response.tweetTexts.length; i++) {
-        //   if (response.tweetTexts[i] !== '') {
-        //     credibility = CalculateCredibility(response.tweetTexts[i], filterOptions, true, response).toFixed(2)
-        //     credibilityList.push(credibility)
-        //   } else {
-        //     credibility = '--'
-        //     credibilityList.push(credibility)
-        //   }
-        // }
+          .catch(error => {
+            window.alert(JSON.stringify(error))
+          })
       })
     })
   })
