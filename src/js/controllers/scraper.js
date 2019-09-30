@@ -1,18 +1,18 @@
-function formatNumber (string) {
-  let x = string.replace(/ /, '') // 20 K -> 20K
+// function formatNumber (string) {
+//   let x = string.replace(/ /, '') // 20 K -> 20K
 
-  if (x.match(/^(\d+\.\dK|\d+\.\dM|\d+,\dK|\d+,\dM)$/) != null) {
-    x = x.replace(/K/, '00') // 20,2K -> 20,200 | 20.2K -> 20.200
-    x = x.replace(/M/, '00000') // 20,2M -> 20,200000 | 20.2M -> 20.200000
-  } else {
-    x = x.replace(/K/, '000') // 20K -> 20000
-    x = x.replace(/M/, '000000') // 20M -> 20000000
-  }
+//   if (x.match(/^(\d+\.\dK|\d+\.\dM|\d+,\dK|\d+,\dM)$/) != null) {
+//     x = x.replace(/K/, '00') // 20,2K -> 20,200 | 20.2K -> 20.200
+//     x = x.replace(/M/, '00000') // 20,2M -> 20,200000 | 20.2M -> 20.200000
+//   } else {
+//     x = x.replace(/K/, '000') // 20K -> 20000
+//     x = x.replace(/M/, '000000') // 20M -> 20000000
+//   }
 
-  x = x.replace(/[.,]/, '') // quita comas o puntos
+//   x = x.replace(/[.,]/, '') // quita comas o puntos
 
-  return Number(x)
-}
+//   return Number(x)
+// }
 
 // Listener to scrape the values in real time
 chrome.runtime.onConnect.addListener((port) => {
@@ -20,60 +20,71 @@ chrome.runtime.onConnect.addListener((port) => {
     if (request.sender === 'www' && request.instruction === 'scrap') {
       // Get username
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
+      const times = document.querySelectorAll("div[data-testid='tweet'] time")
+      const tweetIds = []
 
-      const followingPath = window.location.pathname + '/following'
-      const followersPath = window.location.pathname + '/followers'
-
-      const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
-
-      const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
-
-      // get # of tweets and likes
-
-      const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
-      // Get joined Date
-      const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
-
-      // Get Verified value
-      const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
-      let verifiedBool
-      if (verifiedClass) {
-        verifiedBool = true
-      } else {
-        verifiedBool = false
+      for (let i = 0; i < times.length; i++) {
+        const x = times[i].parentElement.getAttribute('href')
+        if (x) {
+          tweetIds.push(x.split('/')[3])
+        }
       }
 
-      // Creating Objects for data transfer to popup
+      // const followingPath = window.location.pathname + '/following'
+      // const followersPath = window.location.pathname + '/followers'
 
-      // Create verified object
-      const joinedDate = {
-        name: 'joinedDate',
-        value: joinedDateString
-      }
+      // const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
 
-      // Create verified object
-      const verified = {
-        name: 'verified',
-        value: verifiedBool
-      }
+      // const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
 
-      // Create tweets object
-      const tweets = {
-        name: 'tweets',
-        value: quantity
-      }
+      // // get # of tweets and likes
 
-      // Create following object
-      const following = {
-        name: 'following',
-        value: followingNum
-      }
+      // const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
+      // // Get joined Date
+      // const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
 
-      // Create followers object
-      const followers = {
-        name: 'followers',
-        value: followersNum
-      }
+      // // Get Verified value
+      // const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
+      // let verifiedBool
+      // if (verifiedClass) {
+      //   verifiedBool = true
+      // } else {
+      //   verifiedBool = false
+      // }
+
+      // // get tweet id
+
+      // // Creating Objects for data transfer to popup
+
+      // // Create verified object
+      // const joinedDate = {
+      //   name: 'joinedDate',
+      //   value: joinedDateString
+      // }
+
+      // // Create verified object
+      // const verified = {
+      //   name: 'verified',
+      //   value: verifiedBool
+      // }
+
+      // // Create tweets object
+      // const tweets = {
+      //   name: 'tweets',
+      //   value: quantity
+      // }
+
+      // // Create following object
+      // const following = {
+      //   name: 'following',
+      //   value: followingNum
+      // }
+
+      // // Create followers object
+      // const followers = {
+      //   name: 'followers',
+      //   value: followersNum
+      // }
 
       /* // Create likes object
       var likes = {
@@ -82,14 +93,14 @@ chrome.runtime.onConnect.addListener((port) => {
       } */
 
       // Create data structure to send to main context
-      const data = {
-        joinedDate: joinedDate,
-        verified: verified,
-        tweets: tweets,
-        following: following,
-        followers: followers
-        // likes: likes
-      }
+      // const data = {
+      //   joinedDate: joinedDate,
+      //   verified: verified,
+      //   tweets: tweets,
+      //   following: following,
+      //   followers: followers
+      //   // likes: likes
+      // }
       let tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
       tweetContainers = Array.from(tweetContainers)
 
@@ -103,7 +114,7 @@ chrome.runtime.onConnect.addListener((port) => {
       })
 
       port.postMessage({
-        data: data,
+        tweetIds: tweetIds,
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers
       })
