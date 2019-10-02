@@ -4,12 +4,27 @@ import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_
 
 document.addEventListener('DOMContentLoaded', function () {
   chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
-    document.querySelector('#weightSpam').value = filterOptions.weightSpam
-    document.querySelector('#weightBadWords').value = filterOptions.weightBadWords
-    document.querySelector('#weightMisspelling').value = filterOptions.weightMisspelling
-    document.querySelector('#weightText').value = filterOptions.weightText
-    document.querySelector('#weightUser').value = filterOptions.weightUser
-    document.querySelector('#weightSocial').value = filterOptions.weightSocial
+    if (!filterOptions.weightSpam) {
+      chrome.storage.sync.set({ weightSpam: 0.44 })
+      document.querySelector('#weightSpam').value = 0.44
+      chrome.storage.sync.set({ weightBadWords: 0.33 })
+      document.querySelector('#weightBadWords').value = 0.33
+      chrome.storage.sync.set({ weightMisspelling: 0.23 })
+      document.querySelector('#weightMisspelling').value = 0.23
+      chrome.storage.sync.set({ weightText: 0.34 })
+      document.querySelector('#weightText').value = 0.34
+      chrome.storage.sync.set({ weightUser: 0.33 })
+      document.querySelector('#weightUser').value = 0.33
+      chrome.storage.sync.set({ weightSocial: 0.33 })
+      document.querySelector('#weightSocial').value = 0.33
+    } else {
+      document.querySelector('#weightSpam').value = filterOptions.weightSpam
+      document.querySelector('#weightBadWords').value = filterOptions.weightBadWords
+      document.querySelector('#weightMisspelling').value = filterOptions.weightMisspelling
+      document.querySelector('#weightText').value = filterOptions.weightText
+      document.querySelector('#weightUser').value = filterOptions.weightUser
+      document.querySelector('#weightSocial').value = filterOptions.weightSocial
+    }
   })
   document.querySelector('#SaveWeights').addEventListener('click', () => { // o addeventlistener?
     UpdateWeights()
