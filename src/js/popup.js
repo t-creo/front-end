@@ -90,6 +90,7 @@ function connect () {
     const port = chrome.tabs.connect(tabs[0].id)
     port.postMessage({ sender: 'www', instruction: 'scrap' })
     port.onMessage.addListener((response) => {
+
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
           tweetId: tweetId,
@@ -108,7 +109,7 @@ function connect () {
             })
           })
           .catch(error => {
-            window.alert(JSON.stringify(error))
+            window.alert("2323"+JSON.stringify(error))
           })
       })
     })

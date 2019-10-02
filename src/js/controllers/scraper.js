@@ -22,7 +22,7 @@ chrome.runtime.onConnect.addListener((port) => {
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
       const times = document.querySelectorAll("div[data-testid='tweet'] time")
       const tweetIds = []
-
+      
       for (let i = 0; i < times.length; i++) {
         const x = times[i].parentElement.getAttribute('href')
         if (x) {
