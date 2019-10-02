@@ -20,6 +20,8 @@ chrome.runtime.onConnect.addListener((port) => {
     if (request.sender === 'www' && request.instruction === 'scrap') {
       // Get username
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
+      
+      // Get tweet ID
       const times = document.querySelectorAll("div[data-testid='tweet'] time")
       const tweetIds = []
 
@@ -29,6 +31,13 @@ chrome.runtime.onConnect.addListener((port) => {
           tweetIds.push(x.split('/')[3])
         }
       }
+
+      // Get RTs
+      // que pasa si el tweet es privado
+      const rts = document.querySelectorAll("div[data-testid='retweet']") // span>span para el numero
+      const urts = document.querySelectorAll("div[data-testid='unretweet']")
+      const likes = document.querySelectorAll("div[data-testid='like']")
+      const ulikes = document.querySelectorAll("div[data-testid='unlike']")
 
       // const followingPath = window.location.pathname + '/following'
       // const followersPath = window.location.pathname + '/followers'
@@ -51,8 +60,6 @@ chrome.runtime.onConnect.addListener((port) => {
       // } else {
       //   verifiedBool = false
       // }
-
-      // // get tweet id
 
       // // Creating Objects for data transfer to popup
 
