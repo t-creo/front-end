@@ -11,6 +11,7 @@ import { getCalculatePlainText, getCalculateTwitterTweets } from './services/req
 window.addEventListener('load', function load (event) {
   document.getElementById('submitButton').onclick = getCredibility
   document.getElementById('VerifyPageButton').onclick = ValidateTwitterTweets
+  document.getElementById('VerifyPageButton2').onclick = ValidateTwitterTweetsScrapper
 })
 
 chrome.contextMenus.onClicked.addListener(function (clickData) {
@@ -81,36 +82,70 @@ function ValidateTwitterTweets () {
   // Send Message asking for the scaped values
   chrome.tabs.executeScript(null, {
     file: 'popup.bundle.js' }, () => {
-    connect()
+    connect(1)
   })
 }
 
-function connect () {
+function ValidateTwitterTweetsScrapper() {
+  chrome.tabs.executeScript(null, {
+    file: 'popup.bundle.js' }, () => {
+    connect(2)
+  })
+}
+
+function connect (method) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const port = chrome.tabs.connect(tabs[0].id)
-    port.postMessage({ sender: 'www', instruction: 'scrap' })
+    if(method == 1){
+      port.postMessage({ sender: 'www', instruction: 'api' })
+    }else if(method == 2){
+      port.postMessage({ sender: 'www', instruction: 'scrap' })
+    }
     port.onMessage.addListener((response) => {
-
-      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
-        Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
-          tweetId: tweetId,
-          weightBadWords: filterOptions.weightBadWords,
-          weightMisspelling: filterOptions.weightMisspelling,
-          weightSpam: filterOptions.weightSpam,
-          weightText: filterOptions.weightText,
-          weightUser: filterOptions.weightUser,
-          weightSocial: filterOptions.weightSocial
-        })))
-          .then(values => {
-            port.postMessage({
-              sender: 'www',
-              instruction: 'update',
-              credList: values.map(credibility => credibility.credibility)
+       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+         if(response.instruction == 'api'){
+          Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
+            tweetId: tweetId,
+            weightBadWords: filterOptions.weightBadWords,
+            weightMisspelling: filterOptions.weightMisspelling,
+            weightSpam: filterOptions.weightSpam,
+            weightText: filterOptions.weightText,
+            weightUser: filterOptions.weightUser,
+            weightSocial: filterOptions.weightSocial
+          })))
+            .then(values => {
+              port.postMessage({
+                sender: 'www',
+                instruction: 'update',
+                credList: values.map(credibility => credibility.credibility)
+              })
             })
-          })
-          .catch(error => {
-            window.alert("2323"+JSON.stringify(error))
-          })
+            .catch(error => {
+              window.alert(JSON.stringify(error))
+            })
+         } else if (response.instruction == 'scrap') {
+          Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweetsTwo({
+            tweetId: tweetId,
+            weightBadWords: filterOptions.weightBadWords,
+            weightMisspelling: filterOptions.weightMisspelling,
+            weightSpam: filterOptions.weightSpam,
+            weightText: filterOptions.weightText,
+            weightUser: filterOptions.weightUser,
+            weightSocial: filterOptions.weightSocial,
+            AccountInfo: response
+          })))
+            .then(values => {
+              port.postMessage({
+                sender: 'www',
+                instruction: 'update',
+                credList: values.map(credibility => credibility.credibility)
+              })
+            })
+            .catch(error => {
+              window.alert(JSON.stringify(error))
+            })
+         }
+        
       })
     })
   })
