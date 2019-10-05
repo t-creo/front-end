@@ -104,7 +104,6 @@ function connect (method) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         if (response.instruction === 'api') {
-        
           Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
             tweetId: tweetId,
             weightBadWords: filterOptions.weightBadWords,
@@ -114,40 +113,39 @@ function connect (method) {
             weightUser: filterOptions.weightUser,
             weightSocial: filterOptions.weightSocial
           })))
-          .then(values => {
-            port.postMessage({
-              sender: 'www',
-              instruction: 'update',
-              credList: values.map(credibility => credibility.credibility)
+            .then(values => {
+              port.postMessage({
+                sender: 'www',
+                instruction: 'update',
+                credList: values.map(credibility => credibility.credibility)
+              })
             })
-          })
-          .catch(error => {
-            window.alert(JSON.stringify(error))
-          })
-        } else if (response.instruction == 'scrap') {
-          
+            .catch(error => {
+              window.alert(JSON.stringify(error))
+            })
+        } else if (response.instruction === 'scrap') {
           Promise.all(response.tweetTexts.map(tweetText => getCalculateTweetsScrapped({
-              tweetText: tweetText,
-              weightSpam: filterOptions.weightSpam,
-              weightBadWords: filterOptions.weightBadWords,
-              weightMisspelling: filterOptions.weightMisspelling,
-              weightText: filterOptions.weightText,
-              weightUser: filterOptions.weightUser,
-              weightSocial: filterOptions.weightSocial,
-              followers : response.followers,
-              following: response.following,
-              verified: response.verified,
-              accountCreationYear: response.joinedDate })))
-          .then(values => {
-            port.postMessage({
-              sender: 'www',
-              instruction: 'update',
-              credList: values.map(credibility => credibility.credibility)
+            tweetText: tweetText,
+            weightSpam: filterOptions.weightSpam,
+            weightBadWords: filterOptions.weightBadWords,
+            weightMisspelling: filterOptions.weightMisspelling,
+            weightText: filterOptions.weightText,
+            weightUser: filterOptions.weightUser,
+            weightSocial: filterOptions.weightSocial,
+            followers: response.followers,
+            following: response.following,
+            verified: response.verified,
+            accountCreationYear: response.joinedDate })))
+            .then(values => {
+              port.postMessage({
+                sender: 'www',
+                instruction: 'update',
+                credList: values.map(credibility => credibility.credibility)
+              })
             })
-          })
-          .catch(error => {
-            window.alert(JSON.stringify(error))
-          })
+            .catch(error => {
+              window.alert(JSON.stringify(error))
+            })
         }
       })
     })

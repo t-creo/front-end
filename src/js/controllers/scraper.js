@@ -47,23 +47,22 @@ chrome.runtime.onConnect.addListener((port) => {
         tweetContainers: tweetContainers
       })
     } else if (request.sender === 'www' && request.instruction === 'scrap') {
-
       // Get username
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
       // const times = document.querySelectorAll("div[data-testid='tweet'] time")
 
       const followingPath = window.location.pathname + '/following'
       const followersPath = window.location.pathname + '/followers'
-       
+
       const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
- 
+
       const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
       // get # of tweets and likes
 
       const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
       // Get joined Date
       const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[0].textContent
-     
+
       // Get Verified value
       const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
       let verifiedBool
@@ -113,14 +112,14 @@ chrome.runtime.onConnect.addListener((port) => {
       } */
       let tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
       tweetContainers = Array.from(tweetContainers)
-      
+
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
           tweetContainer.children[1].classList.add('Credibility-Ranking')
           const frag = document.createRange().createContextualFragment("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
           tweetContainer.children[1].append(frag)
         }
-        
+
         return tweetContainer.children[1].innerText
       })
 
