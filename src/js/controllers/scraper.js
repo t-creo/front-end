@@ -41,7 +41,7 @@ chrome.runtime.onConnect.addListener((port) => {
       })
 
       port.postMessage({
-        instruction : 'api',
+        instruction: 'api',
         tweetIds: tweetIds,
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers
@@ -50,13 +50,11 @@ chrome.runtime.onConnect.addListener((port) => {
 
       // Get username
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
-      const times = document.querySelectorAll("div[data-testid='tweet'] time")
-
+      // const times = document.querySelectorAll("div[data-testid='tweet'] time")
 
       const followingPath = window.location.pathname + '/following'
       const followersPath = window.location.pathname + '/followers'
-      
- 
+       
       const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
  
       const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
@@ -65,7 +63,6 @@ chrome.runtime.onConnect.addListener((port) => {
       const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
       // Get joined Date
       const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[0].textContent
-
      
       // Get Verified value
       const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
@@ -123,13 +120,12 @@ chrome.runtime.onConnect.addListener((port) => {
           const frag = document.createRange().createContextualFragment("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
           tweetContainer.children[1].append(frag)
         }
-   
-
+        
         return tweetContainer.children[1].innerText
       })
 
       port.postMessage({
-        instruction : 'scrap',
+        instruction: 'scrap',
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
         joinedDate: joinedDate.value,
