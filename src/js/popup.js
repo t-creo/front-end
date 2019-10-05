@@ -6,7 +6,7 @@ import { PreventInvalidWeightInputs, CalculateWeightProportion, getProportion } 
 import './controllers/scraper'
 import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant.js'
-import { getCalculatePlainText, getCalculateTwitterTweets } from './services/requests.js'
+import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests.js'
 
 window.addEventListener('load', function load (event) {
   document.getElementById('submitButton').onclick = getCredibility
@@ -102,7 +102,6 @@ function connect (method) {
       port.postMessage({ sender: 'www', instruction: 'scrap' })
     }
     port.onMessage.addListener((response) => {
-      alert(JSON.stringify(response));
        chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
          if(response.instruction == 'api'){
           Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
@@ -125,31 +124,21 @@ function connect (method) {
               window.alert(JSON.stringify(error))
             })
          } else if (response.instruction == 'scrap') {
-           alert(JSON,stringify({
-            tweetText: tweetText,
-            weightSpam: filterOptions.weightSpam,
-            weightBadWords: filterOptions.weightBadWords,
-            weightMisspelling: filterOptions.weightMisspelling,
-            weightText: filterOptions.weightText,
-            weightUser: filterOptions.weightUser,
-            weightSocial: filterOptions.weightSocial,
-            followers : response.followers,
-            following: following,
-            verified: verified,
-            accountCreationYear: joinedDate }))
+           
           Promise.all(response.tweetTexts.map(tweetText => getCalculateTweetsScrapped({
-            tweetText: tweetText,
-            weightSpam: filterOptions.weightSpam,
-            weightBadWords: filterOptions.weightBadWords,
-            weightMisspelling: filterOptions.weightMisspelling,
-            weightText: filterOptions.weightText,
-            weightUser: filterOptions.weightUser,
-            weightSocial: filterOptions.weightSocial,
-            followers : response.followers,
-            following: following,
-            verified: verified,
-            accountCreationYear: joinedDate })))
+              tweetText: tweetText,
+              weightSpam: filterOptions.weightSpam,
+              weightBadWords: filterOptions.weightBadWords,
+              weightMisspelling: filterOptions.weightMisspelling,
+              weightText: filterOptions.weightText,
+              weightUser: filterOptions.weightUser,
+              weightSocial: filterOptions.weightSocial,
+              followers : response.followers,
+              following: response.following,
+              verified: response.verified,
+              accountCreationYear: response.joinedDate })))
             .then(values => {
+              alert(values)
               port.postMessage({
                 sender: 'www',
                 instruction: 'update',

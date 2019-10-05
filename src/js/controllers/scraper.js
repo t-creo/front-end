@@ -1,18 +1,18 @@
-// function formatNumber (string) {
-//   let x = string.replace(/ /, '') // 20 K -> 20K
+function formatNumber (string) {
+  let x = string.replace(/ /, '') // 20 K -> 20K
 
-//   if (x.match(/^(\d+\.\dK|\d+\.\dM|\d+,\dK|\d+,\dM)$/) != null) {
-//     x = x.replace(/K/, '00') // 20,2K -> 20,200 | 20.2K -> 20.200
-//     x = x.replace(/M/, '00000') // 20,2M -> 20,200000 | 20.2M -> 20.200000
-//   } else {
-//     x = x.replace(/K/, '000') // 20K -> 20000
-//     x = x.replace(/M/, '000000') // 20M -> 20000000
-//   }
+  if (x.match(/^(\d+\.\dK|\d+\.\dM|\d+,\dK|\d+,\dM)$/) != null) {
+    x = x.replace(/K/, '00') // 20,2K -> 20,200 | 20.2K -> 20.200
+    x = x.replace(/M/, '00000') // 20,2M -> 20,200000 | 20.2M -> 20.200000
+  } else {
+    x = x.replace(/K/, '000') // 20K -> 20000
+    x = x.replace(/M/, '000000') // 20M -> 20000000
+  }
 
-//   x = x.replace(/[.,]/, '') // quita comas o puntos
+  x = x.replace(/[.,]/, '') // quita comas o puntos
 
-//   return Number(x)
-// }
+  return Number(x)
+}
 
 // Listener to scrape the values in real time
 chrome.runtime.onConnect.addListener((port) => {
@@ -58,14 +58,15 @@ chrome.runtime.onConnect.addListener((port) => {
       
  
       const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
-
+ 
       const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
       // get # of tweets and likes
 
       const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
       // Get joined Date
-      const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
+      const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[0].textContent
 
+     
       // Get Verified value
       const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
       let verifiedBool
@@ -126,25 +127,16 @@ chrome.runtime.onConnect.addListener((port) => {
 
         return tweetContainer.children[1].innerText
       })
-      alert(JSON.stringify({
-        instruction : 'scrap',
-        tweetTexts: tweetTexts,
-        tweetContainers: tweetContainers,
-        joinedDate: joinedDate,
-        verified: verified,
-        tweets: tweets,
-        following: following,
-        followers: followers
-      }));
+
       port.postMessage({
         instruction : 'scrap',
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
-        joinedDate: joinedDate,
-        verified: verified,
-        tweets: tweets,
-        following: following,
-        followers: followers
+        joinedDate: joinedDate.value,
+        verified: verified.value,
+        tweets: tweets.value,
+        following: following.value,
+        followers: followers.value
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)
