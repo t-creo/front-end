@@ -10,8 +10,8 @@ import { getCalculatePlainText, getCalculateTwitterTweets } from './services/req
 
 window.addEventListener('load', function load (event) {
   document.getElementById('submitButton').onclick = getCredibility
-  document.getElementById('VerifyPageButton').onclick = ValidateTwitterTweets
-  document.getElementById('VerifyPageButton2').onclick = ValidateTwitterTweetsScrapper
+  document.getElementById('VerifyPageButtonScrapper').onclick = ValidateTwitterTweetsScrapper
+  document.getElementById('VerifyPageButtonTwitterApi').onclick =  ValidateTwitterTweets
 })
 
 chrome.contextMenus.onClicked.addListener(function (clickData) {
@@ -102,6 +102,7 @@ function connect (method) {
       port.postMessage({ sender: 'www', instruction: 'scrap' })
     }
     port.onMessage.addListener((response) => {
+      alert(JSON.stringify(response));
        chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
          if(response.instruction == 'api'){
           Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
@@ -124,16 +125,30 @@ function connect (method) {
               window.alert(JSON.stringify(error))
             })
          } else if (response.instruction == 'scrap') {
-          Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweetsTwo({
-            tweetId: tweetId,
+           alert(JSON,stringify({
+            tweetText: tweetText,
+            weightSpam: filterOptions.weightSpam,
             weightBadWords: filterOptions.weightBadWords,
             weightMisspelling: filterOptions.weightMisspelling,
-            weightSpam: filterOptions.weightSpam,
             weightText: filterOptions.weightText,
             weightUser: filterOptions.weightUser,
             weightSocial: filterOptions.weightSocial,
-            AccountInfo: response
-          })))
+            followers : response.followers,
+            following: following,
+            verified: verified,
+            accountCreationYear: joinedDate }))
+          Promise.all(response.tweetTexts.map(tweetText => getCalculateTweetsScrapped({
+            tweetText: tweetText,
+            weightSpam: filterOptions.weightSpam,
+            weightBadWords: filterOptions.weightBadWords,
+            weightMisspelling: filterOptions.weightMisspelling,
+            weightText: filterOptions.weightText,
+            weightUser: filterOptions.weightUser,
+            weightSocial: filterOptions.weightSocial,
+            followers : response.followers,
+            following: following,
+            verified: verified,
+            accountCreationYear: joinedDate })))
             .then(values => {
               port.postMessage({
                 sender: 'www',

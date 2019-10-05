@@ -18,8 +18,6 @@
 chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((request) => {
     if (request.sender === 'www' && request.instruction === 'api') {
-      // Get username
-      // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
       const times = document.querySelectorAll("div[data-testid='tweet'] time")
       const tweetIds = []
 
@@ -30,77 +28,6 @@ chrome.runtime.onConnect.addListener((port) => {
         }
       }
 
-      // const followingPath = window.location.pathname + '/following'
-      // const followersPath = window.location.pathname + '/followers'
-
-      // const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
-
-      // const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
-
-      // // get # of tweets and likes
-
-      // const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
-      // // Get joined Date
-      // const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
-
-      // // Get Verified value
-      // const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
-      // let verifiedBool
-      // if (verifiedClass) {
-      //   verifiedBool = true
-      // } else {
-      //   verifiedBool = false
-      // }
-
-      // // get tweet id
-
-      // // Creating Objects for data transfer to popup
-
-      // // Create verified object
-      // const joinedDate = {
-      //   name: 'joinedDate',
-      //   value: joinedDateString
-      // }
-
-      // // Create verified object
-      // const verified = {
-      //   name: 'verified',
-      //   value: verifiedBool
-      // }
-
-      // // Create tweets object
-      // const tweets = {
-      //   name: 'tweets',
-      //   value: quantity
-      // }
-
-      // // Create following object
-      // const following = {
-      //   name: 'following',
-      //   value: followingNum
-      // }
-
-      // // Create followers object
-      // const followers = {
-      //   name: 'followers',
-      //   value: followersNum
-      // }
-
-      /* // Create likes object
-      var likes = {
-        name: 'likes',
-        value: getDataCount(spans[3])
-      } */
-
-      // Create data structure to send to main context
-      // const data = {
-      //   joinedDate: joinedDate,
-      //   verified: verified,
-      //   tweets: tweets,
-      //   following: following,
-      //   followers: followers
-      //   // likes: likes
-      // }
       let tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
       tweetContainers = Array.from(tweetContainers)
 
@@ -120,25 +47,19 @@ chrome.runtime.onConnect.addListener((port) => {
         tweetContainers: tweetContainers
       })
     } else if (request.sender === 'www' && request.instruction === 'scrap') {
+
       // Get username
       // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
       const times = document.querySelectorAll("div[data-testid='tweet'] time")
-      const tweetIds = []
 
-      for (let i = 0; i < times.length; i++) {
-        const x = times[i].parentElement.getAttribute('href')
-        if (x) {
-          tweetIds.push(x.split('/')[3])
-        }
-      }
 
       const followingPath = window.location.pathname + '/following'
       const followersPath = window.location.pathname + '/followers'
-
+      
+ 
       const followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"]`).getAttribute('title'))
 
       const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
-
       // get # of tweets and likes
 
       const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
@@ -153,7 +74,6 @@ chrome.runtime.onConnect.addListener((port) => {
       } else {
         verifiedBool = false
       }
-
       // get tweet id
 
       // Creating Objects for data transfer to popup
@@ -193,34 +113,38 @@ chrome.runtime.onConnect.addListener((port) => {
         name: 'likes',
         value: getDataCount(spans[3])
       } */
-
-      // Create data structure to send to main context
-      const data = {
-        joinedDate: joinedDate,
-        verified: verified,
-        tweets: tweets,
-        following: following,
-        followers: followers
-        // likes: likes
-      }
       let tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
       tweetContainers = Array.from(tweetContainers)
-
+      
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
           tweetContainer.children[1].classList.add('Credibility-Ranking')
           const frag = document.createRange().createContextualFragment("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
           tweetContainer.children[1].append(frag)
         }
+   
+
         return tweetContainer.children[1].innerText
       })
-
-      port.postMessage({
+      alert(JSON.stringify({
         instruction : 'scrap',
-        tweetIds: tweetIds,
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
-        accountInfo: data
+        joinedDate: joinedDate,
+        verified: verified,
+        tweets: tweets,
+        following: following,
+        followers: followers
+      }));
+      port.postMessage({
+        instruction : 'scrap',
+        tweetTexts: tweetTexts,
+        tweetContainers: tweetContainers,
+        joinedDate: joinedDate,
+        verified: verified,
+        tweets: tweets,
+        following: following,
+        followers: followers
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)
