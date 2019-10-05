@@ -138,7 +138,6 @@ function connect (method) {
               verified: response.verified,
               accountCreationYear: response.joinedDate })))
             .then(values => {
-              alert(values)
               port.postMessage({
                 sender: 'www',
                 instruction: 'update',
