@@ -73,7 +73,7 @@ function connect (method) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         if (response.instruction === 'api') {
-          Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
+          response.tweetIds.map(tweetId => getCalculateTwitterTweets({
             tweetId: tweetId,
             weightBadWords: filterOptions.weightBadWords,
             weightMisspelling: filterOptions.weightMisspelling,
@@ -81,7 +81,7 @@ function connect (method) {
             weightText: filterOptions.weightText,
             weightUser: filterOptions.weightUser,
             weightSocial: filterOptions.weightSocial
-          })))
+          }))
             .then(values => {
               port.postMessage({
                 sender: 'www',

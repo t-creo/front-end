@@ -59,9 +59,9 @@ chrome.runtime.onConnect.addListener((port) => {
       const followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"]`).getAttribute('title'))
       // get # of tweets and likes
 
-      const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
+      const quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[1]) // "10K Tweets"
       // Get joined Date
-      const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[0].textContent
+      const joinedDateString = document.querySelectorAll("div[data-testid='UserProfileHeader_Items'] > span")[1].textContent
 
       // Get Verified value
       const verifiedClass = document.querySelector("svg[aria-label='Verified account']") // works only in english
