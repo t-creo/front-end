@@ -45,6 +45,8 @@ module.exports = {
     })
   },
 
+  
+
   getCalculateTwitterTweets: function (queryParameters) {
     const url = process.env.API_URL + '/calculate/twitter/tweets'
     return new Promise((resolve, reject) => {
@@ -65,5 +67,27 @@ module.exports = {
         reject(error)
       })
     })
-  }
+  },
+
+  getCalculateSocialScrape: function (queryParameters) {
+    const url = process.env.API_URL + '/calculate/social/scrape'
+    return new Promise((resolve, reject) => {
+      axios.get(url, { params: queryParameters }).then(async (response) => {
+        resolve(response.data)
+      }).catch(function (error) {
+        reject(error)
+      })
+    })
+  },
+
+  getCalculateUserScrape: function (queryParameters) {
+    const url = process.env.API_URL + '/calculate/user/scrape'
+    return new Promise((resolve, reject) => {
+      axios.get(url, { params: queryParameters }).then(async (response) => {
+        resolve(response.data)
+      }).catch(function (error) {
+        reject(error)
+      })
+    })
+  },
 }
