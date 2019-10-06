@@ -45,8 +45,6 @@ module.exports = {
     })
   },
 
-  
-
   getCalculateTwitterTweets: function (queryParameters) {
     const url = process.env.API_URL + '/calculate/twitter/tweets'
     return new Promise((resolve, reject) => {
@@ -89,5 +87,5 @@ module.exports = {
         reject(error)
       })
     })
-  },
+  }
 }
