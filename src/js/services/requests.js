@@ -54,5 +54,16 @@ module.exports = {
         reject(error)
       })
     })
+  },
+
+  getCalculateTweetsScrapped: function (queryParameters) {
+    const url = process.env.API_URL + '/calculate/tweets/scraped'
+    return new Promise((resolve, reject) => {
+      axios.get(url, { params: queryParameters }).then(async (response) => {
+        resolve(response.data)
+      }).catch(function (error) {
+        reject(error)
+      })
+    })
   }
 }
