@@ -34,9 +34,9 @@ function getCredibility () {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         getCalculatePlainText({
           text: tweet,
-          weightBadWords: filterOptions.weightBadWords,
-          weightMisspelling: filterOptions.weightMisspelling,
-          weightSpam: filterOptions.weightSpam
+          weightBadWords: +filterOptions.weightBadWords,
+          weightMisspelling: +filterOptions.weightMisspelling,
+          weightSpam: +filterOptions.weightSpam
         })
           .then(function (credibility) {
             document.querySelector('#credibility').innerText =
@@ -75,12 +75,12 @@ function connect (method) {
         if (response.instruction === 'api') {
           Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
             tweetId: tweetId,
-            weightBadWords: filterOptions.weightBadWords,
-            weightMisspelling: filterOptions.weightMisspelling,
-            weightSpam: filterOptions.weightSpam,
-            weightText: filterOptions.weightText,
-            weightUser: filterOptions.weightUser,
-            weightSocial: filterOptions.weightSocial
+            weightBadWords: +filterOptions.weightBadWords,
+            weightMisspelling: +filterOptions.weightMisspelling,
+            weightSpam: +filterOptions.weightSpam,
+            weightText: +filterOptions.weightText,
+            weightUser: +filterOptions.weightUser,
+            weightSocial: +filterOptions.weightSocial
           })))
             .then(values => {
               port.postMessage({
@@ -93,18 +93,19 @@ function connect (method) {
               window.alert(JSON.stringify(error))
             })
         } else if (response.instruction === 'scrap') {
+          console.log(response)
           Promise.all(response.tweetTexts.map(tweetText => getCalculateTweetsScrapped({
             tweetText: tweetText,
-            weightSpam: filterOptions.weightSpam,
-            weightBadWords: filterOptions.weightBadWords,
-            weightMisspelling: filterOptions.weightMisspelling,
-            weightText: filterOptions.weightText,
-            weightUser: filterOptions.weightUser,
-            weightSocial: filterOptions.weightSocial,
-            followers: response.followers,
-            following: response.following,
+            weightSpam: +filterOptions.weightSpam,
+            weightBadWords: +filterOptions.weightBadWords,
+            weightMisspelling: +filterOptions.weightMisspelling,
+            weightText: +filterOptions.weightText,
+            weightUser: +filterOptions.weightUser,
+            weightSocial: +filterOptions.weightSocial,
+            followersCount: +response.followers,
+            friendsCount: +response.following,
             verified: response.verified,
-            accountCreationYear: response.joinedDate })))
+            yearJoined: +(response.joinedDate.split(' ')[2]) })))
             .then(values => {
               port.postMessage({
                 sender: 'www',
