@@ -20,6 +20,7 @@ if (fileSystem.existsSync(secretsPath)) {
 
 const options = {
   mode: process.env.NODE_ENV || 'development',
+  devtool: 'inline-source-map',
   entry: {
     popup: path.join(__dirname, 'src', 'js', 'popup.js'),
     options: path.join(__dirname, 'src', 'js', 'options.js'),
@@ -31,6 +32,11 @@ const options = {
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
       {
         test: /\.(scss)$/,
         use: [
@@ -69,7 +75,8 @@ const options = {
     ]
   },
   resolve: {
-    alias: alias
+    alias: alias,
+    extensions: ['.tsx', '.ts', '.js']
   },
   plugins: [
     // clean the build folder
