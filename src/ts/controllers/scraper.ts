@@ -22,16 +22,15 @@ chrome.runtime.onConnect.addListener((port) => {
       const tweetIds = []
 
       for (let i = 0; i < times.length; i++) {
-        const x = times[i].parentElement.getAttribute('href')
+        const x = times[i].parentElement!.getAttribute('href')
         if (x) {
           tweetIds.push(x.split('/')[3])
         }
       }
 
-      let tweetContainers = document.querySelectorAll("div[data-testid='tweet']")
-      tweetContainers = Array.from(tweetContainers)
+      let tweetContainers = [].slice.call(document.querySelectorAll("div[data-testid='tweet']"))
 
-      const tweetTexts = tweetContainers.map((tweetContainer, index) => {
+      const tweetTexts = tweetContainers.map((tweetContainer, index: number) => {
         if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
           tweetContainer.children[1].classList.add('Credibility-Ranking')
           const frag = document.createRange().createContextualFragment("<div class='Credibility-Ranking'><p id=TweetNumber" + index + '>...</p></div>')
@@ -61,27 +60,29 @@ chrome.runtime.onConnect.addListener((port) => {
       let verifiedBool = false
       let verifiedAcc = false
 
-      let boxes = document.querySelectorAll("div[data-testid='tweet']")
-      boxes = Array.from(boxes)
+      let boxes = [].slice.call(document.querySelectorAll("div[data-testid='tweet']"))
       const boxesArr = []
 
       for (let i = 0; i < boxes.length; i++) {
         verifiedBool = false
         const current = boxes[i]
+        const tweetInfo = current.querySelector("div[aria-label='Share Tweet']")
+        const date = <HTMLDivElement>current.querySelector("div[data-testid='tweet'] time")
+
         // TEXT
         const tweetText = {
           name: 'tweetText',
-          value: current.querySelector("div[aria-label='Share Tweet']").parentElement.parentElement.parentElement.children[1].textContent
+          value: current.querySelector("div[aria-label='Share Tweet']").parentElement!.parentElement!.parentElement!.children[1].textContent
         }
         // DATE
         const tweetDate = {
           name: 'tweetDate',
-          value: current.querySelector("div[data-testid='tweet'] time").dateTime
+          value: date.dateTime
         }
         // LANGUAGE
         const tweetLang = {
           name: 'tweetLang',
-          value: current.querySelector("div[aria-label='Share Tweet']").parentElement.parentElement.parentElement.children[1].getAttribute('lang')
+          value: tweetInfo.parentElement!.parentElement!.parentElement!.children[1].getAttribute('lang')
         }
         // VERIFIED
         const verifiedClass = current.querySelector("svg[aria-label='Verified account']") // works only in english
@@ -95,15 +96,17 @@ chrome.runtime.onConnect.addListener((port) => {
         }
         // RETWEETS
         let number = 0
-        const typeRt = current.querySelector("div[aria-label='Share Tweet']").parentElement.parentElement.children[1].firstElementChild.getAttribute('data-testid')
+        const typeRt = tweetInfo.parentElement!.parentElement!.children[1]!.firstElementChild!.getAttribute('data-testid')
+        const retweetInfo = <HTMLDivElement>current.querySelector("div[data-testid='retweet'] > div")!
+        const unretweetInfo = <HTMLDivElement>current.querySelector("div[data-testid='unretweet'] > div")
 
         if (typeRt === 'retweet') {
-          if (current.querySelector("div[data-testid='retweet'] > div").children.length === 2) {
-            number = formatNumber(current.querySelector("div[data-testid='retweet'] > div").lastElementChild.innerText)
+          if (current.querySelector("div[data-testid='retweet'] > div")!.children.length === 2) {
+            number = formatNumber(retweetInfo.lastElementChild!.innerText)
           }
         } else {
-          if (current.querySelector("div[data-testid='unretweet'] > div").children.length === 2) {
-            number = formatNumber(current.querySelector("div[data-testid='unretweet'] > div").lastElementChild.innerText)
+          if (current.querySelector("div[data-testid='unretweet'] > div")!.children.length === 2) {
+            number = formatNumber(unretweetInfo.lastElementChild!.innerText)
           }
         }
 
@@ -113,15 +116,17 @@ chrome.runtime.onConnect.addListener((port) => {
         }
         // LIKES
         number = 0
-        const typeLike = current.querySelector("div[aria-label='Share Tweet']").parentElement.parentElement.children[2].firstElementChild.getAttribute('data-testid')
+        const typeLike = tweetInfo.parentElement!.parentElement!.children[2]!.firstElementChild!.getAttribute('data-testid')
+        const likeInfo = current.querySelector("div[data-testid='like'] > div")!
+        const unlikeInfo = current.querySelector("div[data-testid='unlike'] > div")!
 
         if (typeLike === 'like') {
-          if (current.querySelector("div[data-testid='like'] > div").children.length === 2) {
-            number = formatNumber(current.querySelector("div[data-testid='like'] > div").lastElementChild.innerText)
+          if (current.querySelector("div[data-testid='like'] > div")!.children.length === 2) {
+            number = formatNumber(likeInfo.lastElementChild!.innerText)
           }
         } else {
-          if (current.querySelector("div[data-testid='unlike'] > div").children.length === 2) {
-            number = formatNumber(current.querySelector("div[data-testid='unlike'] > div").lastElementChild.innerText)
+          if (current.querySelector("div[data-testid='unlike'] > div")!.children.length === 2) {
+            number = formatNumber(unlikeInfo.lastElementChild!.innerText)
           }
         }
 
@@ -131,9 +136,10 @@ chrome.runtime.onConnect.addListener((port) => {
         }
         // REPLIES
         number = 0
+        const replyInfo = current.querySelector("div[data-testid='reply'] > div")!
 
-        if (current.querySelector("div[data-testid='reply'] > div").children.length === 2) {
-          number = formatNumber(current.querySelector("div[data-testid='reply'] > div").lastElementChild.innerText)
+        if (current.querySelector("div[data-testid='reply'] > div")!.children.length === 2) {
+          number = formatNumber(replyInfo.lastElementChild!.innerText)
         }
 
         const tweetReply = {
@@ -159,14 +165,14 @@ chrome.runtime.onConnect.addListener((port) => {
         const followingPath = window.location.pathname + '/following'
         const followersPath = window.location.pathname + '/followers'
 
-        followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"] > span > span`).textContent)
+        followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"] > span > span`)!.textContent)
 
-        followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"] > span > span`).textContent)
+        followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"] > span > span`)!.textContent)
         // get # of tweets and likes
 
-        quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
+        quantity = formatNumber(document.querySelectorAll("h2[role='heading']")![1].nextSibling!.textContent!.split(' ')[0]) // "10K Tweets"
 
-        const info = document.querySelector("div[data-testid='UserProfileHeader_Items']").children
+        const info = document.querySelector("div[data-testid='UserProfileHeader_Items']")!.children
 
         if (info.length === 2) {
           locationString = info[0].textContent
@@ -284,10 +290,10 @@ function UpdateTweetCredibility (credibilityList) {
         RedHex = '0' + RedHex
       }
       const FinalColor = '#' + (RedHex.toString(16)) + (GreenHex.toString(16)) + '00'
-      document.querySelector('#TweetNumber' + index).innerText = 'WWW Credibility: ' + credibilityItem + '%'
-      document.querySelector('#TweetNumber' + index).style.color = FinalColor
+      document.querySelector('#TweetNumber' + index)!.innerText = 'WWW Credibility: ' + credibilityItem + '%'
+      document.querySelector('#TweetNumber' + index)!.style.color = FinalColor
     } else {
-      document.querySelector('#TweetNumber' + index).innerText = 'WWW Credibility: --'
+      document.querySelector('#TweetNumber' + index)!.innerText = 'WWW Credibility: --'
     }
   })
 }
