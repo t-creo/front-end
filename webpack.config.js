@@ -23,9 +23,9 @@ const options = {
   mode: process.env.NODE_ENV || 'development',
   devtool: 'inline-source-map',
   entry: {
-    popup: path.join(__dirname, 'src', 'js', 'popup.js'),
-    options: path.join(__dirname, 'src', 'js', 'options.js'),
-    background: path.join(__dirname, 'src', 'js', 'background.js')
+    popup: path.join(__dirname, 'src', 'ts', 'popup.ts'),
+    options: path.join(__dirname, 'src', 'ts', 'options.ts'),
+    background: path.join(__dirname, 'src', 'ts', 'background.ts')
   },
   output: {
     path: path.join(__dirname, 'build'),
