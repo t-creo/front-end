@@ -8,25 +8,25 @@ import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScr
 // }
 
 window.addEventListener('load', function load (event) {
-  document.getElementById('submitButton')!.onclick= getCredibility
-  document.getElementById('VerifyPageButtonScrapper')!.onclick = ValidateTwitterTweetsScrapper
-  document.getElementById('VerifyPageButtonTwitterApi')!.onclick = ValidateTwitterTweets
+  document.getElementById('submitButton').onclick= getCredibility
+  document.getElementById('VerifyPageButtonScrapper').onclick = ValidateTwitterTweetsScrapper
+  document.getElementById('VerifyPageButtonTwitterApi').onclick = ValidateTwitterTweets
 })
 
 document.addEventListener('DOMContentLoaded', function (event) {
   chrome.tabs.getSelected(0, function (tab) {
-    const tabUrl = tab.url!
-    const elem = document.querySelector('#PageSensitiveButtons')!
-    const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')!
+    const tabUrl = tab.url
+    const elem = document.querySelector('#PageSensitiveButtons')
+    const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
-      elem.parentNode!.removeChild(elem)
+      elem.parentNode.removeChild(elem)
     } else {
-      document.querySelector('#firstHorBar')!.parentNode!.removeChild(document.querySelector('#firstHorBar')!)
-      document.querySelector('#secondHorBar')!.parentNode!.removeChild(document.querySelector('#secondHorBar')!)
-      elem.parentNode!.removeChild(elem)
+      document.querySelector('#firstHorBar').parentNode.removeChild(document.querySelector('#firstHorBar'))
+      document.querySelector('#secondHorBar').parentNode.removeChild(document.querySelector('#secondHorBar'))
+      elem.parentNode.removeChild(elem)
     }
   })
 })
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 function getCredibility () {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id!, { sender: 'www', instruction: 'scrap' }, function () {
+    chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
       const tweet = <HTMLTextAreaElement>document.querySelector('#text')
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         getCalculatePlainText({
@@ -44,7 +44,7 @@ function getCredibility () {
           weightSpam: +filterOptions.weightSpam
         })
           .then(function (credibility : { credibility: number }) {
-            const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')!
+            const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
             credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
           }).catch(e => console.log(e))
       })
@@ -69,7 +69,7 @@ function ValidateTwitterTweetsScrapper () {
 
 function connect (method: number) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const port = chrome.tabs.connect(tabs[0].id!)
+    const port = chrome.tabs.connect(tabs[0].id)
     if (method === 1) {
       port.postMessage({ sender: 'www', instruction: 'api' })
     } else if (method === 2) {

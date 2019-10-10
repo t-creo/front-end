@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       weightSpam.value = filterOptions.weightSpam
       weightBadWords.value = filterOptions.weightBadWords
-      weightMisspelling!.value = filterOptions.weightMisspelling
+      weightMisspelling.value = filterOptions.weightMisspelling
       weightText.value = filterOptions.weightText
       weightUser.value = filterOptions.weightUser
       weightSocial.value = filterOptions.weightSocial
     }
   })
   
-  document.querySelector('#SaveWeights')!.addEventListener('click', () => { // o addeventlistener?
+  document.querySelector('#SaveWeights').addEventListener('click', () => { // o addeventlistener?
     UpdateWeights()
     const weightSpam = <HTMLInputElement>document.querySelector('#weightSpam')
     const weightBadWords = <HTMLInputElement>document.querySelector('#weightBadWords')
