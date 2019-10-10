@@ -69,7 +69,7 @@ chrome.runtime.onConnect.addListener((port) => {
       for (let i = 0; i < boxes.length; i++) {
         verifiedBool = false
         const current = boxes[i]
-        
+
         // TEXT
         const tweetText = {
           name: 'tweetText',
@@ -99,7 +99,7 @@ chrome.runtime.onConnect.addListener((port) => {
         // RETWEETS
         let number = 0
         const typeRt = current.querySelector("div[aria-label='Share Tweet']").parentElement.parentElement.children[1].firstElementChild.getAttribute('data-testid')
-        
+
         if (typeRt === 'retweet') {
           if (current.querySelector("div[data-testid='retweet'] > div").children.length === 2) {
             number = formatNumber(current.querySelector("div[data-testid='retweet'] > div").lastElementChild.innerText)
@@ -158,7 +158,6 @@ chrome.runtime.onConnect.addListener((port) => {
       }
 
       if (window.location.href.split('/')[3] !== 'home') {
-        
         verifiedAcc = false
         const followingPath = window.location.pathname + '/following'
         const followersPath = window.location.pathname + '/followers'
@@ -236,7 +235,7 @@ chrome.runtime.onConnect.addListener((port) => {
         verified: verifiedAcc,
         following: followingNum,
         followers: followersNum,
-        tweets: quantity,
+        tweets: quantity
       }
 
       console.log(data)
@@ -264,7 +263,7 @@ chrome.runtime.onConnect.addListener((port) => {
         tweets: tweets.value,
         following: following.value,
         followers: followers.value,
-        lang : language
+        lang: language
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)
