@@ -78,7 +78,7 @@ function connect (method: number) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         if (response.instruction === 'api') {
-          Promise.all(response.tweetIds.map((tweetId: number) => getCalculateTwitterTweets({
+          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => getCalculateTwitterTweets({
             tweetId: tweetId,
             weightBadWords: +filterOptions.weightBadWords,
             weightMisspelling: +filterOptions.weightMisspelling,
@@ -86,7 +86,8 @@ function connect (method: number) {
             weightText: +filterOptions.weightText,
             weightUser: +filterOptions.weightUser,
             weightSocial: +filterOptions.weightSocial
-          })))
+          }))
+          Promise.all(promiseList)
             .then(values => {
               port.postMessage({
                 sender: 'www',
@@ -99,7 +100,7 @@ function connect (method: number) {
             })
         } else if (response.instruction === 'scrap') {
           console.log(response)
-          Promise.all(response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
             tweetText: tweetText,
             weightSpam: +filterOptions.weightSpam,
             weightBadWords: +filterOptions.weightBadWords,
@@ -110,7 +111,9 @@ function connect (method: number) {
             followersCount: +response.followers,
             friendsCount: +response.following,
             verified: response.verified,
-            yearJoined: +(response.joinedDate.split(' ')[2]) })))
+            yearJoined: +(response.joinedDate.split(' ')[2]) }))
+
+          Promise.all(promiseList)
             .then(values => {
               port.postMessage({
                 sender: 'www',
