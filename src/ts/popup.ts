@@ -1,14 +1,14 @@
 import './controllers/scraper'
 import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
-import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests.js'
+import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
 
 // interface SelectProtected {
 //   readonly submitButtonElement: HTMLButtonElement;
 // }
 
 window.addEventListener('load', function load (event) {
-  document.getElementById('submitButton')!.onclick!= getCredibility
+  document.getElementById('submitButton')!.onclick= getCredibility
   document.getElementById('VerifyPageButtonScrapper')!.onclick = ValidateTwitterTweetsScrapper
   document.getElementById('VerifyPageButtonTwitterApi')!.onclick = ValidateTwitterTweets
 })
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
   chrome.tabs.getSelected(0, function (tab) {
     const tabUrl = tab.url!
     const elem = document.querySelector('#PageSensitiveButtons')!
-    const currentPage : HTMLHeadingElement = document.querySelector('#currentPage')!
+    const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')!
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 function getCredibility () {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
+    chrome.tabs.sendMessage(tabs[0].id!, { sender: 'www', instruction: 'scrap' }, function () {
       const tweet = <HTMLTextAreaElement>document.querySelector('#text')
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         getCalculatePlainText({
@@ -43,8 +43,8 @@ function getCredibility () {
           weightMisspelling: +filterOptions.weightMisspelling,
           weightSpam: +filterOptions.weightSpam
         })
-          .then(function (credibility) {
-            const credibilityText : HTMLParagraphElement =  document.querySelector('#credibility')!
+          .then(function (credibility : { credibility: number }) {
+            const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')!
             credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
           }).catch(e => console.log(e))
       })
@@ -69,7 +69,7 @@ function ValidateTwitterTweetsScrapper () {
 
 function connect (method: number) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const port = chrome.tabs.connect(tabs[0].id)
+    const port = chrome.tabs.connect(tabs[0].id!)
     if (method === 1) {
       port.postMessage({ sender: 'www', instruction: 'api' })
     } else if (method === 2) {
