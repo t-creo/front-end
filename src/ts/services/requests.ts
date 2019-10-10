@@ -25,7 +25,7 @@ function getHealth() {
     })
   }
 
-  function getCalculateTwitterUser(userId : string) : Promise<{ credibility: number }> {
+  function getCalculateTwitterUser() : Promise<{ credibility: number }> {
     const url = process.env.API_URL + '/calculate/twitter/user/:userId'
     return new Promise((resolve, reject) => {
       axios.get(url)
@@ -37,7 +37,7 @@ function getHealth() {
     })
   }
 
-  function getCalculateTwitterSocial(userId : string) : Promise<{ credibility: number }> {
+  function getCalculateTwitterSocial() : Promise<{ credibility: number }> {
     const url = process.env.API_URL + '/calculate/twitter/social/:userId'
     return new Promise((resolve, reject) => {
       axios.get(url)

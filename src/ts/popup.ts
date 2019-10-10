@@ -7,13 +7,13 @@ import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScr
 //   readonly submitButtonElement: HTMLButtonElement;
 // }
 
-window.addEventListener('load', function load (event) {
+window.addEventListener('load', function load () {
   document.getElementById('submitButton').onclick= getCredibility
   document.getElementById('VerifyPageButtonScrapper').onclick = ValidateTwitterTweetsScrapper
   document.getElementById('VerifyPageButtonTwitterApi').onclick = ValidateTwitterTweets
 })
 
-document.addEventListener('DOMContentLoaded', function (event) {
+document.addEventListener('DOMContentLoaded', function () {
   chrome.tabs.getSelected(0, function (tab) {
     const tabUrl = tab.url
     const elem = document.querySelector('#PageSensitiveButtons')
