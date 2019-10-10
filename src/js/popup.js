@@ -93,7 +93,6 @@ function connect (method) {
               window.alert(JSON.stringify(error))
             })
         } else if (response.instruction === 'scrap') {
-          console.log(response)
           Promise.all(response.tweetTexts.map(tweetText => getCalculateTweetsScrapped({
             tweetText: tweetText,
             weightSpam: +filterOptions.weightSpam,
@@ -105,7 +104,8 @@ function connect (method) {
             followersCount: +response.followers,
             friendsCount: +response.following,
             verified: response.verified,
-            yearJoined: +(response.joinedDate.split(' ')[2]) })))
+            yearJoined: +(response.joinedDate.split(' ')[2]),
+            lang: response.lang })))
             .then(values => {
               port.postMessage({
                 sender: 'www',
