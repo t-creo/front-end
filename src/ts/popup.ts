@@ -14,6 +14,16 @@ window.addEventListener('load', function load () {
 })
 
 document.addEventListener('DOMContentLoaded', function () {
+  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+    if (!filterOptions.weightSpam) {
+      chrome.storage.sync.set({ weightSpam: 0.44 })
+      chrome.storage.sync.set({ weightBadWords: 0.33 })
+      chrome.storage.sync.set({ weightMisspelling: 0.23 })
+      chrome.storage.sync.set({ weightText: 0.34 })
+      chrome.storage.sync.set({ weightUser: 0.33 })
+      chrome.storage.sync.set({ weightSocial: 0.33 })
+    }
+  })
   chrome.tabs.getSelected(null, function (tab) {
     const tabUrl = tab.url
     const elem = document.querySelector('#PageSensitiveButtons')
