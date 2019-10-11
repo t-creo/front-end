@@ -1,12 +1,11 @@
 @import 'custom';
-@import '~bootstrap/scss/bootstrap';
 
 $gray: #808080;
 
 .container {
-  height: 240px;
+  max-height: 240px;
   padding: 10px;
-  width: 480px;
+  max-width: 480px;
 }
 
 #credibility {
@@ -14,3 +13,51 @@ $gray: #808080;
   font-size: 24px;
 }
 
+.title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 0px;
+  
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.row {
+  display: flex;
+}
+
+.col-3 {
+  width: 25%;
+}
+.col-9 {
+  width: 70%;
+}
+
+.labels {
+  font-size: 1.1rem;
+  color: aqua
+}
+
+.form-control {
+  border-radius: 10px;
+  max-width: 100%;
+  padding: 3%;
+  margin-top: 10px;
+  height: 65px;
+  margin-bottom: 10px;
+}
+
+button {
+  color: #fff;
+  background-color: #0069d9;
+  border-color: #0062cc;
+  border-radius: 10px;
+  width: 20%;
+  padding: 7px;
+}
+
+#currentPage {
+  font-size: 0.8rem
+}
