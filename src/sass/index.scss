@@ -30,6 +30,7 @@ $gray: #808080;
 
 .col-3 {
   width: 25%;
+  text-align: center
 }
 .col-9 {
   width: 70%;
@@ -42,13 +43,15 @@ $gray: #808080;
 
 .form-control {
   border-radius: 10px;
-  max-width: 100%;
+  max-width: 90%;
   padding: 3%;
   margin-top: 10px;
   height: 65px;
   margin-bottom: 10px;
 }
-
+.form-group {
+  text-align: center;
+}
 button {
   color: #fff;
   background-color: #0069d9;
@@ -56,8 +59,17 @@ button {
   border-radius: 10px;
   width: 20%;
   padding: 7px;
+  margin-bottom: 10px
 }
 
 #currentPage {
   font-size: 0.8rem
+}
+
+#VerifyPageButtonScrapper {
+
+}
+
+#VerifyPageButtonTwitterApi {
+  
 }
