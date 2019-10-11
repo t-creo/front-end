@@ -60,6 +60,7 @@ chrome.runtime.onConnect.addListener((port) => {
       let link = ''
       let verifiedBool = false
       let verifiedAcc = false
+      let language = ''
 
       let boxes = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
       const boxesArr = []
@@ -85,6 +86,7 @@ chrome.runtime.onConnect.addListener((port) => {
           name: 'tweetLang',
           value: tweetInfo.parentElement.parentElement.parentElement.children[1].getAttribute('lang')
         }
+        language = tweetLang.value
         // VERIFIED
         const verifiedClass = current.querySelector('svg[aria-label="Verified account"]') // works only in english
         if (verifiedClass) {
@@ -191,7 +193,6 @@ chrome.runtime.onConnect.addListener((port) => {
           verifiedAcc = true
         }
       }
-
       // Creating Objects for data transfer to popup
 
       // Create verified object
@@ -267,7 +268,8 @@ chrome.runtime.onConnect.addListener((port) => {
         verified: verified.value,
         tweets: tweets.value,
         following: following.value,
-        followers: followers.value
+        followers: followers.value,
+        lang: language
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)

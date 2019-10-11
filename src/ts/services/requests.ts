@@ -25,10 +25,10 @@ function getCalculatePlainText(queryParameters :
   })
 }
 
-function getCalculateTwitterUser() : Promise<{ credibility: number }> {
-  const url = process.env.API_URL + '/calculate/twitter/user/:userId'
+function getCalculateTwitterUser(userId: string, queryParameters: any) : Promise<{ credibility: number }> {
+  const url = process.env.API_URL + '/calculate/twitter/user/' + userId
   return new Promise((resolve, reject) => {
-    axios.get(url)
+    axios.get(url, { params: queryParameters })
       .then(async (response: any) => {
         resolve(response.data)
       }).catch(function (error : Error) {
@@ -37,10 +37,10 @@ function getCalculateTwitterUser() : Promise<{ credibility: number }> {
   })
 }
 
-function getCalculateTwitterSocial() : Promise<{ credibility: number }> {
-  const url = process.env.API_URL + '/calculate/twitter/social/:userId'
+function getCalculateTwitterSocial(userId: string, queryParameters: any) : Promise<{ credibility: number }> {
+  const url = process.env.API_URL + '/calculate/twitter/social/' + userId
   return new Promise((resolve, reject) => {
-    axios.get(url)
+    axios.get(url, { params: queryParameters })
       .then(async (response: any) => {
         resolve(response.data)
       }).catch(function (error : Error) {
@@ -69,7 +69,7 @@ function getCalculateTweetsScrapped(queryParameters :
   { tweetText: string; weightSpam: number; weightBadWords: number;
     weightMisspelling: number; weightText: number; weightUser: number;
     weightSocial: number; followersCount: number;
-    friendsCount: number; verified: boolean; yearJoined: number; }) :
+    friendsCount: number; verified: boolean; yearJoined: number; lang: string}) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/tweets/scraped'
   return new Promise((resolve, reject) => {
@@ -81,6 +81,27 @@ function getCalculateTweetsScrapped(queryParameters :
       })
   })
 }
+function getCalculateSocialScrape(queryParameters: any) {
+  const url = process.env.API_URL + '/calculate/social/scrape'
+  return new Promise((resolve, reject) => {
+    axios.get(url, { params: queryParameters }).then(async (response: any) => {
+      resolve(response.data)
+    }).catch(function (error: Error) {
+      reject(error)
+    })
+  })
+}
+
+function getCalculateUserScrape(queryParameters: any) {
+  const url = process.env.API_URL + '/calculate/user/scrape'
+  return new Promise((resolve, reject) => {
+    axios.get(url, { params: queryParameters }).then(async (response: any) => {
+      resolve(response.data)
+    }).catch(function (error: Error) {
+      reject(error)
+    })
+  })
+}
 
 export {
   getCalculatePlainText,
@@ -88,5 +109,7 @@ export {
   getCalculateTwitterSocial,
   getCalculateTwitterTweets,
   getCalculateTwitterUser,
+  getCalculateSocialScrape,
+  getCalculateUserScrape,
   getHealth
 }

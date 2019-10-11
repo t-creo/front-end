@@ -111,8 +111,9 @@ function connect (method: number) {
             followersCount: +response.followers,
             friendsCount: +response.following,
             verified: response.verified,
-            yearJoined: +(response.joinedDate.split(' ')[2]) }))
-
+            yearJoined: +(response.joinedDate.split(' ')[2]),
+            lang: response.lang
+          }))
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
