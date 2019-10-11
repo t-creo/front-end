@@ -1,6 +1,8 @@
 @import 'custom';
 
 $gray: #808080;
+$blue: #007bff;
+$white: #fff;
 
 .container {
   max-height: 240px;
@@ -14,11 +16,10 @@ $gray: #808080;
 }
 
 .title {
-  text-align: center;
   font-size: 1.5rem;
-  margin-top: 0px;
-  
+  text-align: center;
 }
+
 .flex-center {
   display: flex;
   justify-content: center;
@@ -29,9 +30,10 @@ $gray: #808080;
 }
 
 .col-3 {
+  text-align: center;
   width: 25%;
-  text-align: center
 }
+
 .col-9 {
   width: 70%;
 }
@@ -42,42 +44,42 @@ $gray: #808080;
 
 .form-control {
   border-radius: 10px;
-  max-width: 90%;
-  padding: 3%;
-  margin-top: 10px;
   height: 65px;
   margin-bottom: 10px;
+  margin-top: 10px;
+  max-width: 90%;
+  padding: 3%;
 }
+
 .form-group {
   text-align: center;
 }
+
 button {
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: $blue;
+  border-color: $blue;
   border-radius: 5px;
-  width: 20%;
-  padding: 7px;
+  color: $white;
+  font-size: 1rem;
   margin-bottom: 10px;
-  font-size: 1.0rem
+  padding: 7px;
+  width: 20%;
 }
 
 #currentPage {
-  font-size: 1.0rem
+  font-size: 1rem;
 }
 
 #VerifyPageButtonScrapper {
-  width: 25%;
-  padding: 5px;
+  font-size: .8rem;
   margin-bottom: 10px;
-  font-size: .8rem
-
+  padding: 5px;
+  width: 25%;
 }
 
 #VerifyPageButtonTwitterApi {
+  font-size: .8rem;
   margin-left: 15px;
-  width: 55%;
   padding: 5px;
-  font-size: .8rem
-
+  width: 55%;
 }

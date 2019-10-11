@@ -162,7 +162,6 @@ chrome.runtime.onConnect.addListener((port) => {
 
         boxesArr.push(dataTweet)
       }
-      console.log("*****")
 
       if (window.location.href.split('/')[3] !== 'home') {
         verifiedAcc = false
