@@ -162,6 +162,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
         boxesArr.push(dataTweet)
       }
+      console.log("*****")
 
       if (window.location.href.split('/')[3] !== 'home') {
         verifiedAcc = false
@@ -182,8 +183,8 @@ chrome.runtime.onConnect.addListener((port) => {
           joinedDateString = info[1].textContent
         } else {
           locationString = info[0].textContent
-          link = (<HTMLAnchorElement>info[1]).href
-          joinedDateString = info[2].textContent
+          // link = (<HTMLAnchorElement>info[1]).href
+          // joinedDateString = info[2].textContent
         }
 
         // Get Verified value

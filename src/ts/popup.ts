@@ -14,17 +14,21 @@ window.addEventListener('load', function load () {
 })
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log("262655")
   chrome.tabs.getSelected(0, function (tab) {
+    console.log("ur",tab);
     const tabUrl = tab.url
+    console.log("current2")
     const elem = document.querySelector('#PageSensitiveButtons')
+    console.log("current2")
     const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
+    console.log("current2",currentPage)
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
       elem.parentNode.removeChild(elem)
     } else {
+      console.log("else")
       document.querySelector('#firstHorBar').parentNode.removeChild(document.querySelector('#firstHorBar'))
       document.querySelector('#secondHorBar').parentNode.removeChild(document.querySelector('#secondHorBar'))
       elem.parentNode.removeChild(elem)
@@ -71,6 +75,7 @@ function ValidateTwitterTweetsScrapper () {
 function connect (method: number) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const port = chrome.tabs.connect(tabs[0].id)
+    console.log("port",port, tabs.length)
     if (method === 1) {
       port.postMessage({ sender: 'www', instruction: 'api' })
     } else if (method === 2) {
