@@ -21,7 +21,6 @@ if (fileSystem.existsSync(secretsPath)) {
 
 const options = {
   mode: process.env.NODE_ENV || 'development',
-  devtool: 'inline-source-map',
   entry: {
     popup: path.join(__dirname, 'src', 'ts', 'popup.ts'),
     options: path.join(__dirname, 'src', 'ts', 'options.ts'),
@@ -114,7 +113,7 @@ const options = {
 }
 
 if (env.NODE_ENV === 'development') {
-  options.devtool = 'cheap-module-source-map'
+  options.devtool = 'inline-source-map'
 }
 
 module.exports = options
