@@ -14,14 +14,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
     if (!filterOptions.weightSpam) {
       chrome.storage.sync.set({ weightSpam: 0.44 })
       document.querySelector('#weightSpam').value = 0.44
+    }
+    if (!filterOptions.weightBadWords) {
       chrome.storage.sync.set({ weightBadWords: 0.33 })
       document.querySelector('#weightBadWords').value = 0.33
+    }
+    if (!filterOptions.weightMisspelling) {
       chrome.storage.sync.set({ weightMisspelling: 0.23 })
       document.querySelector('#weightMisspelling').value = 0.23
+    }
+    if (!filterOptions.weightText) {
       chrome.storage.sync.set({ weightText: 0.34 })
       document.querySelector('#weightText').value = 0.34
+    }
+    if (!filterOptions.weightUser) {
       chrome.storage.sync.set({ weightUser: 0.33 })
       document.querySelector('#weightUser').value = 0.33
+    }
+    if (!filterOptions.weightSocial) {
       chrome.storage.sync.set({ weightSocial: 0.33 })
       document.querySelector('#weightSocial').value = 0.33
     }
