@@ -60,6 +60,7 @@ chrome.runtime.onConnect.addListener((port) => {
       let link = ''
       let verifiedBool = false
       let verifiedAcc = false
+      let language = ''
 
       let boxes = document.querySelectorAll("div[data-testid='tweet']")
       boxes = Array.from(boxes)
@@ -68,6 +69,7 @@ chrome.runtime.onConnect.addListener((port) => {
       for (let i = 0; i < boxes.length; i++) {
         verifiedBool = false
         const current = boxes[i]
+
         // TEXT
         const tweetText = {
           name: 'tweetText',
@@ -83,6 +85,7 @@ chrome.runtime.onConnect.addListener((port) => {
           name: 'tweetLang',
           value: current.querySelector("div[aria-label='Share Tweet']").parentElement.parentElement.parentElement.children[1].getAttribute('lang')
         }
+        language = tweetLang.value
         // VERIFIED
         const verifiedClass = current.querySelector("svg[aria-label='Verified account']") // works only in english
         if (verifiedClass) {
@@ -167,7 +170,6 @@ chrome.runtime.onConnect.addListener((port) => {
         quantity = formatNumber(document.querySelectorAll("h2[role='heading']")[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
 
         const info = document.querySelector("div[data-testid='UserProfileHeader_Items']").children
-
         if (info.length === 2) {
           locationString = info[0].textContent
           joinedDateString = info[1].textContent
@@ -184,7 +186,6 @@ chrome.runtime.onConnect.addListener((port) => {
           verifiedAcc = true
         }
       }
-
       // Creating Objects for data transfer to popup
 
       // Create verified object
@@ -261,7 +262,8 @@ chrome.runtime.onConnect.addListener((port) => {
         verified: verified.value,
         tweets: tweets.value,
         following: following.value,
-        followers: followers.value
+        followers: followers.value,
+        lang: language
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)
