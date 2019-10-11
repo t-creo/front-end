@@ -7,6 +7,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
+
 // load the secrets
 const alias = {}
 
@@ -21,9 +22,9 @@ if (fileSystem.existsSync(secretsPath)) {
 const options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    popup: path.join(__dirname, 'src', 'js', 'popup.js'),
-    options: path.join(__dirname, 'src', 'js', 'options.js'),
-    background: path.join(__dirname, 'src', 'js', 'background.js')
+    popup: path.join(__dirname, 'src', 'ts', 'popup.ts'),
+    options: path.join(__dirname, 'src', 'ts', 'options.ts'),
+    background: path.join(__dirname, 'src', 'ts', 'background.ts')
   },
   output: {
     path: path.join(__dirname, 'build'),
@@ -31,6 +32,11 @@ const options = {
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
       {
         test: /\.(scss)$/,
         use: [
@@ -69,7 +75,8 @@ const options = {
     ]
   },
   resolve: {
-    alias: alias
+    alias: alias,
+    extensions: ['.tsx', '.ts', '.js']
   },
   plugins: [
     // clean the build folder
@@ -106,7 +113,7 @@ const options = {
 }
 
 if (env.NODE_ENV === 'development') {
-  options.devtool = 'cheap-module-source-map'
+  options.devtool = 'inline-source-map'
 }
 
 module.exports = options
