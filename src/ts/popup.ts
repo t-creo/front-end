@@ -1,15 +1,19 @@
 import './controllers/scraper'
 import '../sass/index.scss'
-import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant.js'
-import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests.js'
+import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
+import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
 
-window.addEventListener('load', function load (event) {
-  document.getElementById('submitButton').onclick = getCredibility
+// interface SelectProtected {
+//   readonly submitButtonElement: HTMLButtonElement;
+// }
+
+window.addEventListener('load', function load () {
+  document.getElementById('submitButton').onclick= getCredibility
   document.getElementById('VerifyPageButtonScrapper').onclick = ValidateTwitterTweetsScrapper
   document.getElementById('VerifyPageButtonTwitterApi').onclick = ValidateTwitterTweets
 })
 
-document.addEventListener('DOMContentLoaded', function (event) {
+document.addEventListener('DOMContentLoaded', function () {
   chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
     if (!filterOptions.weightSpam) {
       chrome.storage.sync.set({ weightSpam: 0.44 })
@@ -23,10 +27,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
   chrome.tabs.getSelected(null, function (tab) {
     const tabUrl = tab.url
     const elem = document.querySelector('#PageSensitiveButtons')
+    const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
     if (tabUrl.includes('https://twitter.com')) {
-      document.querySelector('#currentPage').innerText = 'You are currently on Twitter'
+      currentPage.innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
-      document.querySelector('#currentPage').innerText = 'You are currently on Facebook'
+      currentPage.innerText = 'You are currently on Facebook'
       elem.parentNode.removeChild(elem)
     } else {
       document.querySelector('#firstHorBar').parentNode.removeChild(document.querySelector('#firstHorBar'))
@@ -39,18 +44,18 @@ document.addEventListener('DOMContentLoaded', function (event) {
 function getCredibility () {
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function (response) {
-      const tweet = document.querySelector('#text').value
+    chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
+      const tweet = <HTMLTextAreaElement>document.querySelector('#text')
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         getCalculatePlainText({
-          text: tweet,
+          text: tweet.value,
           weightBadWords: +filterOptions.weightBadWords,
           weightMisspelling: +filterOptions.weightMisspelling,
           weightSpam: +filterOptions.weightSpam
         })
-          .then(function (credibility) {
-            document.querySelector('#credibility').innerText =
-            credibility.credibility.toFixed(2) + '%'
+          .then(function (credibility : { credibility: number }) {
+            const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
+            credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
           }).catch(e => console.log(e))
       })
     })
@@ -59,20 +64,20 @@ function getCredibility () {
 
 function ValidateTwitterTweets () {
   // Send Message asking for the scaped values
-  chrome.tabs.executeScript(null, {
+  chrome.tabs.executeScript(0, {
     file: 'popup.bundle.js' }, () => {
     connect(1)
   })
 }
 
 function ValidateTwitterTweetsScrapper () {
-  chrome.tabs.executeScript(null, {
+  chrome.tabs.executeScript(0, {
     file: 'popup.bundle.js' }, () => {
     connect(2)
   })
 }
 
-function connect (method) {
+function connect (method: number) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const port = chrome.tabs.connect(tabs[0].id)
     if (method === 1) {
@@ -83,7 +88,7 @@ function connect (method) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
         if (response.instruction === 'api') {
-          Promise.all(response.tweetIds.map(tweetId => getCalculateTwitterTweets({
+          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => getCalculateTwitterTweets({
             tweetId: tweetId,
             weightBadWords: +filterOptions.weightBadWords,
             weightMisspelling: +filterOptions.weightMisspelling,
@@ -91,7 +96,8 @@ function connect (method) {
             weightText: +filterOptions.weightText,
             weightUser: +filterOptions.weightUser,
             weightSocial: +filterOptions.weightSocial
-          })))
+          }))
+          Promise.all(promiseList)
             .then(values => {
               port.postMessage({
                 sender: 'www',
@@ -104,7 +110,7 @@ function connect (method) {
             })
         } else if (response.instruction === 'scrap') {
           console.log(response)
-          Promise.all(response.tweetTexts.map(tweetText => getCalculateTweetsScrapped({
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
             tweetText: tweetText,
             weightSpam: +filterOptions.weightSpam,
             weightBadWords: +filterOptions.weightBadWords,
@@ -115,7 +121,10 @@ function connect (method) {
             followersCount: +response.followers,
             friendsCount: +response.following,
             verified: response.verified,
-            yearJoined: +(response.joinedDate.split(' ')[2]) })))
+            yearJoined: +(response.joinedDate.split(' ')[2]),
+            lang: response.lang
+          }))
+          Promise.all(promiseList)
             .then(values => {
               port.postMessage({
                 sender: 'www',
