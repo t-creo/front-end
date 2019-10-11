@@ -14,7 +14,7 @@ window.addEventListener('load', function load () {
 })
 
 document.addEventListener('DOMContentLoaded', function () {
-  chrome.tabs.getSelected(0, function (tab) {
+  chrome.tabs.getSelected(null, function (tab) {
     const tabUrl = tab.url
     const elem = document.querySelector('#PageSensitiveButtons')
     const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
