@@ -52,7 +52,7 @@ function getCalculateTwitterSocial(userId: string, queryParameters: any) : Promi
 function getCalculateTwitterTweets(queryParameters :
   { tweetId: number; weightBadWords: number; weightMisspelling: number;
     weightSpam: number; weightText: number; weightUser: number;
-    weightSocial: number; }) :
+    weightSocial: number; maxFollowers: number}) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/twitter/tweets'
   return new Promise((resolve, reject) => {
@@ -68,7 +68,7 @@ function getCalculateTwitterTweets(queryParameters :
 function getCalculateTweetsScrapped(queryParameters :
   { tweetText: string; weightSpam: number; weightBadWords: number;
     weightMisspelling: number; weightText: number; weightUser: number;
-    weightSocial: number; followersCount: number;
+    weightSocial: number; maxFollowers: number; followersCount: number;
     friendsCount: number; verified: boolean; yearJoined: number; lang: string}) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/tweets/scraped'
