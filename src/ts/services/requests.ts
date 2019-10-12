@@ -12,7 +12,7 @@ function getHealth() {
 }
 
 function getCalculatePlainText(queryParameters :
-  { text: string; weightBadWords: number; weightMisspelling: number; weightSpam: number; } ) :
+  { text: string; weightBadWords: number; weightMisspelling: number; weightSpam: number; lang: string } ) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/plain-text'
   return new Promise((resolve, reject) => {
@@ -69,7 +69,7 @@ function getCalculateTweetsScrapped(queryParameters :
   { tweetText: string; weightSpam: number; weightBadWords: number;
     weightMisspelling: number; weightText: number; weightUser: number;
     weightSocial: number; followersCount: number;
-    friendsCount: number; verified: boolean; yearJoined: number; lang: string}) :
+    friendsCount: number; verified: boolean; accountCreationYear: number; lang: string, maxFollowers: number}) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/tweets/scraped'
   return new Promise((resolve, reject) => {

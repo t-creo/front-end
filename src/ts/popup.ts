@@ -51,11 +51,15 @@ function getCredibility () {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
       const tweet = <HTMLTextAreaElement>document.querySelector('#text')
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
+        const e = <HTMLSelectElement>document.getElementById('language')
+        const lang = e.options[e.selectedIndex].value
+       // var strUser = e.options[e.selectedIndex].value;
         getCalculatePlainText({
           text: tweet.value,
           weightBadWords: +filterOptions.weightBadWords,
           weightMisspelling: +filterOptions.weightMisspelling,
-          weightSpam: +filterOptions.weightSpam
+          weightSpam: +filterOptions.weightSpam,
+          lang: lang
         })
           .then(function (credibility : { credibility: number }) {
             const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
@@ -124,8 +128,9 @@ function connect (method: number) {
             followersCount: +response.followers,
             friendsCount: +response.following,
             verified: response.verified,
-            yearJoined: +(response.joinedDate.split(' ')[2]),
-            lang: response.lang
+            accountCreationYear: +(response.joinedDate.split(' ')[2]),
+            lang: response.lang,
+            maxFollowers: 2000000
           }))
           Promise.all(promiseList)
             .then(values => {
