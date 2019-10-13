@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function getCredibility () {
+  showSpinner();
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
@@ -53,13 +54,6 @@ function getCredibility () {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         const e = <HTMLSelectElement>document.getElementById('language')
         const lang = e.options[e.selectedIndex].value
-        console.log({
-          text: tweet.value,
-          weightBadWords: +filterOptions.weightBadWords,
-          weightMisspelling: +filterOptions.weightMisspelling,
-          weightSpam: +filterOptions.weightSpam,
-          lang: lang
-        });
         getCalculatePlainText({
           text: tweet.value,
           weightBadWords: +filterOptions.weightBadWords,
@@ -153,6 +147,10 @@ function connect (method: number) {
       })
     })
   })
+}
+
+function showSpinner(){
+ document.body.style.background = "rgba(0,0,0,.5)";
 }
 
 
