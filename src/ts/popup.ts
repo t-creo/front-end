@@ -53,6 +53,13 @@ function getCredibility () {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         const e = <HTMLSelectElement>document.getElementById('language')
         const lang = e.options[e.selectedIndex].value
+        console.log({
+          text: tweet.value,
+          weightBadWords: +filterOptions.weightBadWords,
+          weightMisspelling: +filterOptions.weightMisspelling,
+          weightSpam: +filterOptions.weightSpam,
+          lang: lang
+        });
         getCalculatePlainText({
           text: tweet.value,
           weightBadWords: +filterOptions.weightBadWords,
@@ -147,3 +154,5 @@ function connect (method: number) {
     })
   })
 }
+
+
