@@ -1,6 +1,5 @@
 import { VerifySum } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
-import '../ /spinner.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
 
 document.addEventListener('DOMContentLoaded', function () {

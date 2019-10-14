@@ -1,7 +1,9 @@
 import './controllers/scraper'
 import '../sass/index.scss'
+import '../sass/spinner.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
 import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
+import { verify } from 'crypto';
 
 // interface SelectProtected {
 //   readonly submitButtonElement: HTMLButtonElement;
@@ -64,13 +66,17 @@ function getCredibility () {
           .then(function (credibility : { credibility: number }) {
             const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
             credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
-          }).catch(e => console.log(e))
+            hideSpinner()
+          }).catch(e => {
+            hideSpinner();
+            console.log(e)})
       })
     })
   })
 }
 
 function ValidateTwitterTweets () {
+  showSpinner();
   // Send Message asking for the scaped values
   chrome.tabs.executeScript(0, {
     file: 'popup.bundle.js' }, () => {
@@ -79,6 +85,7 @@ function ValidateTwitterTweets () {
 }
 
 function ValidateTwitterTweetsScrapper () {
+  showSpinner();
   chrome.tabs.executeScript(0, {
     file: 'popup.bundle.js' }, () => {
     connect(2)
@@ -112,9 +119,11 @@ function connect (method: number) {
                 instruction: 'update',
                 credList: values.map(credibility => credibility.credibility)
               })
+              hideSpinner();
             })
             .catch(error => {
               window.alert(JSON.stringify(error))
+              hideSpinner();
             })
         } else if (response.instruction === 'scrap') {
           let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
@@ -139,9 +148,11 @@ function connect (method: number) {
                 instruction: 'update',
                 credList: values.map(credibility => credibility.credibility)
               })
+              hideSpinner();
             })
             .catch(error => {
               window.alert(JSON.stringify(error))
+              hideSpinner();
             })
         }
       })
@@ -150,7 +161,50 @@ function connect (method: number) {
 }
 
 function showSpinner(){
- document.body.style.background = "rgba(0,0,0,.5)";
+  //document.body.style.background = "rgba(0,0,0,.5)";
+  const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
+  verifyBtn.disabled =  true
+  const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
+  verifyPageBtn.disabled  = true
+  const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
+  verifyPageTwitterApiBtn.disabled  = true
+  verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)';
+  verifyBtn.style.borderColor = 'rgba(255,255,255,.7)';
+
+  verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)';
+  verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)';
+
+  verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)';
+  verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)';
+
+  const spinner = <HTMLDivElement>document.getElementById('sp-content');
+  spinner.style.display = 'block'
+  console.log("show")
 }
+
+function hideSpinner(){
+  document.body.style.background = "white";
+  const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
+  verifyBtn.disabled =  false
+  const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
+  verifyPageBtn.disabled  = false
+  const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
+  verifyPageTwitterApiBtn.disabled  = false
+
+  verifyBtn.style.backgroundColor = '#007bff';
+  verifyBtn.style.borderColor = '#007bff';
+
+  verifyPageBtn.style.backgroundColor = '#007bff';
+  verifyPageBtn.style.borderColor = '#007bff';
+
+  verifyPageTwitterApiBtn.style.backgroundColor = '#007bff';
+  verifyPageTwitterApiBtn.style.borderColor = '#007bff';
+
+
+  const spinner = <HTMLDivElement>document.getElementById('sp-content');
+  spinner.style.display = 'none'
+  console.log("hide")
+}
+
 
 
