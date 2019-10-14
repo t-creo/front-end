@@ -6,10 +6,10 @@
   </head>
   <body>
     <div class="container">
-      <h2 class="d-flex justify-content-center">World White Web</h2>
+      <h2 class="title">World White Web</h2>
       <div class="row">
         <div class="col-9">
-          <div id="usrform" action="" method="get">
+          <div id="usrform" action="" method="get" >
             <div class="form-group">
               <label class="labels" for="tweet">Text to Analyze</label>
               <textarea
@@ -21,16 +21,21 @@
                 form="usrform"
               >I'm sorry professor, but I must not tell lies</textarea>
             </div>
+            <select id="language">
+              <option value="es">ES</option>
+              <option value="en" selected>EN</option>
+              <option value="fr">FR</option>
+            </select>
           </div>
         </div>
         <div class="col-3">
           <div class="form-group">
-            <label class="d-flex justify-content-center">Credibility</label>
-            <p id="credibility" class="d-flex justify-content-center">0%</p>
+            <label class="labels">Credibility</label>
+            <p id="credibility" class="flex-center">0%</p>
           </div>
         </div>
       </div>
-      <div class="d-flex justify-content-center">
+      <div class="flex-center">
         <button
           id="submitButton"
           type="submit"
@@ -38,9 +43,9 @@
         >Verify</button>
       </div>
       <hr id="firstHorBar">
-      <h6 id="currentPage" class="d-flex justify-content-center">
+      <h6 id="currentPage" class="flex-center">
       </h6>
-      <div id="PageSensitiveButtons" class="d-flex justify-content-center">
+      <div id="PageSensitiveButtons" class="flex-center">
         <button
           id="VerifyPageButtonScrapper"
           type="submit"
@@ -53,6 +58,10 @@
         >Verify Page Tweets with Twitter Api</button>
       </div>
       <hr id="secondHorBar">
+      <div class="spinner-container" id="sp-content">
+        <img src="images/get_started48.png" alt="">
+        <p class="saving"><span class="span" id="span-one">.</span><span class="span" id="span-two">.</span><span class="span" id="span-three">.</span></p>
+    </div>
     </div>
   </body>
 </html>

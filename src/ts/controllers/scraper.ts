@@ -16,7 +16,9 @@ function formatNumber (string : string) : number {
 
 // Listener to scrape the values in real time
 chrome.runtime.onConnect.addListener((port) => {
+  console.log('aaaaa')
   port.onMessage.addListener((request) => {
+    console.log('bbbbb')
     if (request.sender === 'www' && request.instruction === 'api') {
       const times = document.querySelectorAll('div[data-testid="tweet"] time')
       const tweetIds = []
@@ -177,13 +179,19 @@ chrome.runtime.onConnect.addListener((port) => {
 
         const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
 
-        if (info.length === 2) {
-          locationString = info[0].textContent
-          joinedDateString = info[1].textContent
-        } else {
-          locationString = info[0].textContent
-          link = (<HTMLAnchorElement>info[1]).href
-          joinedDateString = info[2].textContent
+        for (let i = 0; i < info.length; i++) {
+          let x = info[i]
+          if (x.tagName === 'A') { //only possibility its a link
+            link = (<HTMLAnchorElement>x).href
+          } else {
+            if (x.textContent.match(/^(Joined)/) != null) {
+              joinedDateString = x.textContent
+            } else {
+              if (x.textContent.match(/^(Born)/) === null) { // not join not birthday not link = locatio
+                locationString = x.textContent
+              }
+            }
+          }
         }
 
         // Get Verified value

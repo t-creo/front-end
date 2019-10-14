@@ -12,7 +12,7 @@ function getHealth() {
 }
 
 function getCalculatePlainText(queryParameters :
-  { text: string; weightBadWords: number; weightMisspelling: number; weightSpam: number; } ) :
+  { text: string; weightBadWords: number; weightMisspelling: number; weightSpam: number; lang: string } ) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/plain-text'
   return new Promise((resolve, reject) => {
@@ -52,7 +52,7 @@ function getCalculateTwitterSocial(userId: string, queryParameters: any) : Promi
 function getCalculateTwitterTweets(queryParameters :
   { tweetId: number; weightBadWords: number; weightMisspelling: number;
     weightSpam: number; weightText: number; weightUser: number;
-    weightSocial: number; maxFollowers: number}) :
+    weightSocial: number; maxFollowers: number }) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/twitter/tweets'
   return new Promise((resolve, reject) => {
