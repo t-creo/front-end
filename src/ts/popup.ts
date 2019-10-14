@@ -77,15 +77,14 @@ function getCredibility () {
 function ValidateTwitterTweets () {
   showSpinner()
   // Send Message asking for the scaped values
-  chrome.tabs.executeScript(0, {
+  chrome.tabs.executeScript(null, {
     file: 'popup.bundle.js' }, () => {
     connect(1)
   })
 }
 
 function ValidateTwitterTweetsScrapper () {
-  showSpinner()
-  chrome.tabs.executeScript(0, {
+  chrome.tabs.executeScript(null, {
     file: 'popup.bundle.js' }, () => {
     connect(2)
   })
