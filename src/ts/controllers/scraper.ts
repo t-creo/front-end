@@ -58,7 +58,6 @@ chrome.runtime.onConnect.addListener((port) => {
       let joinedDateString = ''
       let locationString = ''
       let link = ''
-      let birthday = ''
       let verifiedBool = false
       let verifiedAcc = false
       let language = ''
@@ -183,12 +182,10 @@ chrome.runtime.onConnect.addListener((port) => {
           if (x.tagName === 'A') { //only possibility its a link
             link = (<HTMLAnchorElement>x).href
           } else {
-            if (x.textContent.match(/^(Joined)$/) != null) {
+            if (x.textContent.match(/^(Joined)/) != null) {
               joinedDateString = x.textContent
             } else {
-              if (x.textContent.match(/^(Born)$/) != null) { // not join not birthday not link = location
-                birthday = x.textContent
-              } else {
+              if (x.textContent.match(/^(Born)/) === null) { // not join not birthday not link = locatio
                 locationString = x.textContent
               }
             }
@@ -248,7 +245,6 @@ chrome.runtime.onConnect.addListener((port) => {
         joinedDate: joinedDateString,
         location: locationString,
         userLink: link,
-        birthdate: birthday,
         verified: verifiedAcc,
         following: followingNum,
         followers: followersNum,
