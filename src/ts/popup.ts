@@ -108,7 +108,9 @@ function connect (method: number) {
             weightSpam: +filterOptions.weightSpam,
             weightText: +filterOptions.weightText,
             weightUser: +filterOptions.weightUser,
-            weightSocial: +filterOptions.weightSocial
+            weightSocial: +filterOptions.weightSocial,
+            maxFollowers: 2000000
+
           }))
           Promise.all(promiseList)
             .then(values => {
@@ -135,7 +137,7 @@ function connect (method: number) {
             followersCount: +response.followers,
             friendsCount: +response.following,
             verified: response.verified,
-            accountCreationYear: +(response.joinedDate.split(' ')[2]),
+            yearJoined: +(response.joinedDate.split(' ')[2]),
             lang: response.lang,
             maxFollowers: 2000000
           }))
