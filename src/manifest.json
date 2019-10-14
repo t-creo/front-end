@@ -10,7 +10,7 @@
     "storage",
     "tabs",
     "http://localhost/*",
-    "world-white-web.herokuapp.com"
+    "http://world-white-web.herokuapp.com/*"
   ],
   "options_page": "options.html",
   "browser_action": {
