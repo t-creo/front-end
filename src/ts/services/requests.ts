@@ -12,7 +12,7 @@ function getHealth() {
 }
 
 function getCalculatePlainText(queryParameters :
-  { text: string; weightBadWords: number; weightMisspelling: number; weightSpam: number; } ) :
+  { text: string; weightBadWords: number; weightMisspelling: number; weightSpam: number; lang: string } ) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/plain-text'
   return new Promise((resolve, reject) => {

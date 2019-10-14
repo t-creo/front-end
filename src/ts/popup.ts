@@ -1,5 +1,6 @@
 import './controllers/scraper'
 import '../sass/index.scss'
+import '../sass/spinner.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
 import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
 
@@ -26,14 +27,18 @@ document.addEventListener('DOMContentLoaded', function () {
   })
   chrome.tabs.getSelected(null, function (tab) {
     const tabUrl = tab.url
+ 
     const elem = document.querySelector('#PageSensitiveButtons')
+  
     const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
+
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
       elem.parentNode.removeChild(elem)
     } else {
+ 
       document.querySelector('#firstHorBar').parentNode.removeChild(document.querySelector('#firstHorBar'))
       document.querySelector('#secondHorBar').parentNode.removeChild(document.querySelector('#secondHorBar'))
       elem.parentNode.removeChild(elem)
@@ -42,36 +47,44 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function getCredibility () {
+  showSpinner()
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
       const tweet = <HTMLTextAreaElement>document.querySelector('#text')
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
+        const e = <HTMLSelectElement>document.getElementById('language')
+        const lang = e.options[e.selectedIndex].value
         getCalculatePlainText({
           text: tweet.value,
           weightBadWords: +filterOptions.weightBadWords,
           weightMisspelling: +filterOptions.weightMisspelling,
-          weightSpam: +filterOptions.weightSpam
+          weightSpam: +filterOptions.weightSpam,
+          lang: lang
         })
           .then(function (credibility : { credibility: number }) {
             const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
             credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
-          }).catch(e => console.log(e))
+            hideSpinner()
+          }).catch(e => {
+            hideSpinner()
+            console.log(e)})
       })
     })
   })
 }
 
 function ValidateTwitterTweets () {
+  showSpinner()
   // Send Message asking for the scaped values
-  chrome.tabs.executeScript(0, {
+  chrome.tabs.executeScript(null, {
     file: 'popup.bundle.js' }, () => {
     connect(1)
   })
 }
 
 function ValidateTwitterTweetsScrapper () {
-  chrome.tabs.executeScript(0, {
+  chrome.tabs.executeScript(null, {
     file: 'popup.bundle.js' }, () => {
     connect(2)
   })
@@ -106,12 +119,13 @@ function connect (method: number) {
                 instruction: 'update',
                 credList: values.map(credibility => credibility.credibility)
               })
+              hideSpinner()
             })
             .catch(error => {
               window.alert(JSON.stringify(error))
+              hideSpinner()
             })
         } else if (response.instruction === 'scrap') {
-          console.log(response)
           let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
             tweetText: tweetText,
             weightSpam: +filterOptions.weightSpam,
@@ -134,12 +148,60 @@ function connect (method: number) {
                 instruction: 'update',
                 credList: values.map(credibility => credibility.credibility)
               })
+              hideSpinner()
             })
             .catch(error => {
               window.alert(JSON.stringify(error))
+              hideSpinner()
             })
         }
       })
     })
   })
 }
+
+function showSpinner(){
+  //document.body.style.background = "rgba(0,0,0,.5)";
+  const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
+  verifyBtn.disabled =  true
+  const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
+  verifyPageBtn.disabled  = true
+  const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
+  verifyPageTwitterApiBtn.disabled  = true
+  verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+  verifyBtn.style.borderColor = 'rgba(255,255,255,.7)'
+
+  verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+  verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)'
+
+  verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+  verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'
+
+  const spinner = <HTMLDivElement>document.getElementById('sp-content')
+  spinner.style.display = 'block'
+}
+
+function hideSpinner(){
+  const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
+  verifyBtn.disabled =  false
+  const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
+  verifyPageBtn.disabled  = false
+  const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
+  verifyPageTwitterApiBtn.disabled  = false
+
+  verifyBtn.style.backgroundColor = '#007bff'
+  verifyBtn.style.borderColor = '#007bff'
+
+  verifyPageBtn.style.backgroundColor = '#007bff'
+  verifyPageBtn.style.borderColor = '#007bff'
+
+  verifyPageTwitterApiBtn.style.backgroundColor = '#007bff'
+  verifyPageTwitterApiBtn.style.borderColor = '#007bff'
+
+
+  const spinner = <HTMLDivElement>document.getElementById('sp-content')
+  spinner.style.display = 'none'
+}
+
+
+

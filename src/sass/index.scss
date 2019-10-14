@@ -1,16 +1,122 @@
 @import 'custom';
-@import '~bootstrap/scss/bootstrap';
 
 $gray: #808080;
+$blue: #007bff;
+$whiteColor: #fff;
+$cover: rgba(0, 0, 0, .5);
 
 .container {
-  height: 240px;
+  max-height: 240px;
   padding: 10px;
   width: 480px;
 }
 
 #credibility {
   color: $gray;
-  font-size: 24px;
+  font-size: 2rem;
 }
 
+.title {
+  font-size: 1.5rem;
+  margin-top: 1px;
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.row {
+  display: flex;
+}
+
+.col-3 {
+  text-align: center;
+  width: 25%;
+}
+
+.col-9 {
+  width: 70%;
+}
+
+.labels {
+  font-size: 1.1rem;
+}
+
+.form-control {
+  border-radius: 10px;
+  height: 65px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  max-width: 90%;
+  padding: 3%;
+}
+
+.form-group {
+  text-align: center;
+}
+
+button {
+  background-color: $blue;
+  border-color: $blue;
+  border-radius: 5px;
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  padding: 7px;
+  width: 20%;
+}
+
+#currentPage {
+  font-size: 1rem;
+}
+
+#VerifyPageButtonScrapper {
+  font-size: .9rem;
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 25%;
+}
+
+#VerifyPageButtonTwitterApi {
+  font-size: .9rem;
+  margin-left: 15px;
+  padding: 5px;
+  width: 55%;
+}
+
+#submitButton {
+  margin-top: 10px;
+}
+
+#language {
+  background: $whiteColor;
+  border-radius: 10px;
+  float: right;
+  padding: 4px;
+}
+
+.spinner-container {
+  background-color: $cover;
+  display: none;
+  font-size: 6rem;
+  height: 100%;
+  left: 0;
+  margin: 0 auto;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.saving {
+  margin: -50px 40%;
+  text-align: center;
+}
+
+img {
+  height: 16%;
+  margin-left: 43%;
+  margin-top: 27%;
+  width: 15%;
+}
