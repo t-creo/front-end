@@ -58,6 +58,7 @@ chrome.runtime.onConnect.addListener((port) => {
       let joinedDateString = ''
       let locationString = ''
       let link = ''
+      let birthday = ''
       let verifiedBool = false
       let verifiedAcc = false
       let language = ''
@@ -177,13 +178,21 @@ chrome.runtime.onConnect.addListener((port) => {
 
         const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
 
-        if (info.length === 2) {
-          locationString = info[0].textContent
-          joinedDateString = info[1].textContent
-        } else {
-          locationString = info[0].textContent
-          link = (<HTMLAnchorElement>info[1]).href
-          joinedDateString = info[2].textContent
+        for (let i = 0; i < info.length; i++) {
+          let x = info[i]
+          if (x.tagName === 'A') { //only possibility its a link
+            link = (<HTMLAnchorElement>x).href
+          } else {
+            if (x.textContent.match(/^(Joined)$/) != null) {
+              joinedDateString = x.textContent
+            } else {
+              if (x.textContent.match(/^(Born)$/) != null) { // not join not birthday not link = location
+                birthday = x.textContent
+              } else {
+                locationString = x.textContent
+              }
+            }
+          }
         }
 
         // Get Verified value
@@ -239,6 +248,7 @@ chrome.runtime.onConnect.addListener((port) => {
         joinedDate: joinedDateString,
         location: locationString,
         userLink: link,
+        birthdate: birthday,
         verified: verifiedAcc,
         following: followingNum,
         followers: followersNum,
