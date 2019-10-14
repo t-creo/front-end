@@ -16,7 +16,9 @@ function formatNumber (string : string) : number {
 
 // Listener to scrape the values in real time
 chrome.runtime.onConnect.addListener((port) => {
+  console.log('aaaaa')
   port.onMessage.addListener((request) => {
+    console.log('bbbbb')
     if (request.sender === 'www' && request.instruction === 'api') {
       const times = document.querySelectorAll('div[data-testid="tweet"] time')
       const tweetIds = []
