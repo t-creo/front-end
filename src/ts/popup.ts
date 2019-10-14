@@ -3,7 +3,6 @@ import '../sass/index.scss'
 import '../sass/spinner.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
 import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
-import { verify } from 'crypto';
 
 // interface SelectProtected {
 //   readonly submitButtonElement: HTMLButtonElement;
@@ -48,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function getCredibility () {
-  showSpinner();
+  showSpinner()
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
@@ -68,7 +67,7 @@ function getCredibility () {
             credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
             hideSpinner()
           }).catch(e => {
-            hideSpinner();
+            hideSpinner()
             console.log(e)})
       })
     })
@@ -76,7 +75,7 @@ function getCredibility () {
 }
 
 function ValidateTwitterTweets () {
-  showSpinner();
+  showSpinner()
   // Send Message asking for the scaped values
   chrome.tabs.executeScript(0, {
     file: 'popup.bundle.js' }, () => {
@@ -85,7 +84,7 @@ function ValidateTwitterTweets () {
 }
 
 function ValidateTwitterTweetsScrapper () {
-  showSpinner();
+  showSpinner()
   chrome.tabs.executeScript(0, {
     file: 'popup.bundle.js' }, () => {
     connect(2)
@@ -119,11 +118,11 @@ function connect (method: number) {
                 instruction: 'update',
                 credList: values.map(credibility => credibility.credibility)
               })
-              hideSpinner();
+              hideSpinner()
             })
             .catch(error => {
               window.alert(JSON.stringify(error))
-              hideSpinner();
+              hideSpinner()
             })
         } else if (response.instruction === 'scrap') {
           let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
@@ -148,11 +147,11 @@ function connect (method: number) {
                 instruction: 'update',
                 credList: values.map(credibility => credibility.credibility)
               })
-              hideSpinner();
+              hideSpinner()
             })
             .catch(error => {
               window.alert(JSON.stringify(error))
-              hideSpinner();
+              hideSpinner()
             })
         }
       })
@@ -168,22 +167,20 @@ function showSpinner(){
   verifyPageBtn.disabled  = true
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
   verifyPageTwitterApiBtn.disabled  = true
-  verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)';
-  verifyBtn.style.borderColor = 'rgba(255,255,255,.7)';
+  verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+  verifyBtn.style.borderColor = 'rgba(255,255,255,.7)'
 
-  verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)';
-  verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)';
+  verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+  verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)'
 
-  verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)';
-  verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)';
+  verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+  verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'
 
-  const spinner = <HTMLDivElement>document.getElementById('sp-content');
+  const spinner = <HTMLDivElement>document.getElementById('sp-content')
   spinner.style.display = 'block'
-  console.log("show")
 }
 
 function hideSpinner(){
-  document.body.style.background = "white";
   const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
   verifyBtn.disabled =  false
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
@@ -191,19 +188,18 @@ function hideSpinner(){
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
   verifyPageTwitterApiBtn.disabled  = false
 
-  verifyBtn.style.backgroundColor = '#007bff';
-  verifyBtn.style.borderColor = '#007bff';
+  verifyBtn.style.backgroundColor = '#007bff'
+  verifyBtn.style.borderColor = '#007bff'
 
-  verifyPageBtn.style.backgroundColor = '#007bff';
-  verifyPageBtn.style.borderColor = '#007bff';
+  verifyPageBtn.style.backgroundColor = '#007bff'
+  verifyPageBtn.style.borderColor = '#007bff'
 
-  verifyPageTwitterApiBtn.style.backgroundColor = '#007bff';
-  verifyPageTwitterApiBtn.style.borderColor = '#007bff';
+  verifyPageTwitterApiBtn.style.backgroundColor = '#007bff'
+  verifyPageTwitterApiBtn.style.borderColor = '#007bff'
 
 
-  const spinner = <HTMLDivElement>document.getElementById('sp-content');
+  const spinner = <HTMLDivElement>document.getElementById('sp-content')
   spinner.style.display = 'none'
-  console.log("hide")
 }
 
 
