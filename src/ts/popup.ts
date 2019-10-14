@@ -26,14 +26,18 @@ document.addEventListener('DOMContentLoaded', function () {
   })
   chrome.tabs.getSelected(null, function (tab) {
     const tabUrl = tab.url
+ 
     const elem = document.querySelector('#PageSensitiveButtons')
+  
     const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
+
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
       elem.parentNode.removeChild(elem)
     } else {
+ 
       document.querySelector('#firstHorBar').parentNode.removeChild(document.querySelector('#firstHorBar'))
       document.querySelector('#secondHorBar').parentNode.removeChild(document.querySelector('#secondHorBar'))
       elem.parentNode.removeChild(elem)
@@ -109,7 +113,6 @@ function connect (method: number) {
               window.alert(JSON.stringify(error))
             })
         } else if (response.instruction === 'scrap') {
-          console.log(response)
           let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
             tweetText: tweetText,
             weightSpam: +filterOptions.weightSpam,
