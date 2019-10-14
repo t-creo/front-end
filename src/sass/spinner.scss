@@ -1,0 +1,31 @@
+$whiteColor: #fff;
+
+@keyframes blink {
+  0% {
+    opacity: .2;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: .2;
+  }
+}
+
+.span {
+  animation-duration: 1.4s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  animation-name: blink;
+  color: $whiteColor;
+}
+
+#span-two {
+  animation-delay: .2s;
+}
+
+#span-three {
+  animation-delay: .4s;
+}

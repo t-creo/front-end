@@ -2,7 +2,8 @@
 
 $gray: #808080;
 $blue: #007bff;
-$white: #fff;
+$whiteColor: #fff;
+$cover: rgba(0, 0, 0, .5);
 
 .container {
   max-height: 240px;
@@ -60,7 +61,7 @@ button {
   background-color: $blue;
   border-color: $blue;
   border-radius: 5px;
-  color: $white;
+  color: white;
   font-size: 1rem;
   margin-bottom: 10px;
   padding: 7px;
@@ -83,4 +84,39 @@ button {
   margin-left: 15px;
   padding: 5px;
   width: 55%;
+}
+
+#submitButton {
+  margin-top: 10px;
+}
+
+#language {
+  background: $whiteColor;
+  border-radius: 10px;
+  float: right;
+  padding: 4px;
+}
+
+.spinner-container {
+  background-color: $cover;
+  display: none;
+  font-size: 6rem;
+  height: 100%;
+  left: 0;
+  margin: 0 auto;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.saving {
+  margin: -50px 40%;
+  text-align: center;
+}
+
+img {
+  height: 16%;
+  margin-left: 43%;
+  margin-top: 27%;
+  width: 15%;
 }
