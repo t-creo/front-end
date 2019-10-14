@@ -1,7 +1,7 @@
 import './controllers/scraper'
 import '../sass/index.scss'
+import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
 import '../sass/spinner.scss'
-import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
 import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
 
 // interface SelectProtected {
@@ -15,7 +15,7 @@ window.addEventListener('load', function load () {
 })
 
 document.addEventListener('DOMContentLoaded', function () {
-  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
     if (!filterOptions.weightSpam) {
       chrome.storage.sync.set({ weightSpam: 0.44 })
       chrome.storage.sync.set({ weightBadWords: 0.33 })
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
       chrome.storage.sync.set({ weightText: 0.34 })
       chrome.storage.sync.set({ weightUser: 0.33 })
       chrome.storage.sync.set({ weightSocial: 0.33 })
+      chrome.storage.sync.set({ maxFollowers: 2000000 })
     }
   })
   chrome.tabs.getSelected(null, function (tab) {
@@ -99,7 +100,7 @@ function connect (method: number) {
       port.postMessage({ sender: 'www', instruction: 'scrap' })
     }
     port.onMessage.addListener((response) => {
-      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
           let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => getCalculateTwitterTweets({
             tweetId: tweetId,
@@ -109,8 +110,7 @@ function connect (method: number) {
             weightText: +filterOptions.weightText,
             weightUser: +filterOptions.weightUser,
             weightSocial: +filterOptions.weightSocial,
-            maxFollowers: 2000000
-
+            maxFollowers: +filterOptions.maxFollowers
           }))
           Promise.all(promiseList)
             .then(values => {
@@ -134,12 +134,12 @@ function connect (method: number) {
             weightText: +filterOptions.weightText,
             weightUser: +filterOptions.weightUser,
             weightSocial: +filterOptions.weightSocial,
+            maxFollowers: +filterOptions.maxFollowers,
             followersCount: +response.followers,
             friendsCount: +response.following,
             verified: response.verified,
             yearJoined: +(response.joinedDate.split(' ')[2]),
-            lang: response.lang,
-            maxFollowers: 2000000
+            lang: response.lang
           }))
           Promise.all(promiseList)
             .then(values => {

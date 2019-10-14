@@ -1,15 +1,16 @@
 import { VerifySum } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
-import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL } from './constant'
+import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
 
 document.addEventListener('DOMContentLoaded', function () {
-  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL], function (filterOptions) {
+  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
     const weightSpam = <HTMLInputElement>document.querySelector('#weightSpam')
     const weightBadWords = <HTMLInputElement>document.querySelector('#weightBadWords')
     const weightMisspelling = <HTMLInputElement>document.querySelector('#weightMisspelling')
     const weightText = <HTMLInputElement>document.querySelector('#weightText')
     const weightUser = <HTMLInputElement>document.querySelector('#weightUser')
     const weightSocial = <HTMLInputElement>document.querySelector('#weightSocial')
+    const maxFollowers = <HTMLInputElement>document.querySelector('#maxFollowers')
 
     if (!filterOptions.weightSpam) {
       chrome.storage.sync.set({ weightSpam: 0.44 }) 
@@ -23,8 +24,9 @@ document.addEventListener('DOMContentLoaded', function () {
       chrome.storage.sync.set({ weightUser: 0.33 })
       weightUser.value = '0.33'  
       chrome.storage.sync.set({ weightSocial: 0.33 })
-      
       weightSocial.value = '0.33'
+      chrome.storage.sync.set({ maxFollowers: 2000000 })
+      maxFollowers.value = '2000000'
     } else {
       weightSpam.value = filterOptions.weightSpam
       weightBadWords.value = filterOptions.weightBadWords
@@ -32,23 +34,19 @@ document.addEventListener('DOMContentLoaded', function () {
       weightText.value = filterOptions.weightText
       weightUser.value = filterOptions.weightUser
       weightSocial.value = filterOptions.weightSocial
+      maxFollowers.value = filterOptions.maxFollowers
     }
   })
   
   document.querySelector('#SaveWeights').addEventListener('click', () => { // o addeventlistener?
     UpdateWeights()
-    const weightSpam = <HTMLInputElement>document.querySelector('#weightSpam')
-    const weightBadWords = <HTMLInputElement>document.querySelector('#weightBadWords')
-    const weightMisspelling = <HTMLInputElement>document.querySelector('#weightMisspelling')
-    const weightText = <HTMLInputElement>document.querySelector('#weightText')
-    const weightUser = <HTMLInputElement>document.querySelector('#weightUser')
-    const weightSocial = <HTMLInputElement>document.querySelector('#weightSocial')
-    weightSpam.value
-    weightBadWords.value
-    weightMisspelling.value
-    weightText.value
-    weightUser.value
-    weightSocial.value
+    const weightSpam = (<HTMLInputElement>document.querySelector('#weightSpam')).value
+    const weightBadWords = (<HTMLInputElement>document.querySelector('#weightBadWords')).value
+    const weightMisspelling = (<HTMLInputElement>document.querySelector('#weightMisspelling')).value
+    const weightText = (<HTMLInputElement>document.querySelector('#weightText')).value
+    const weightUser = (<HTMLInputElement>document.querySelector('#weightUser')).value
+    const weightSocial = (<HTMLInputElement>document.querySelector('#weightSocial')).value
+    const maxFollowers = (<HTMLInputElement>document.querySelector('#maxFollowers')).value
 
     if (weightSpam) {
       chrome.storage.sync.set({ weightSpam: weightSpam })
@@ -68,11 +66,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (weightSocial) {
       chrome.storage.sync.set({ weightSocial: weightSocial })
     }
+    if (maxFollowers) {
+      chrome.storage.sync.set({ maxFollowers: maxFollowers })
+    }
   })
 })
 
 function UpdateWeights () {
-  const listOfHTMLInputIDs = ['#weightSpam', '#weightBadWords', '#weightMisspelling', '#weightText', '#weightUser', '#weightSocial']
+  const listOfHTMLInputIDs = ['#weightSpam', '#weightBadWords', '#weightMisspelling', '#weightText', '#weightUser', '#weightSocial', '#maxFollowers']
   const listOfHTMLInputIDsText = ['#weightSpam', '#weightBadWords', '#weightMisspelling']
   const listOfHTMLInputIDsTweet = ['#weightText', '#weightUser', '#weightSocial']
   const enteredWeights = ExtractHTMLInputValuesFromIDList(listOfHTMLInputIDs)

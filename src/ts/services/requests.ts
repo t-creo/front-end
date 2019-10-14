@@ -68,8 +68,8 @@ function getCalculateTwitterTweets(queryParameters :
 function getCalculateTweetsScrapped(queryParameters :
   { tweetText: string; weightSpam: number; weightBadWords: number;
     weightMisspelling: number; weightText: number; weightUser: number;
-    weightSocial: number; followersCount: number;
-    friendsCount: number; verified: boolean; yearJoined: number; lang: string, maxFollowers: number}) :
+    weightSocial: number; maxFollowers: number; followersCount: number;
+    friendsCount: number; verified: boolean; yearJoined: number; lang: string}) :
   Promise<{ credibility: number }> {
   const url = process.env.API_URL + '/calculate/tweets/scraped'
   return new Promise((resolve, reject) => {
