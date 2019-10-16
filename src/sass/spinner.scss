@@ -1,4 +1,4 @@
-$whiteColor: #fff;
+$white: #fff;
 
 @keyframes blink {
   0% {
@@ -19,7 +19,7 @@ $whiteColor: #fff;
   animation-fill-mode: both;
   animation-iteration-count: infinite;
   animation-name: blink;
-  color: $whiteColor;
+  color: $white;
 }
 
 #span-two {
