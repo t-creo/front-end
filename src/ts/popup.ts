@@ -85,6 +85,7 @@ function ValidateTwitterTweets () {
 }
 
 function ValidateTwitterTweetsScrapper () {
+  showSpinner()
   chrome.tabs.executeScript(null, {
     file: 'popup.bundle.js' }, () => {
     connect(2)

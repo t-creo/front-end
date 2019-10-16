@@ -2,7 +2,7 @@
 
 $gray: #808080;
 $blue: #007bff;
-$whiteColor: #fff;
+$white: #fff;
 $cover: rgba(0, 0, 0, .5);
 
 .container {
@@ -61,7 +61,7 @@ button {
   background-color: $blue;
   border-color: $blue;
   border-radius: 5px;
-  color: white;
+  color: $white;
   font-size: 1rem;
   margin-bottom: 10px;
   padding: 7px;
@@ -91,7 +91,7 @@ button {
 }
 
 #language {
-  background: $whiteColor;
+  background: $white;
   border-radius: 10px;
   float: right;
   padding: 4px;
