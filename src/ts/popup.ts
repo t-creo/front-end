@@ -2,7 +2,8 @@ import './controllers/scraper'
 import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
 import '../sass/spinner.scss'
-import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
+import WorldWhiteWebClient from 'www-client-js'
+const client = new WorldWhiteWebClient(process.env.API_URL)
 
 // interface SelectProtected {
 //   readonly submitButtonElement: HTMLButtonElement;
@@ -55,21 +56,21 @@ function getCredibility () {
       const tweet = <HTMLTextAreaElement>document.querySelector('#text')
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         const e = <HTMLSelectElement>document.getElementById('language')
-        const lang = e.options[e.selectedIndex].value
-        getCalculatePlainText({
-          text: tweet.value,
-          weightBadWords: +filterOptions.weightBadWords,
-          weightMisspelling: +filterOptions.weightMisspelling,
-          weightSpam: +filterOptions.weightSpam,
-          lang: lang
+        var lang = e.options[e.selectedIndex].value
+        client.getPlainTextCredibility({weightBadWords: filterOptions.weightBadWords,
+                                        weightMisspelling: filterOptions.weightMisspelling,
+                                        weightSpam: filterOptions.weightSpam},
+                                        { text: tweet.value,
+                                          lang: lang })
+        .then(function (credibility : { credibility: number }) {
+          const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
+          credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
+          hideSpinner()
         })
-          .then(function (credibility : { credibility: number }) {
-            const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
-            credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
-            hideSpinner()
-          }).catch(e => {
-            hideSpinner()
-            console.log(e)})
+        .catch(error => {
+          window.alert(JSON.stringify(error))
+          hideSpinner()
+        })
       })
     })
   })
@@ -103,16 +104,20 @@ function connect (method: number) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => getCalculateTwitterTweets({
-            tweetId: tweetId,
-            weightBadWords: +filterOptions.weightBadWords,
-            weightMisspelling: +filterOptions.weightMisspelling,
-            weightSpam: +filterOptions.weightSpam,
-            weightText: +filterOptions.weightText,
-            weightUser: +filterOptions.weightUser,
-            weightSocial: +filterOptions.weightSocial,
-            maxFollowers: +filterOptions.maxFollowers
-          }))
+          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(tweetId.toString(),
+            {
+              weightBadWords: filterOptions.weightBadWords,
+              weightMisspelling: filterOptions.weightMisspelling,
+              weightSpam: filterOptions.weightSpam
+            },
+            { weightBadWords: filterOptions.weightBadWords,
+              weightMisspelling: filterOptions.weightMisspelling,
+              weightSpam: filterOptions.weightSpam,
+              weightText: filterOptions.weightText,
+              weightSocial: filterOptions.weightSocial,
+              weightUser: filterOptions.weightUser
+            },
+            filterOptions.maxFollowers))
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
@@ -127,21 +132,29 @@ function connect (method: number) {
               hideSpinner()
             })
         } else if (response.instruction === 'scrap') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
-            tweetText: tweetText,
-            weightSpam: +filterOptions.weightSpam,
-            weightBadWords: +filterOptions.weightBadWords,
-            weightMisspelling: +filterOptions.weightMisspelling,
-            weightText: +filterOptions.weightText,
-            weightUser: +filterOptions.weightUser,
-            weightSocial: +filterOptions.weightSocial,
-            maxFollowers: +filterOptions.maxFollowers,
-            followersCount: +response.followers,
-            friendsCount: +response.following,
-            verified: response.verified,
-            yearJoined: +(response.joinedDate.split(' ')[2]),
-            lang: response.lang
-          }))
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => client.getTweetCredibilityWithScraping(
+            { text: tweetText,
+              lang: lang},
+            {
+              weightBadWords: filterOptions.weightBadWords,
+              weightMisspelling: filterOptions.weightMisspelling,
+              weightSpam: filterOptions.weightSpam
+            },
+            { weightBadWords: filterOptions.weightBadWords,
+              weightMisspelling: filterOptions.weightMisspelling,
+              weightSpam: filterOptions.weightSpam,
+              weightText: filterOptions.weightText,
+              weightSocial: filterOptions.weightSocial,
+              weightUser: filterOptions.weightUser
+            },
+            {
+              name : response.name,
+              verified: response.verified,
+              yearJoined: response.yearJoined,
+              followersCount: response.followersCount,
+              friendsCount: response.friendsCount
+            },
+            filterOptions.maxFollowers))
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
@@ -164,6 +177,7 @@ function connect (method: number) {
 function showSpinner(){
   //document.body.style.background = "rgba(0,0,0,.5)";
   const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
+  console.log("****");
   verifyBtn.disabled =  true
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
   verifyPageBtn.disabled  = true
