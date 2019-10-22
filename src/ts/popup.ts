@@ -133,7 +133,6 @@ function connect (method: number) {
         } else if (response.instruction === 'scrap') {
           var lang : Language = getLanguage(response.lang)
           let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>{
-
             client.getTweetCredibilityWithScraping(
               { text: tweetText,
                 lang: lang},
@@ -226,14 +225,12 @@ function hideSpinner(){
 
 function getLanguage(language : string){
   var lang : Language
-  if(language === 'es'){
+  if (language === 'es') {
     lang = 'es'
-  }else if(language === 'en'){
-    lang = 'en'
-  }else if(language === 'fr'){
+  } else if (language === 'fr') {
     lang = 'fr'
-  }else{
-    lang = null
+  } else {
+    lang = 'en'
   }
 
   return lang
