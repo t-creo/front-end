@@ -181,18 +181,20 @@ function showSpinner(){
   const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
   verifyBtn.disabled =  true
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
-  verifyPageBtn.disabled  = true
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
-  verifyPageTwitterApiBtn.disabled  = true
-  verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
-  verifyBtn.style.borderColor = 'rgba(255,255,255,.7)'
-
-  verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
-  verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)'
-
-  verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
-  verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'
-
+  if(verifyPageBtn != null && verifyPageTwitterApiBtn != null){
+    verifyPageBtn.disabled  = true
+    verifyPageTwitterApiBtn.disabled  = true
+    verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+    verifyBtn.style.borderColor = 'rgba(255,255,255,.7)'
+  
+    verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+    verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)'
+  
+    verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+    verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'  
+  }
+  
   const spinner = <HTMLDivElement>document.getElementById('sp-content')
   spinner.style.display = 'block'
 }
@@ -201,20 +203,22 @@ function hideSpinner(){
   const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
   verifyBtn.disabled =  false
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
-  verifyPageBtn.disabled  = false
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
-  verifyPageTwitterApiBtn.disabled  = false
 
-  verifyBtn.style.backgroundColor = '#007bff'
-  verifyBtn.style.borderColor = '#007bff'
+  if(verifyPageBtn != null && verifyPageTwitterApiBtn != null){
+    verifyPageBtn.disabled  = false
+    verifyPageTwitterApiBtn.disabled  = false
+  
+    verifyBtn.style.backgroundColor = '#007bff'
+    verifyBtn.style.borderColor = '#007bff'
 
-  verifyPageBtn.style.backgroundColor = '#007bff'
-  verifyPageBtn.style.borderColor = '#007bff'
+    verifyPageBtn.style.backgroundColor = '#007bff'
+    verifyPageBtn.style.borderColor = '#007bff'
 
-  verifyPageTwitterApiBtn.style.backgroundColor = '#007bff'
-  verifyPageTwitterApiBtn.style.borderColor = '#007bff'
+    verifyPageTwitterApiBtn.style.backgroundColor = '#007bff'
+    verifyPageTwitterApiBtn.style.borderColor = '#007bff'
 
-
+  }
   const spinner = <HTMLDivElement>document.getElementById('sp-content')
   spinner.style.display = 'none'
 }
