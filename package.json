@@ -61,7 +61,8 @@
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
     "webpack-dev-server": "3.1.14",
-    "write-file-webpack-plugin": "4.5.0"
+    "write-file-webpack-plugin": "4.5.0",
+    "www-client-js": "^1.0.1"
   },
   "standard": {
     "globals": [

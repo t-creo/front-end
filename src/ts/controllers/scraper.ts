@@ -16,9 +16,7 @@ function formatNumber (string : string) : number {
 
 // Listener to scrape the values in real time
 chrome.runtime.onConnect.addListener((port) => {
-  console.log('aaaaa')
   port.onMessage.addListener((request) => {
-    console.log('bbbbb')
     if (request.sender === 'www' && request.instruction === 'api') {
       const times = document.querySelectorAll('div[data-testid="tweet"] time')
       const tweetIds = []
@@ -49,8 +47,6 @@ chrome.runtime.onConnect.addListener((port) => {
         tweetContainers: tweetContainers
       })
     } else if (request.sender === 'www' && request.instruction === 'scrap') {
-      // Get username
-      // var usernameProf = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
       // const times = document.querySelectorAll("div[data-testid="tweet"] time")
       // init values
 
@@ -242,9 +238,8 @@ chrome.runtime.onConnect.addListener((port) => {
         name: 'followers',
         value: followersNum
       }
-
       const data = {
-        joinedDate: joinedDateString,
+        joinedDate: joinedDateString.split(' ')[2],
         location: locationString,
         userLink: link,
         verified: verifiedAcc,
@@ -255,6 +250,8 @@ chrome.runtime.onConnect.addListener((port) => {
 
       console.log(data)
       console.log(boxesArr)
+      // Get username
+      var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
 
       let tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
 
@@ -272,12 +269,13 @@ chrome.runtime.onConnect.addListener((port) => {
         instruction: 'scrap',
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
-        joinedDate: joinedDate.value,
+        joinedDate: joinedDate.value.split(' ')[2],
         verified: verified.value,
         tweets: tweets.value,
         following: following.value,
         followers: followers.value,
-        lang: language
+        lang: language,
+        name:user_name
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)

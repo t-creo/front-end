@@ -2,7 +2,8 @@ import './controllers/scraper'
 import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
 import '../sass/spinner.scss'
-import { getCalculatePlainText, getCalculateTwitterTweets, getCalculateTweetsScrapped } from './services/requests'
+import WorldWhiteWebClient, { Language } from 'www-client-js'
+const client = new WorldWhiteWebClient(process.env.API_URL)
 
 // interface SelectProtected {
 //   readonly submitButtonElement: HTMLButtonElement;
@@ -55,14 +56,13 @@ function getCredibility () {
       const tweet = <HTMLTextAreaElement>document.querySelector('#text')
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
         const e = <HTMLSelectElement>document.getElementById('language')
-        const lang = e.options[e.selectedIndex].value
-        getCalculatePlainText({
-          text: tweet.value,
-          weightBadWords: +filterOptions.weightBadWords,
-          weightMisspelling: +filterOptions.weightMisspelling,
-          weightSpam: +filterOptions.weightSpam,
-          lang: lang
-        })
+        var lang : Language = getLanguage(e.options[e.selectedIndex].value)
+        client.getPlainTextCredibility(
+          {weightBadWords: filterOptions.weightBadWords,
+            weightMisspelling: filterOptions.weightMisspelling,
+            weightSpam: filterOptions.weightSpam},
+          {text: tweet.value,
+            lang: lang })
           .then(function (credibility : { credibility: number }) {
             const credibilityText  =  <HTMLParagraphElement>document.querySelector('#credibility')
             credibilityText.innerText = credibility.credibility.toFixed(2) + '%'
@@ -103,16 +103,20 @@ function connect (method: number) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => getCalculateTwitterTweets({
-            tweetId: tweetId,
-            weightBadWords: +filterOptions.weightBadWords,
-            weightMisspelling: +filterOptions.weightMisspelling,
-            weightSpam: +filterOptions.weightSpam,
-            weightText: +filterOptions.weightText,
-            weightUser: +filterOptions.weightUser,
-            weightSocial: +filterOptions.weightSocial,
-            maxFollowers: +filterOptions.maxFollowers
-          }))
+          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(tweetId.toString(),
+            {
+              weightBadWords: filterOptions.weightBadWords,
+              weightMisspelling: filterOptions.weightMisspelling,
+              weightSpam: filterOptions.weightSpam
+            },
+            { weightBadWords: filterOptions.weightBadWords,
+              weightMisspelling: filterOptions.weightMisspelling,
+              weightSpam: filterOptions.weightSpam,
+              weightText: filterOptions.weightText,
+              weightSocial: filterOptions.weightSocial,
+              weightUser: filterOptions.weightUser
+            },
+            filterOptions.maxFollowers))
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
@@ -127,21 +131,32 @@ function connect (method: number) {
               hideSpinner()
             })
         } else if (response.instruction === 'scrap') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
-            tweetText: tweetText,
-            weightSpam: +filterOptions.weightSpam,
-            weightBadWords: +filterOptions.weightBadWords,
-            weightMisspelling: +filterOptions.weightMisspelling,
-            weightText: +filterOptions.weightText,
-            weightUser: +filterOptions.weightUser,
-            weightSocial: +filterOptions.weightSocial,
-            maxFollowers: +filterOptions.maxFollowers,
-            followersCount: +response.followers,
-            friendsCount: +response.following,
-            verified: response.verified,
-            yearJoined: +(response.joinedDate.split(' ')[2]),
-            lang: response.lang
-          }))
+          var lang : Language = getLanguage(response.lang)
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>{
+            client.getTweetCredibilityWithScraping(
+              { text: tweetText,
+                lang: lang},
+              {
+                weightBadWords: +filterOptions.weightBadWords,
+                weightMisspelling: +filterOptions.weightMisspelling,
+                weightSpam: +filterOptions.weightSpam
+              },
+              { weightBadWords: +filterOptions.weightBadWords,
+                weightMisspelling: +filterOptions.weightMisspelling,
+                weightSpam: +filterOptions.weightSpam,
+                weightText: +filterOptions.weightText,
+                weightSocial: +filterOptions.weightSocial,
+                weightUser: +filterOptions.weightUser
+              },
+              {
+                name : response.name,
+                verified: response.verified,
+                yearJoined: +response.joinedDate,
+                followersCount: +response.followers,
+                friendsCount: +response.following
+              },
+              +filterOptions.maxFollowers)
+          })
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
@@ -152,7 +167,7 @@ function connect (method: number) {
               hideSpinner()
             })
             .catch(error => {
-              window.alert(JSON.stringify(error))
+              window.alert('Error: '+JSON.stringify(error))
               hideSpinner()
             })
         }
@@ -162,22 +177,24 @@ function connect (method: number) {
 }
 
 function showSpinner(){
-  //document.body.style.background = "rgba(0,0,0,.5)";
+  //document.body.style.background = 'rgba(0,0,0,.5)';
   const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
   verifyBtn.disabled =  true
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
-  verifyPageBtn.disabled  = true
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
-  verifyPageTwitterApiBtn.disabled  = true
-  verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
-  verifyBtn.style.borderColor = 'rgba(255,255,255,.7)'
-
-  verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
-  verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)'
-
-  verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
-  verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'
-
+  if(verifyPageBtn != null && verifyPageTwitterApiBtn != null){
+    verifyPageBtn.disabled  = true
+    verifyPageTwitterApiBtn.disabled  = true
+    verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+    verifyBtn.style.borderColor = 'rgba(255,255,255,.7)'
+  
+    verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+    verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)'
+  
+    verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
+    verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'  
+  }
+  
   const spinner = <HTMLDivElement>document.getElementById('sp-content')
   spinner.style.display = 'block'
 }
@@ -186,23 +203,37 @@ function hideSpinner(){
   const verifyBtn = <HTMLButtonElement>document.getElementById('submitButton')
   verifyBtn.disabled =  false
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScrapper')
-  verifyPageBtn.disabled  = false
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
-  verifyPageTwitterApiBtn.disabled  = false
 
-  verifyBtn.style.backgroundColor = '#007bff'
-  verifyBtn.style.borderColor = '#007bff'
+  if(verifyPageBtn != null && verifyPageTwitterApiBtn != null){
+    verifyPageBtn.disabled  = false
+    verifyPageTwitterApiBtn.disabled  = false
+  
+    verifyBtn.style.backgroundColor = '#007bff'
+    verifyBtn.style.borderColor = '#007bff'
 
-  verifyPageBtn.style.backgroundColor = '#007bff'
-  verifyPageBtn.style.borderColor = '#007bff'
+    verifyPageBtn.style.backgroundColor = '#007bff'
+    verifyPageBtn.style.borderColor = '#007bff'
 
-  verifyPageTwitterApiBtn.style.backgroundColor = '#007bff'
-  verifyPageTwitterApiBtn.style.borderColor = '#007bff'
+    verifyPageTwitterApiBtn.style.backgroundColor = '#007bff'
+    verifyPageTwitterApiBtn.style.borderColor = '#007bff'
 
-
+  }
   const spinner = <HTMLDivElement>document.getElementById('sp-content')
   spinner.style.display = 'none'
 }
 
+function getLanguage(language : string){
+  var lang : Language
+  if (language === 'es') {
+    lang = 'es'
+  } else if (language === 'fr') {
+    lang = 'fr'
+  } else {
+    lang = 'en'
+  }
+
+  return lang
+}
 
 
