@@ -238,9 +238,8 @@ chrome.runtime.onConnect.addListener((port) => {
         name: 'followers',
         value: followersNum
       }
-
       const data = {
-        joinedDate: joinedDateString,
+        joinedDate: joinedDateString.split(' ')[2],
         location: locationString,
         userLink: link,
         verified: verifiedAcc,
@@ -270,7 +269,7 @@ chrome.runtime.onConnect.addListener((port) => {
         instruction: 'scrap',
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
-        joinedDate: joinedDate.value,
+        joinedDate: joinedDate.value.split(' ')[2],
         verified: verified.value,
         tweets: tweets.value,
         following: following.value,
