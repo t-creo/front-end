@@ -252,8 +252,8 @@ chrome.runtime.onConnect.addListener((port) => {
       console.log(data)
       console.log(boxesArr)
       // Get username
-      var user_name = (document.querySelector("div[dir='ltr'] > span").textContent).substring(1)
-      
+      var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
+
       let tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
 
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
