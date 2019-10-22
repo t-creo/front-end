@@ -133,29 +133,30 @@ function connect (method: number) {
         } else if (response.instruction === 'scrap') {
           var lang : Language = getLanguage(response.lang)
           let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>{
+
             client.getTweetCredibilityWithScraping(
               { text: tweetText,
                 lang: lang},
               {
-                weightBadWords: filterOptions.weightBadWords,
-                weightMisspelling: filterOptions.weightMisspelling,
-                weightSpam: filterOptions.weightSpam
+                weightBadWords: +filterOptions.weightBadWords,
+                weightMisspelling: +filterOptions.weightMisspelling,
+                weightSpam: +filterOptions.weightSpam
               },
-              { weightBadWords: filterOptions.weightBadWords,
-                weightMisspelling: filterOptions.weightMisspelling,
-                weightSpam: filterOptions.weightSpam,
-                weightText: filterOptions.weightText,
-                weightSocial: filterOptions.weightSocial,
-                weightUser: filterOptions.weightUser
+              { weightBadWords: +filterOptions.weightBadWords,
+                weightMisspelling: +filterOptions.weightMisspelling,
+                weightSpam: +filterOptions.weightSpam,
+                weightText: +filterOptions.weightText,
+                weightSocial: +filterOptions.weightSocial,
+                weightUser: +filterOptions.weightUser
               },
               {
                 name : response.name,
                 verified: response.verified,
-                yearJoined: response.joinedDate,
-                followersCount: response.followers,
-                friendsCount: response.following
+                yearJoined: +response.joinedDate,
+                followersCount: +response.followers,
+                friendsCount: +response.following
               },
-              filterOptions.maxFollowers)
+              +filterOptions.maxFollowers)
           })
           Promise.all(promiseList)
             .then(values => {
