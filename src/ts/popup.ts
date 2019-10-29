@@ -103,7 +103,8 @@ function connect (method: number) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => getCalculateTwitterTweets({
+          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => {
+            promiseList.push(getCalculateTwitterTweets({
             tweetId: tweetId,
             weightBadWords: +filterOptions.weightBadWords,
             weightMisspelling: +filterOptions.weightMisspelling,
@@ -113,6 +114,7 @@ function connect (method: number) {
             weightSocial: +filterOptions.weightSocial,
             maxFollowers: +filterOptions.maxFollowers
           }))
+        })
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
@@ -127,7 +129,9 @@ function connect (method: number) {
               hideSpinner()
             })
         } else if (response.instruction === 'scrap') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => getCalculateTweetsScrapped({
+          let promiseList : Promise<{credibility : number}>[] =[];
+          response.tweetTexts.map((tweetText: string) => {
+            promiseList.push(getCalculateTweetsScrapped({
             tweetText: tweetText,
             weightSpam: +filterOptions.weightSpam,
             weightBadWords: +filterOptions.weightBadWords,
@@ -142,6 +146,7 @@ function connect (method: number) {
             yearJoined: +(response.joinedDate.split(' ')[2]),
             lang: response.lang
           }))
+        })
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
