@@ -28,9 +28,10 @@ Solo es necesario tener instalado Node lts/dubnium (v10.16.0). Se recomienda usa
 
 #### Para desarrollo
 
-1. Ejecuta `npm install` para descargar todas las dependencias.
-2. Ejecuta `npm start` para correr el servidor de desarrollo. El mismo se encarga recargar las páginas en el navegador cuando guardas alguna modificación a los archvos del repositorio.
-3. En chrome, ve a `chrome://extensions`
+1. Ejecuta `touch .env` y edita el archivo generado con la siguiente linea: `API_URL=http://localhost:3001`
+2. Ejecuta `npm install` para descargar todas las dependencias.
+3. Ejecuta `npm start` para correr el servidor de desarrollo. El mismo se encarga recargar las páginas en el navegador cuando guardas alguna modificación a los archvos del repositorio.
+4. En chrome, ve a `chrome://extensions`
     1. Activa el modo de desarrollo (Developer Mode)
     2. Haz clic en Añadir paquete (Load unpacked) y dirígete a este repositorio en la carpeta build.
     3. Si todo sale bien, se debería de añadir la extensión satisfactoriamente.
