@@ -103,15 +103,16 @@ function connect (method: number) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(tweetId.toString(),
-            { weightBadWords: filterOptions.weightBadWords,
-              weightMisspelling: filterOptions.weightMisspelling,
-              weightSpam: filterOptions.weightSpam,
-              weightText: filterOptions.weightText,
-              weightSocial: filterOptions.weightSocial,
-              weightUser: filterOptions.weightUser
+          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(
+            tweetId.toString(),
+            { weightBadWords: +filterOptions.weightBadWords,
+              weightMisspelling: +filterOptions.weightMisspelling,
+              weightSpam: +filterOptions.weightSpam,
+              weightText: +filterOptions.weightText,
+              weightSocial: +filterOptions.weightSocial,
+              weightUser: +filterOptions.weightUser
             },
-            filterOptions.maxFollowers))
+            +filterOptions.maxFollowers))
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
@@ -130,7 +131,7 @@ function connect (method: number) {
           var lang : Language = getLanguage(response.lang)
           console.log(response)
           console.log(filterOptions)
-          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>{
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>
             client.getTweetCredibilityWithScraping(
               { text: tweetText,
                 lang: lang
@@ -143,14 +144,13 @@ function connect (method: number) {
                 weightUser: +filterOptions.weightUser
               },
               {
-                name : response.name,
+                name: response.name,
                 verified: response.verified,
                 yearJoined: +response.joinedDate,
                 followersCount: +response.followers,
                 friendsCount: +response.following
               },
-              +filterOptions.maxFollowers)
-          })
+              +filterOptions.maxFollowers))
           Promise.all(promiseList)
             .then(values => {
               console.log(values)
