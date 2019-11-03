@@ -103,20 +103,16 @@ function connect (method: number) {
     port.onMessage.addListener((response) => {
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
-          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(tweetId.toString(),
-            {
-              weightBadWords: filterOptions.weightBadWords,
-              weightMisspelling: filterOptions.weightMisspelling,
-              weightSpam: filterOptions.weightSpam
+          let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(
+            tweetId.toString(),
+            { weightBadWords: +filterOptions.weightBadWords,
+              weightMisspelling: +filterOptions.weightMisspelling,
+              weightSpam: +filterOptions.weightSpam,
+              weightText: +filterOptions.weightText,
+              weightSocial: +filterOptions.weightSocial,
+              weightUser: +filterOptions.weightUser
             },
-            { weightBadWords: filterOptions.weightBadWords,
-              weightMisspelling: filterOptions.weightMisspelling,
-              weightSpam: filterOptions.weightSpam,
-              weightText: filterOptions.weightText,
-              weightSocial: filterOptions.weightSocial,
-              weightUser: filterOptions.weightUser
-            },
-            filterOptions.maxFollowers))
+            +filterOptions.maxFollowers))
           Promise.all(promiseList)
             .then(values => {
               port.postMessage({
@@ -128,18 +124,17 @@ function connect (method: number) {
             })
             .catch(error => {
               window.alert(JSON.stringify(error))
+              console.error(error)
               hideSpinner()
             })
         } else if (response.instruction === 'scrap') {
           var lang : Language = getLanguage(response.lang)
-          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>{
+          console.log(response)
+          console.log(filterOptions)
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>
             client.getTweetCredibilityWithScraping(
               { text: tweetText,
-                lang: lang},
-              {
-                weightBadWords: +filterOptions.weightBadWords,
-                weightMisspelling: +filterOptions.weightMisspelling,
-                weightSpam: +filterOptions.weightSpam
+                lang: lang
               },
               { weightBadWords: +filterOptions.weightBadWords,
                 weightMisspelling: +filterOptions.weightMisspelling,
@@ -149,16 +144,16 @@ function connect (method: number) {
                 weightUser: +filterOptions.weightUser
               },
               {
-                name : response.name,
+                name: response.name,
                 verified: response.verified,
                 yearJoined: +response.joinedDate,
                 followersCount: +response.followers,
                 friendsCount: +response.following
               },
-              +filterOptions.maxFollowers)
-          })
+              +filterOptions.maxFollowers))
           Promise.all(promiseList)
             .then(values => {
+              console.log(values)
               port.postMessage({
                 sender: 'www',
                 instruction: 'update',
@@ -167,7 +162,8 @@ function connect (method: number) {
               hideSpinner()
             })
             .catch(error => {
-              window.alert('Error: '+JSON.stringify(error))
+              window.alert('Errorf: '+JSON.stringify(error))
+              console.error(error)
               hideSpinner()
             })
         }
