@@ -116,7 +116,7 @@ function connect (method: number) {
       port.postMessage({ sender: 'www', instruction: 'scrapFB' })
     }
     port.onMessage.addListener((response) => {
-      console.log(response);
+      console.log(response)
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
           let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(
@@ -183,8 +183,8 @@ function connect (method: number) {
               hideSpinner()
             })
         } else if (response.instruction === 'scrapFB'){
-          hideSpinner();
-          console.log(response.message);
+          hideSpinner()
+          console.log(response.message)
         }
       })
     })
