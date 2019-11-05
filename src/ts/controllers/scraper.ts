@@ -46,7 +46,7 @@ chrome.runtime.onConnect.addListener((port) => {
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers
       })
-    } else if (request.sender === 'www' && request.instruction === 'scrap') {
+    } else if (request.sender === 'www' && request.instruction === 'scrapTW') {
       // const times = document.querySelectorAll("div[data-testid="tweet"] time")
       // init values
 
@@ -266,7 +266,7 @@ chrome.runtime.onConnect.addListener((port) => {
       })
 
       port.postMessage({
-        instruction: 'scrap',
+        instruction: 'scrapTW',
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
         joinedDate: joinedDate.value.split(' ')[2],
@@ -276,6 +276,12 @@ chrome.runtime.onConnect.addListener((port) => {
         followers: followers.value,
         lang: language,
         name:user_name
+      })
+    } else if (request.sender === 'www' && request.instruction === 'scrapFB'){
+      // scrap de Facebook
+      port.postMessage({
+        instruction: 'scrapFB',
+        message: 'mensaje de prueba'
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)
