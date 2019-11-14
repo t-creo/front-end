@@ -98,16 +98,16 @@ chrome.runtime.onConnect.addListener((port) => {
         // RETWEETS
         let number = 0
         const typeRt = tweetInfo.parentElement.parentElement.children[1].firstElementChild.getAttribute('data-testid')
-        const retweetInfo = <HTMLDivElement>current.querySelector('div[data-testid="retweet"] > div')
-        const unretweetInfo = <HTMLDivElement>current.querySelector('div[data-testid="unretweet"] > div')
+        const retweetInfo = (<HTMLDivElement>current.querySelector('div[data-testid="retweet"]')).getAttribute('aria-label').split(' ')[0]
+        const unretweetInfo =(<HTMLDivElement>current.querySelector('div[data-testid="unretweet"]')).getAttribute('aria-label').split(' ')[0]
 
         if (typeRt === 'retweet') {
           if (current.querySelector('div[data-testid="retweet"] > div').children.length === 2) {
-            number = formatNumber((<HTMLElement>retweetInfo.lastElementChild).innerText)
+            number = formatNumber(retweetInfo)
           }
         } else {
           if (current.querySelector('div[data-testid="unretweet"] > div').children.length === 2) {
-            number = formatNumber((<HTMLElement>unretweetInfo.lastElementChild).innerText)
+            number = formatNumber(unretweetInfo)
           }
         }
 
@@ -118,16 +118,16 @@ chrome.runtime.onConnect.addListener((port) => {
         // LIKES
         number = 0
         const typeLike = tweetInfo.parentElement.parentElement.children[2].firstElementChild.getAttribute('data-testid')
-        const likeInfo = current.querySelector('div[data-testid="like"] > div')
-        const unlikeInfo = current.querySelector('div[data-testid="unlike"] > div')
+        const likeInfo = current.querySelector('div[data-testid="like"]').getAttribute('aria-label').split(' ')[0]
+        const unlikeInfo = current.querySelector('div[data-testid="unlike"]').getAttribute('aria-label').split(' ')[0]
 
         if (typeLike === 'like') {
           if (current.querySelector('div[data-testid="like"] > div').children.length === 2) {
-            number = formatNumber((<HTMLElement>likeInfo.lastElementChild).innerText)
+            number = formatNumber(likeInfo)
           }
         } else {
           if (current.querySelector('div[data-testid="unlike"] > div').children.length === 2) {
-            number = formatNumber((<HTMLElement>unlikeInfo.lastElementChild).innerText)
+            number = formatNumber(unlikeInfo)
           }
         }
 
@@ -137,10 +137,10 @@ chrome.runtime.onConnect.addListener((port) => {
         }
         // REPLIES
         number = 0
-        const replyInfo = current.querySelector('div[data-testid="reply"] > div')
+        const replyInfo = current.querySelector('div[data-testid="reply"]').getAttribute('aria-label').split(' ')[0]
 
         if (current.querySelector('div[data-testid="reply"] > div').children.length === 2) {
-          number = formatNumber((<HTMLElement>replyInfo.lastElementChild).innerText)
+          number = formatNumber(replyInfo)
         }
 
         const tweetReply = {
@@ -166,9 +166,13 @@ chrome.runtime.onConnect.addListener((port) => {
         const followingPath = window.location.pathname + '/following'
         const followersPath = window.location.pathname + '/followers'
 
-        followingNum = formatNumber(document.querySelector(`a[href="${followingPath}"] > span > span`).textContent)
+        let aElem = document.querySelector(`a[href="${followingPath}"]`)
 
-        followersNum = formatNumber(document.querySelector(`a[href="${followersPath}"] > span > span`).textContent)
+        followingNum = formatNumber(aElem.getAttribute('title'))
+
+        aElem = document.querySelector(`a[href="${followersPath}"]`)
+
+        followersNum = formatNumber(aElem.getAttribute('title'))
         // get # of tweets and likes
 
         quantity = formatNumber(document.querySelectorAll('h2[role="heading"]')[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
