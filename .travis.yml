@@ -5,6 +5,7 @@ if: branch IN (master, develop)
 before_deploy:
 - git config --local user.name "German Robayo"
 - git config --local user.email "germanrobayo33@gmail.com"
+- git branch
 - npm version minor
 - zip build.zip -r build/
 deploy:
