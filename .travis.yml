@@ -5,8 +5,10 @@ if: branch IN (master, develop)
 before_deploy:
 - git config --local user.name "German Robayo"
 - git config --local user.email "germanrobayo33@gmail.com"
-- git branch
+- git checkout $TRAVIS_BRANCH
 - npm version minor
+- git push origin $TRAVIS_BRANCH
+- git push --tags
 - zip build.zip -r build/
 deploy:
   provider: releases
