@@ -8,8 +8,7 @@
     "lint": "eslint src --ext .ts",
     "pretest": "npm run lint",
     "test": "sass-lint -v -q",
-    "version": "echo http://107.170.90.209 > .env && npm run build && git add -u",
-    "postversion": "git push origin $(git branch | grep \\* | cut -d ' ' -f2) && git push --tags"
+    "version": "echo http://107.170.90.209 > .env && npm run build && git add -u"
   },
   "repository": {
     "type": "git",
