@@ -6,7 +6,7 @@ before_deploy:
 - git config --local user.name "German Robayo"
 - git config --local user.email "germanrobayo33@gmail.com"
 - git checkout $TRAVIS_BRANCH
-- npm version minor
+- npm version minor -m "[skip travis] Update to %s"
 - git remote set-url origin https://${GH_TOKEN}@github.com/World-White-Web/www-front-end.git
 - git push origin $TRAVIS_BRANCH
 - git push --tags

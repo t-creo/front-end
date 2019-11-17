@@ -8,7 +8,7 @@
     "lint": "eslint src --ext .ts",
     "pretest": "npm run lint",
     "test": "sass-lint -v -q",
-    "version": "echo http://107.170.90.209 > .env && npm run build && git add -u"
+    "version": "echo API_URL=http://107.170.90.209:8081 > .env && npm run build && git add -u"
   },
   "repository": {
     "type": "git",
