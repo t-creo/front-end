@@ -7,7 +7,9 @@
     "start": "NODE_ENV=development node utils/webserver.js",
     "lint": "eslint src --ext .ts",
     "pretest": "npm run lint",
-    "test": "sass-lint -v -q"
+    "test": "sass-lint -v -q",
+    "version": "echo http://107.170.90.209 > .env && npm run build && git add -u",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
