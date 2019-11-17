@@ -7,6 +7,7 @@ before_deploy:
 - git config --local user.email "germanrobayo33@gmail.com"
 - git checkout $TRAVIS_BRANCH
 - npm version minor
+- git remote set-url origin https://${GH_TOKEN}@github.com/World-White-Web/www-front-end.git
 - git push origin $TRAVIS_BRANCH
 - git push --tags
 - zip build.zip -r build/
