@@ -9,7 +9,7 @@
     "pretest": "npm run lint",
     "test": "sass-lint -v -q",
     "version": "echo http://107.170.90.209 > .env && npm run build && git add -u",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push $(git branch | grep \\* | cut -d ' ' -f2) && git push --tags"
   },
   "repository": {
     "type": "git",
