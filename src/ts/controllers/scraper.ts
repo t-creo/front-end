@@ -56,7 +56,7 @@ chrome.runtime.onConnect.addListener((port) => {
       let joinedDateString = ''
       let locationString = ''
       let link = ''
-      let verifiedBool = false
+      //let verifiedBool = false
       let verifiedAcc = false
       let language = ''
 
@@ -103,8 +103,8 @@ chrome.runtime.onConnect.addListener((port) => {
         }
       }
 
-      let boxes = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
-      const boxesArr = []
+      //let boxes = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
+      //const boxesArr = []
 
       /*for (let i = 0; i < boxes.length; i++) {
         verifiedBool = false
