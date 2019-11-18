@@ -59,11 +59,6 @@ Ejecutar el comando `npm run build` generará un artefacto optimizado para produ
 
 Ver [CONTRIBUTING.md](./CONTRIBUTING.md)
 
-### Convenciones de rama
-
-* `feature/*` para ramas que contienen cosas nuevas. Ejemplo: `feature/anade-soporte-a-facebook`.
-* `bugfix/*` para ramas que contienen fixes a cosas ya existentes. Ejemplo: `bugfix/arregla-calculo-de-pesos`.
-
 
 ## En caso de dudas
 
