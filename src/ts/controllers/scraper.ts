@@ -49,9 +49,9 @@ chrome.runtime.onConnect.addListener((port) => {
     } else if (request.sender === 'www' && request.instruction === 'scrapTW') {
       // const times = document.querySelectorAll("div[data-testid="tweet"] time")
       // init values
-
-      let followingNum = 1
-      let followersNum = 1
+      
+      let followingNum = ''
+      let followersNum = ''
       let quantity = 1
       let joinedDateString = ''
       let locationString = ''
@@ -60,10 +60,53 @@ chrome.runtime.onConnect.addListener((port) => {
       let verifiedAcc = false
       let language = ''
 
+      if (window.location.href.split('/')[3] !== 'home') {
+        verifiedAcc = false
+        const followingPath = window.location.pathname + '/following'
+        const followersPath = window.location.pathname + '/followers'
+
+        let aElem = document.querySelector(`a[href="${followingPath}"]`)
+
+        followingNum = aElem.getAttribute('title').replace(/[.,]/g, '')
+        
+        aElem = document.querySelector(`a[href="${followersPath}"]`)
+
+        followersNum = aElem.getAttribute('title').replace(/[.,]/g, '')
+        // get # of tweets and likes
+        
+        console.log(followersNum)
+        
+        quantity = formatNumber(document.querySelectorAll('h2[role="heading"]')[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
+
+        const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
+
+        for (let i = 0; i < info.length; i++) {
+          let x = info[i]
+          if (x.tagName === 'A') { //only possibility its a link
+            link = (<HTMLAnchorElement>x).href
+          } else {
+            if (x.textContent.match(/^(Joined)/) != null) {
+              joinedDateString = x.textContent
+            } else {
+              if (x.textContent.match(/^(Born)/) === null) { // not join not birthday not link = locatio
+                locationString = x.textContent
+              }
+            }
+          }
+        }
+
+        // Get Verified value
+        const nav = document.querySelectorAll('h2[role="heading"]')[1]
+        const verifiedClass = nav.querySelector('svg[aria-label="Verified account"]') // works only in english
+        if (verifiedClass) {
+          verifiedAcc = true
+        }
+      }
+
       let boxes = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
       const boxesArr = []
 
-      for (let i = 0; i < boxes.length; i++) {
+      /*for (let i = 0; i < boxes.length; i++) {
         verifiedBool = false
         const current = boxes[i]
         const tweetInfo = current.querySelector('div[aria-label="Share Tweet"]')
@@ -159,48 +202,8 @@ chrome.runtime.onConnect.addListener((port) => {
         }
 
         boxesArr.push(dataTweet)
-      }
+      }*/
 
-      if (window.location.href.split('/')[3] !== 'home') {
-        verifiedAcc = false
-        const followingPath = window.location.pathname + '/following'
-        const followersPath = window.location.pathname + '/followers'
-
-        let aElem = document.querySelector(`a[href="${followingPath}"]`)
-
-        followingNum = formatNumber(aElem.getAttribute('title'))
-
-        aElem = document.querySelector(`a[href="${followersPath}"]`)
-
-        followersNum = formatNumber(aElem.getAttribute('title'))
-        // get # of tweets and likes
-
-        quantity = formatNumber(document.querySelectorAll('h2[role="heading"]')[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
-
-        const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
-
-        for (let i = 0; i < info.length; i++) {
-          let x = info[i]
-          if (x.tagName === 'A') { //only possibility its a link
-            link = (<HTMLAnchorElement>x).href
-          } else {
-            if (x.textContent.match(/^(Joined)/) != null) {
-              joinedDateString = x.textContent
-            } else {
-              if (x.textContent.match(/^(Born)/) === null) { // not join not birthday not link = locatio
-                locationString = x.textContent
-              }
-            }
-          }
-        }
-
-        // Get Verified value
-        const nav = document.querySelectorAll('h2[role="heading"]')[1]
-        const verifiedClass = nav.querySelector('svg[aria-label="Verified account"]') // works only in english
-        if (verifiedClass) {
-          verifiedAcc = true
-        }
-      }
       // Creating Objects for data transfer to popup
 
       // Create verified object
@@ -252,8 +255,9 @@ chrome.runtime.onConnect.addListener((port) => {
         tweets: quantity
       }
 
+      console.log(followers.value)
       console.log(data)
-      console.log(boxesArr)
+      //console.log(boxesArr)
       // Get username
       var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
 
