@@ -283,6 +283,134 @@ chrome.runtime.onConnect.addListener((port) => {
       })
     } else if (request.sender === 'www' && request.instruction === 'scrapFB'){
       // scrap de Facebook
+
+      let followingNum = 1
+      let followersNum = 1
+      let quantity = 1
+      let joinedDateString = ''
+      let verifiedAcc = false
+      let language = ''
+
+      let boxes = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
+      const boxesArr = []
+
+      for (let i = 0; i < boxes.length; i++) {
+        const current = boxes[i]
+        const tweetInfo = current.querySelector('div[aria-label="Share Tweet"]')
+
+        // TEXT
+        const tweetText = {
+          name: 'tweetText',
+          value: tweetInfo.parentElement.parentElement.parentElement.children[1].textContent
+        }
+        // LANGUAGE
+        const tweetLang = {
+          name: 'tweetLang',
+          value: tweetInfo.parentElement.parentElement.parentElement.children[1].getAttribute('lang')
+        }
+        language = tweetLang.value
+
+        const dataTweet = {
+          text: tweetText.value,
+          lang: tweetLang.value,
+        }
+
+        boxesArr.push(dataTweet)
+      }
+
+      
+      const followingPath = window.location.pathname + '/following'
+      const followersPath = window.location.pathname + '/followers'
+
+      let aElem = document.querySelector(`a[href="${followingPath}"]`)
+
+      followingNum = formatNumber(aElem.getAttribute('title'))
+
+      aElem = document.querySelector(`a[href="${followersPath}"]`)
+
+      followersNum = formatNumber(aElem.getAttribute('title'))
+      // get # of tweets and likes
+
+      quantity = formatNumber(document.querySelectorAll('h2[role="heading"]')[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
+
+      const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
+
+        // Get Verified value
+        const nav = document.querySelectorAll('h2[role="heading"]')[1]
+        const verifiedClass = nav.querySelector('svg[aria-label="Verified account"]') // works only in english
+        if (verifiedClass) {
+          verifiedAcc = true
+        }
+      
+      // Creating Objects for data transfer to popup
+
+      // Create verified object
+      const joinedDate = {
+        name: 'joinedDate',
+        value: joinedDateString
+      }
+
+      // // Create verified object
+      const verified = {
+        name: 'verified',
+        value: verifiedAcc
+      }
+
+      // // Create tweets object
+      const tweets = {
+        name: 'tweets',
+        value: quantity
+      }
+
+      // // Create following object
+      const following = {
+        name: 'following',
+        value: followingNum
+      }
+
+      // // Create followers object
+      const followers = {
+        name: 'followers',
+        value: followersNum
+      }
+      const data = {
+        joinedDate: joinedDateString.split(' ')[2],
+        verified: verifiedAcc,
+        following: followingNum,
+        followers: followersNum,
+        tweets: quantity
+      }
+
+      console.log(data)
+      console.log(boxesArr)
+      // Get username
+      var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
+
+      let tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
+
+      const tweetTexts = tweetContainers.map((tweetContainer, index) => {
+        if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
+          tweetContainer.children[1].classList.add('Credibility-Ranking')
+          const frag = document.createRange().createContextualFragment('<div class="Credibility-Ranking"><p id=TweetNumber' + index + '>...</p></div>')
+          tweetContainer.children[1].append(frag)
+        }
+
+        return (<HTMLElement>tweetContainer.children[1]).innerText
+      })
+
+      port.postMessage({
+        instruction: 'scrapTW',
+        tweetTexts: tweetTexts,
+        tweetContainers: tweetContainers,
+        joinedDate: joinedDate.value.split(' ')[2],
+        verified: verified.value,
+        tweets: tweets.value,
+        following: following.value,
+        followers: followers.value,
+        lang: language,
+        name:user_name
+      })
+
       port.postMessage({
         instruction: 'scrapFB',
         message: 'mensaje de prueba'
