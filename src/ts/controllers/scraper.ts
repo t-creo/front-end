@@ -1,3 +1,5 @@
+import { response } from "express";
+
 function formatNumber (string : string) : number {
   let x = string.replace(/ /, '') // 20 K -> 20K
 
@@ -17,6 +19,7 @@ function formatNumber (string : string) : number {
 // Listener to scrape the values in real time
 chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((request) => {
+    
     if (request.sender === 'www' && request.instruction === 'api') {
       const times = document.querySelectorAll('div[data-testid="tweet"] time')
       const tweetIds = []
@@ -49,7 +52,7 @@ chrome.runtime.onConnect.addListener((port) => {
     } else if (request.sender === 'www' && request.instruction === 'scrapTW') {
       // const times = document.querySelectorAll("div[data-testid="tweet"] time")
       // init values
-
+      console.log('tw 1.1');
       let followingNum = 1
       let followersNum = 1
       let quantity = 1
@@ -283,26 +286,30 @@ chrome.runtime.onConnect.addListener((port) => {
       })
     } else if (request.sender === 'www' && request.instruction === 'scrapFB'){
       // scrap de Facebook
-
+      
       let followingNum = 1
       let followersNum = 1
       let quantity = 1
       let joinedDateString = ''
       let verifiedAcc = false
       let language = ''
-      
+      ;
       const followingPath = window.location.href.split('?')[0] + '/friends'
       const followersPath = window.location.href.split('?')[0] + '/friends_mutual'
+      ;
 
       let aElem = document.querySelector(`._2iem a[href="${followingPath}"]`).textContent
+      ;
 
       followingNum = formatNumber(aElem)
+      ;
 
       if (document.querySelector(`._2iem a[href="${followersPath}"]`)) {
         aElem = document.querySelector(`._2iem a[href="${followersPath}"]`).textContent.split(' ')[0].split('(')[1]
       } else {
         aElem = '1'
       }
+      ;
 
       followersNum = formatNumber(aElem)
       
@@ -342,6 +349,7 @@ chrome.runtime.onConnect.addListener((port) => {
       var user_name = window.location.pathname.replace(/[/]/,'')
 
       let tweetContainers = Array.from(document.querySelectorAll('._5pbx.userContent._3576'))
+  
 
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         if (!(tweetContainer.firstElementChild).classList.contains('Credibility-Ranking')) {
