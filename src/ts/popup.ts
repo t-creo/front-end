@@ -184,10 +184,8 @@ function connect (method: number) {
             })
         } else if (response.instruction === 'scrapFB'){
           hideSpinner()
-          console.log(response);
-          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>
-            {
-              
+          console.log(response)
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) => {
             client.getTweetCredibilityWithScraping(
               { text: tweetText,
                 lang: lang
@@ -207,7 +205,7 @@ function connect (method: number) {
                 friendsCount: +response.following
               },
               +filterOptions.maxFollowers)
-        })
+          })
           Promise.all(promiseList)
             .then(values => {
               console.log(values)
