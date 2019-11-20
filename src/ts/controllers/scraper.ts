@@ -290,57 +290,21 @@ chrome.runtime.onConnect.addListener((port) => {
       let joinedDateString = ''
       let verifiedAcc = false
       let language = ''
+      
+      const followingPath = window.location.href.split('?')[0] + '/friends'
+      const followersPath = window.location.href.split('?')[0] + '/friends_mutual'
 
-      let boxes = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
-      const boxesArr = []
+      let aElem = document.querySelector(`._2iem a[href="${followingPath}"]`).textContent
 
-      for (let i = 0; i < boxes.length; i++) {
-        const current = boxes[i]
-        const tweetInfo = current.querySelector('div[aria-label="Share Tweet"]')
+      followingNum = formatNumber(aElem)
 
-        // TEXT
-        const tweetText = {
-          name: 'tweetText',
-          value: tweetInfo.parentElement.parentElement.parentElement.children[1].textContent
-        }
-        // LANGUAGE
-        const tweetLang = {
-          name: 'tweetLang',
-          value: tweetInfo.parentElement.parentElement.parentElement.children[1].getAttribute('lang')
-        }
-        language = tweetLang.value
-
-        const dataTweet = {
-          text: tweetText.value,
-          lang: tweetLang.value,
-        }
-
-        boxesArr.push(dataTweet)
+      if (document.querySelector(`._2iem a[href="${followersPath}"]`)) {
+        aElem = document.querySelector(`._2iem a[href="${followersPath}"]`).textContent.split(' ')[0].split('(')[1]
+      } else {
+        aElem = '1'
       }
 
-      
-      const followingPath = window.location.pathname + '/following'
-      const followersPath = window.location.pathname + '/followers'
-
-      let aElem = document.querySelector(`a[href="${followingPath}"]`)
-
-      followingNum = formatNumber(aElem.getAttribute('title'))
-
-      aElem = document.querySelector(`a[href="${followersPath}"]`)
-
-      followersNum = formatNumber(aElem.getAttribute('title'))
-      // get # of tweets and likes
-
-      quantity = formatNumber(document.querySelectorAll('h2[role="heading"]')[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
-
-      const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
-
-        // Get Verified value
-        const nav = document.querySelectorAll('h2[role="heading"]')[1]
-        const verifiedClass = nav.querySelector('svg[aria-label="Verified account"]') // works only in english
-        if (verifiedClass) {
-          verifiedAcc = true
-        }
+      followersNum = formatNumber(aElem)
       
       // Creating Objects for data transfer to popup
 
@@ -373,33 +337,24 @@ chrome.runtime.onConnect.addListener((port) => {
         name: 'followers',
         value: followersNum
       }
-      const data = {
-        joinedDate: joinedDateString.split(' ')[2],
-        verified: verifiedAcc,
-        following: followingNum,
-        followers: followersNum,
-        tweets: quantity
-      }
 
-      console.log(data)
-      console.log(boxesArr)
       // Get username
-      var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
+      var user_name = window.location.pathname.replace(/[/]/,'')
 
-      let tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
+      let tweetContainers = Array.from(document.querySelectorAll('._5pbx.userContent._3576'))
 
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
-        if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
-          tweetContainer.children[1].classList.add('Credibility-Ranking')
+        if (!(tweetContainer.firstElementChild).classList.contains('Credibility-Ranking')) {
+          tweetContainer.firstElementChild.classList.add('Credibility-Ranking')
           const frag = document.createRange().createContextualFragment('<div class="Credibility-Ranking"><p id=TweetNumber' + index + '>...</p></div>')
-          tweetContainer.children[1].append(frag)
+          tweetContainer.firstElementChild.append(frag)
         }
 
-        return (<HTMLElement>tweetContainer.children[1]).innerText
+        return (<HTMLElement>tweetContainer.firstElementChild).innerText
       })
 
       port.postMessage({
-        instruction: 'scrapTW',
+        instruction: 'scrapFB',
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
         joinedDate: joinedDate.value.split(' ')[2],
@@ -409,11 +364,6 @@ chrome.runtime.onConnect.addListener((port) => {
         followers: followers.value,
         lang: language,
         name:user_name
-      })
-
-      port.postMessage({
-        instruction: 'scrapFB',
-        message: 'mensaje de prueba'
       })
     } else if (request.sender === 'www' && request.instruction === 'update') {
       UpdateTweetCredibility(request.credList)
