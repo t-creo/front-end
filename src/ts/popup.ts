@@ -184,7 +184,46 @@ function connect (method: number) {
             })
         } else if (response.instruction === 'scrapFB'){
           hideSpinner()
-          console.log(response.message)
+          console.log(response);
+          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>
+            {
+              
+            client.getTweetCredibilityWithScraping(
+              { text: tweetText,
+                lang: lang
+              },
+              { weightBadWords: +filterOptions.weightBadWords,
+                weightMisspelling: +filterOptions.weightMisspelling,
+                weightSpam: +filterOptions.weightSpam,
+                weightText: +filterOptions.weightText,
+                weightSocial: +filterOptions.weightSocial,
+                weightUser: +filterOptions.weightUser
+              },
+              {
+                name: response.name,
+                verified: response.verified,
+                yearJoined: +response.joinedDate,
+                followersCount: +response.followers,
+                friendsCount: +response.following
+              },
+              +filterOptions.maxFollowers)
+        })
+          Promise.all(promiseList)
+            .then(values => {
+              console.log(values)
+              port.postMessage({
+                sender: 'www',
+                instruction: 'update',
+                credList: values.map(credibility => credibility.credibility)
+              })
+              hideSpinner()
+            })
+            .catch(error => {
+              window.alert('Error: '+JSON.stringify(error))
+              console.error(error)
+              hideSpinner()
+            })
+          
         }
       })
     })
