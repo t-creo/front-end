@@ -1,4 +1,3 @@
-import { response } from "express";
 
 function formatNumber (string : string) : number {
   let x = string.replace(/ /, '') // 20 K -> 20K
@@ -52,7 +51,7 @@ chrome.runtime.onConnect.addListener((port) => {
     } else if (request.sender === 'www' && request.instruction === 'scrapTW') {
       // const times = document.querySelectorAll("div[data-testid="tweet"] time")
       // init values
-      console.log('tw 1.1');
+
       let followingNum = 1
       let followersNum = 1
       let quantity = 1
@@ -100,19 +99,19 @@ chrome.runtime.onConnect.addListener((port) => {
         }
         // RETWEETS
         let number = 0
-        const typeRt = tweetInfo.parentElement.parentElement.children[1].firstElementChild.getAttribute('data-testid')
-        const retweetInfo = (<HTMLDivElement>current.querySelector('div[data-testid="retweet"]')).getAttribute('aria-label').split(' ')[0]
-        const unretweetInfo =(<HTMLDivElement>current.querySelector('div[data-testid="unretweet"]')).getAttribute('aria-label').split(' ')[0]
+        // const typeRt = tweetInfo.parentElement.parentElement.children[1].firstElementChild.getAttribute('data-testid')
+        // const retweetInfo = (<HTMLDivElement>current.querySelector('div[data-testid="retweet"]')).getAttribute('aria-label').split(' ')[0]
+        // const unretweetInfo =(<HTMLDivElement>current.querySelector('div[data-testid="unretweet"]')).getAttribute('aria-label').split(' ')[0]
 
-        if (typeRt === 'retweet') {
-          if (current.querySelector('div[data-testid="retweet"] > div').children.length === 2) {
-            number = formatNumber(retweetInfo)
-          }
-        } else {
-          if (current.querySelector('div[data-testid="unretweet"] > div').children.length === 2) {
-            number = formatNumber(unretweetInfo)
-          }
-        }
+        // if (typeRt === 'retweet') {
+        //   if (current.querySelector('div[data-testid="retweet"] > div').children.length === 2) {
+        //     number = formatNumber(retweetInfo)
+        //   }
+        // } else {
+        //   if (current.querySelector('div[data-testid="unretweet"] > div').children.length === 2) {
+        //     number = formatNumber(unretweetInfo)
+        //   }
+        // }
 
         const tweetRts = {
           name: 'tweetRts',
@@ -120,19 +119,19 @@ chrome.runtime.onConnect.addListener((port) => {
         }
         // LIKES
         number = 0
-        const typeLike = tweetInfo.parentElement.parentElement.children[2].firstElementChild.getAttribute('data-testid')
-        const likeInfo = current.querySelector('div[data-testid="like"]').getAttribute('aria-label').split(' ')[0]
-        const unlikeInfo = current.querySelector('div[data-testid="unlike"]').getAttribute('aria-label').split(' ')[0]
+        // const typeLike = tweetInfo.parentElement.parentElement.children[2].firstElementChild.getAttribute('data-testid')
+        // const likeInfo = current.querySelector('div[data-testid="like"]').getAttribute('aria-label').split(' ')[0]
+        // const unlikeInfo = current.querySelector('div[data-testid="unlike"]').getAttribute('aria-label').split(' ')[0]
 
-        if (typeLike === 'like') {
-          if (current.querySelector('div[data-testid="like"] > div').children.length === 2) {
-            number = formatNumber(likeInfo)
-          }
-        } else {
-          if (current.querySelector('div[data-testid="unlike"] > div').children.length === 2) {
-            number = formatNumber(unlikeInfo)
-          }
-        }
+        // if (typeLike === 'like') {
+        //   if (current.querySelector('div[data-testid="like"] > div').children.length === 2) {
+        //     number = formatNumber(likeInfo)
+        //   }
+        // } else {
+        //   if (current.querySelector('div[data-testid="unlike"] > div').children.length === 2) {
+        //     number = formatNumber(unlikeInfo)
+        //   }
+        // }
 
         const tweetLikes = {
           name: 'tweetLikes',
@@ -293,23 +292,23 @@ chrome.runtime.onConnect.addListener((port) => {
       let joinedDateString = ''
       let verifiedAcc = false
       let language = ''
-      ;
+      
       const followingPath = window.location.href.split('?')[0] + '/friends'
       const followersPath = window.location.href.split('?')[0] + '/friends_mutual'
-      ;
+      
 
       let aElem = document.querySelector(`._2iem a[href="${followingPath}"]`).textContent
-      ;
+      
 
       followingNum = formatNumber(aElem)
-      ;
+      
 
       if (document.querySelector(`._2iem a[href="${followersPath}"]`)) {
         aElem = document.querySelector(`._2iem a[href="${followersPath}"]`).textContent.split(' ')[0].split('(')[1]
       } else {
         aElem = '1'
       }
-      ;
+      
 
       followersNum = formatNumber(aElem)
       
