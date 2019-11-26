@@ -116,7 +116,6 @@ function connect (method: number) {
       port.postMessage({ sender: 'www', instruction: 'scrapFB' })
     }
     port.onMessage.addListener((response) => {
-      console.log(response)
       chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
           let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(
@@ -145,10 +144,9 @@ function connect (method: number) {
             })
         } else if (response.instruction === 'scrapTW') {
           var lang : Language = getLanguage(response.lang)
-          console.log(response)
-          console.log(filterOptions)
-          let promiseList : Promise<{credibility : number}>[] = response.tweetTexts.map((tweetText: string) =>
-            client.getTweetCredibilityWithScraping(
+          let promiseList : Promise<{credibility : number}>[] = []
+          response.tweetTexts.map((tweetText: string) =>
+            promiseList.push(client.getTweetCredibilityWithScraping(
               { text: tweetText,
                 lang: lang
               },
@@ -166,10 +164,9 @@ function connect (method: number) {
                 followersCount: +response.followers,
                 friendsCount: +response.following
               },
-              +filterOptions.maxFollowers))
+              +filterOptions.maxFollowers)))
           Promise.all(promiseList)
             .then(values => {
-              console.log(values)
               port.postMessage({
                 sender: 'www',
                 instruction: 'update',
@@ -183,8 +180,44 @@ function connect (method: number) {
               hideSpinner()
             })
         } else if (response.instruction === 'scrapFB'){
-          hideSpinner()
-          console.log(response.message)
+          var lang : Language = getLanguage(response.lang)
+          let promiseList : Promise<{credibility : number}>[] = []
+          response.tweetTexts.map((tweetText: string) => {
+            promiseList.push(client.getTweetCredibilityWithScraping(
+              { text: tweetText,
+                lang: lang
+              },
+              { weightBadWords: +filterOptions.weightBadWords,
+                weightMisspelling: +filterOptions.weightMisspelling,
+                weightSpam: +filterOptions.weightSpam,
+                weightText: +filterOptions.weightText,
+                weightSocial: +filterOptions.weightSocial,
+                weightUser: +filterOptions.weightUser
+              },
+              {
+                name: response.name,
+                verified: response.verified,
+                yearJoined: 2011,
+                followersCount: +response.followers,
+                friendsCount: +response.following
+              },
+              +filterOptions.maxFollowers))
+          })
+          Promise.all(promiseList)
+            .then(values => {
+              port.postMessage({
+                sender: 'www',
+                instruction: 'update',
+                credList: values.map(credibility => credibility.credibility)
+              })
+              hideSpinner()
+            })
+            .catch(error => {
+              window.alert('Error: '+JSON.stringify(error))
+              console.error(error)
+              hideSpinner()
+            })
+          
         }
       })
     })
@@ -197,6 +230,8 @@ function showSpinner(){
   verifyBtn.disabled =  true
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScraperTW')
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
+  const verifyPageBtnFB = <HTMLButtonElement>document.getElementById('VerifyPageButtonScraperFB')
+
   if(verifyPageBtn != null && verifyPageTwitterApiBtn != null){
     verifyPageBtn.disabled  = true
     verifyPageTwitterApiBtn.disabled  = true
@@ -208,8 +243,7 @@ function showSpinner(){
   
     verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
     verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'  
-  }else{
-    const verifyPageBtnFB = <HTMLButtonElement>document.getElementById('VerifyPageButtonScraperFB')
+  }else if (verifyPageBtnFB != null){
     verifyPageBtnFB.disabled  = true
     verifyPageBtnFB.style.backgroundColor = 'rgba(0,123,255,.7)'
     verifyPageBtnFB.style.borderColor = 'rgba(255,255,255,.7)'
@@ -224,6 +258,7 @@ function hideSpinner(){
   verifyBtn.disabled =  false
   const verifyPageBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonScraperTW')
   const verifyPageTwitterApiBtn = <HTMLButtonElement>document.getElementById('VerifyPageButtonTwitterApi')
+  const verifyPageBtnFB = <HTMLButtonElement>document.getElementById('VerifyPageButtonScraperFB')
 
   if(verifyPageBtn != null && verifyPageTwitterApiBtn != null){
     verifyPageBtn.disabled  = false
@@ -238,8 +273,7 @@ function hideSpinner(){
     verifyPageTwitterApiBtn.style.backgroundColor = '#007bff'
     verifyPageTwitterApiBtn.style.borderColor = '#007bff'
 
-  }else{
-    const verifyPageBtnFB = <HTMLButtonElement>document.getElementById('VerifyPageButtonScraperFB')
+  }else if (verifyPageBtnFB != null){
     verifyPageBtnFB.disabled = false
 
     verifyPageBtnFB.style.backgroundColor = '#007bff'
