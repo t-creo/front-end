@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabUrl = tab.url
  
     const elem = document.querySelector('#PageSensitiveButtons')
+    const elemSCRTW = document.querySelector('#VerifyPageButtonScraperTW')
     const elemFB = document.querySelector('#PageSensitiveButtonsFB')
   
     const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
@@ -41,6 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
       elemFB.parentNode.removeChild(elemFB)
+      if (tabUrl.includes('/home')){
+        elemSCRTW.parentNode.removeChild(elemSCRTW)
+      }
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
       elem.parentNode.removeChild(elem)

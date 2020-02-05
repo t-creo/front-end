@@ -48,7 +48,7 @@ chrome.runtime.onConnect.addListener((port) => {
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers
       })
-    } else if (request.sender === 'www' && request.instruction === 'scrapTW') {
+    } else if (request.sender === 'www' && request.instruction === 'scrapTW'){
       // const times = document.querySelectorAll("div[data-testid="tweet"] time")
       // init values
       
@@ -70,16 +70,18 @@ chrome.runtime.onConnect.addListener((port) => {
         let aElem = document.querySelector(`a[href="${followingPath}"]`)
 
         followingNum = aElem.getAttribute('title').replace(/[.,]/g, '')
-        
+        followingNum= followingNum.replace(/\s/g, '')
         aElem = document.querySelector(`a[href="${followersPath}"]`)
 
         followersNum = aElem.getAttribute('title').replace(/[.,]/g, '')
+        followersNum = followersNum.replace(/\s/g, '')
+
         // get # of tweets and likes
         
-        console.log(followersNum)
         
         quantity = formatNumber(document.querySelectorAll('h2[role="heading"]')[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
-
+       
+        console.log(quantity)
         const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
 
         for (let i = 0; i < info.length; i++) {
@@ -88,18 +90,40 @@ chrome.runtime.onConnect.addListener((port) => {
             link = (<HTMLAnchorElement>x).href
           } else {
             if (x.textContent.match(/^(Joined)/) != null) {
-              joinedDateString = x.textContent
+              joinedDateString = x.textContent.split(' ')[2] 
+            } if (x.textContent.match(/^(Se uni)/) != null) {      
+              joinedDateString = x.textContent.split(' ')[5]
+            } if (x.textContent.match(/^(A rejoint Twitter)/) != null) {      
+              joinedDateString = x.textContent.split(' ')[5]
             } else {
               if (x.textContent.match(/^(Born)/) === null) { // not join not birthday not link = locatio
                 locationString = x.textContent
+              } else if (x.textContent.match(/^(Fecha de nacimiento)/) === null){
+                locationString = x.textContent
+              } else if (x.textContent.match(/^(Naissance)/) === null){
+                locationString = x.textContent
+              }else{
+                
               }
             }
           }
         }
+        // console.log(link)
+        // console.log(joinedDateString)
+        // console.log(locationString)
 
         // Get Verified value
         const nav = document.querySelectorAll('h2[role="heading"]')[1]
-        const verifiedClass = nav.querySelector('svg[aria-label="Verified account"]') // works only in english
+        var verifiedClass
+        if(nav.querySelector('svg[aria-label="Verified account"]')){
+          verifiedClass = nav.querySelector('svg[aria-label="Verified account"]') //
+        }else if(nav.querySelector('svg[aria-label="Cuenta verificada"]')){
+          verifiedClass = nav.querySelector('svg[aria-label="Cuenta verificada"]')          
+        }else if(nav.querySelector('svg[aria-label="Compte certifié"]')){
+          verifiedClass = nav.querySelector('svg[aria-label="Compte certifié"]')      
+        }
+
+        //aria-label="Cuenta verificada"
         if (verifiedClass) {
           verifiedAcc = true
         }
@@ -248,7 +272,7 @@ chrome.runtime.onConnect.addListener((port) => {
         value: followersNum
       }
       const data = {
-        joinedDate: joinedDateString.split(' ')[2],
+        joinedDate: joinedDateString,
         location: locationString,
         userLink: link,
         verified: verifiedAcc,
@@ -257,15 +281,14 @@ chrome.runtime.onConnect.addListener((port) => {
         tweets: quantity
       }
 
-      console.log(followers.value)
-      console.log(data)
-      //console.log(boxesArr)
+      
       // Get username
       var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
 
       let tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
 
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
+        
         if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
           tweetContainer.children[1].classList.add('Credibility-Ranking')
           const frag = document.createRange().createContextualFragment('<div class="Credibility-Ranking"><p id=TweetNumber' + index + '>...</p></div>')
@@ -279,7 +302,7 @@ chrome.runtime.onConnect.addListener((port) => {
         instruction: 'scrapTW',
         tweetTexts: tweetTexts,
         tweetContainers: tweetContainers,
-        joinedDate: joinedDate.value.split(' ')[2],
+        joinedDate: joinedDate.value,
         verified: verified.value,
         tweets: tweets.value,
         following: following.value,
@@ -352,8 +375,8 @@ chrome.runtime.onConnect.addListener((port) => {
       var user_name = window.location.pathname.replace(/[/]/,'')
 
       let tweetContainers = Array.from(document.querySelectorAll('._5pbx.userContent._3576'))
-  
-
+      console.log(user_name)
+      console.log(tweetContainers)
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         if (!(tweetContainer.firstElementChild).classList.contains('Credibility-Ranking')) {
           tweetContainer.firstElementChild.classList.add('Credibility-Ranking')
@@ -376,7 +399,7 @@ chrome.runtime.onConnect.addListener((port) => {
         lang: language,
         name:user_name
       })
-    } else if (request.sender === 'www' && request.instruction === 'update') {
+    } else if (request.sender === 'www' && request.instruction === 'update'){
       UpdateTweetCredibility(request.credList)
     }
   })
