@@ -3,6 +3,7 @@ import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
 import '../sass/spinner.scss'
 import WorldWhiteWebClient, { Language } from 'www-client-js'
+import { equal } from 'assert'
 const client = new WorldWhiteWebClient(process.env.API_URL)
 
 // interface SelectProtected {
@@ -13,7 +14,6 @@ window.addEventListener('load', function load () {
   document.getElementById('submitButton').onclick= getCredibility
   document.getElementById('VerifyPageButtonScraperTW').onclick = ValidateTwitterTweetsScrapper
   document.getElementById('VerifyPageButtonTwitterApi').onclick = ValidateTwitterTweets
-
   document.getElementById('VerifyPageButtonScraperFB').onclick = ValidateFacebookScraper
 
 })
@@ -147,6 +147,7 @@ function connect (method: number) {
               hideSpinner()
             })
         } else if (response.instruction === 'scrapTW') {
+          console.log('respuesta scraping');
           var lang : Language = getLanguage(response.lang)
           let promiseList : Promise<{credibility : number}>[] = []
           response.tweetTexts.map((tweetText: string) =>
@@ -179,9 +180,13 @@ function connect (method: number) {
               hideSpinner()
             })
             .catch(error => {
-              window.alert('Errorf: '+JSON.stringify(error))
-              console.error(error)
-              hideSpinner()
+              if(JSON.stringify(error.message)== '"Request failed with status code 400"'){
+                window.alert('Error de idioma')
+                hideSpinner()
+              }else{
+                window.alert('Errorf: '+JSON.stringify(error))
+                hideSpinner()
+              }
             })
         } else if (response.instruction === 'scrapFB'){
           var lang : Language = getLanguage(response.lang)

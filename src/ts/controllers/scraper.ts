@@ -81,7 +81,7 @@ chrome.runtime.onConnect.addListener((port) => {
         
         quantity = formatNumber(document.querySelectorAll('h2[role="heading"]')[1].nextSibling.textContent.split(' ')[0]) // "10K Tweets"
        
-        console.log(quantity)
+        // console.log(quantity)
         const info = document.querySelector('div[data-testid="UserProfileHeader_Items"]').children
 
         for (let i = 0; i < info.length; i++) {
@@ -281,12 +281,10 @@ chrome.runtime.onConnect.addListener((port) => {
         tweets: quantity
       }
 
-      
       // Get username
       var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
 
       let tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
-
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         
         if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
@@ -375,8 +373,8 @@ chrome.runtime.onConnect.addListener((port) => {
       var user_name = window.location.pathname.replace(/[/]/,'')
 
       let tweetContainers = Array.from(document.querySelectorAll('._5pbx.userContent._3576'))
-      console.log(user_name)
-      console.log(tweetContainers)
+      // console.log(user_name)
+      // console.log(tweetContainers)
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         if (!(tweetContainer.firstElementChild).classList.contains('Credibility-Ranking')) {
           tweetContainer.firstElementChild.classList.add('Credibility-Ranking')
