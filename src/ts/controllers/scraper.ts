@@ -108,10 +108,6 @@ chrome.runtime.onConnect.addListener((port) => {
             }
           }
         }
-        // console.log(link)
-        // console.log(joinedDateString)
-        // console.log(locationString)
-
         // Get Verified value
         const nav = document.querySelectorAll('h2[role="heading"]')[1]
         var verifiedClass
@@ -128,108 +124,6 @@ chrome.runtime.onConnect.addListener((port) => {
           verifiedAcc = true
         }
       }
-
-      //let boxes = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
-      //const boxesArr = []
-
-      /*for (let i = 0; i < boxes.length; i++) {
-        verifiedBool = false
-        const current = boxes[i]
-        const tweetInfo = current.querySelector('div[aria-label="Share Tweet"]')
-        const date = <HTMLTimeElement>current.querySelector('div[data-testid="tweet"] time')
-
-        // TEXT
-        const tweetText = {
-          name: 'tweetText',
-          value: tweetInfo.parentElement.parentElement.parentElement.children[1].textContent
-        }
-        // DATE
-        const tweetDate = {
-          name: 'tweetDate',
-          value: date.dateTime
-        }
-        // LANGUAGE
-        const tweetLang = {
-          name: 'tweetLang',
-          value: tweetInfo.parentElement.parentElement.parentElement.children[1].getAttribute('lang')
-        }
-        language = tweetLang.value
-        // VERIFIED
-        const verifiedClass = current.querySelector('svg[aria-label="Verified account"]') // works only in english
-        if (verifiedClass) {
-          verifiedBool = true
-        }
-
-        const tweetVerified = {
-          name: 'tweetVerified',
-          value: verifiedBool
-        }
-        // RETWEETS
-        let number = 0
-        // const typeRt = tweetInfo.parentElement.parentElement.children[1].firstElementChild.getAttribute('data-testid')
-        // const retweetInfo = (<HTMLDivElement>current.querySelector('div[data-testid="retweet"]')).getAttribute('aria-label').split(' ')[0]
-        // const unretweetInfo =(<HTMLDivElement>current.querySelector('div[data-testid="unretweet"]')).getAttribute('aria-label').split(' ')[0]
-
-        // if (typeRt === 'retweet') {
-        //   if (current.querySelector('div[data-testid="retweet"] > div').children.length === 2) {
-        //     number = formatNumber(retweetInfo)
-        //   }
-        // } else {
-        //   if (current.querySelector('div[data-testid="unretweet"] > div').children.length === 2) {
-        //     number = formatNumber(unretweetInfo)
-        //   }
-        // }
-
-        const tweetRts = {
-          name: 'tweetRts',
-          value: number
-        }
-        // LIKES
-        number = 0
-        // const typeLike = tweetInfo.parentElement.parentElement.children[2].firstElementChild.getAttribute('data-testid')
-        // const likeInfo = current.querySelector('div[data-testid="like"]').getAttribute('aria-label').split(' ')[0]
-        // const unlikeInfo = current.querySelector('div[data-testid="unlike"]').getAttribute('aria-label').split(' ')[0]
-
-        // if (typeLike === 'like') {
-        //   if (current.querySelector('div[data-testid="like"] > div').children.length === 2) {
-        //     number = formatNumber(likeInfo)
-        //   }
-        // } else {
-        //   if (current.querySelector('div[data-testid="unlike"] > div').children.length === 2) {
-        //     number = formatNumber(unlikeInfo)
-        //   }
-        // }
-
-        const tweetLikes = {
-          name: 'tweetLikes',
-          value: number
-        }
-        // REPLIES
-        number = 0
-        const replyInfo = current.querySelector('div[data-testid="reply"]').getAttribute('aria-label').split(' ')[0]
-
-        if (current.querySelector('div[data-testid="reply"] > div').children.length === 2) {
-          number = formatNumber(replyInfo)
-        }
-
-        const tweetReply = {
-          name: 'tweetReply',
-          value: number
-        }
-
-        const dataTweet = {
-          text: tweetText.value,
-          date: tweetDate.value,
-          verified: tweetVerified.value,
-          lang: tweetLang.value,
-          retweets: tweetRts.value,
-          likes: tweetLikes.value,
-          reply: tweetReply.value
-        }
-
-        boxesArr.push(dataTweet)
-      }*/
-
       // Creating Objects for data transfer to popup
 
       // Create verified object
@@ -283,8 +177,9 @@ chrome.runtime.onConnect.addListener((port) => {
 
       // Get username
       var user_name = (document.querySelector('div[dir="ltr"] > span').textContent).substring(1)
-
       let tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
+
+
       const tweetTexts = tweetContainers.map((tweetContainer, index) => {
         
         if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
@@ -295,6 +190,53 @@ chrome.runtime.onConnect.addListener((port) => {
 
         return (<HTMLElement>tweetContainer.children[1]).innerText
       })
+      
+
+      port.postMessage({
+        instruction: 'scrapTW',
+        tweetTexts: tweetTexts,
+        tweetContainers: tweetContainers,
+        joinedDate: joinedDate.value,
+        verified: verified.value,
+        tweets: tweets.value,
+        following: following.value,
+        followers: followers.value,
+        lang: language,
+        name:user_name
+      })    
+
+
+      document.addEventListener("scroll", e => {
+        console.log('scroll')
+        tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
+
+
+        const tweetTexts = tweetContainers.map((tweetContainer, index) => {
+          
+          if (!(tweetContainer.children[1]).classList.contains('Credibility-Ranking')) {
+            tweetContainer.children[1].classList.add('Credibility-Ranking')
+            const frag = document.createRange().createContextualFragment('<div class="Credibility-Ranking"><p id=TweetNumber' + index + '>...</p></div>')
+            tweetContainer.children[1].append(frag)
+          }
+
+          return (<HTMLElement>tweetContainer.children[1]).innerText
+        })
+        
+
+        port.postMessage({
+          instruction: 'scrapTW',
+          tweetTexts: tweetTexts,
+          tweetContainers: tweetContainers,
+          joinedDate: joinedDate.value,
+          verified: verified.value,
+          tweets: tweets.value,
+          following: following.value,
+          followers: followers.value,
+          lang: language,
+          name:user_name
+        })    
+            
+      });
 
       port.postMessage({
         instruction: 'scrapTW',
@@ -308,6 +250,9 @@ chrome.runtime.onConnect.addListener((port) => {
         lang: language,
         name:user_name
       })
+
+      
+     
     } else if (request.sender === 'www' && request.instruction === 'scrapFB'){
       // scrap de Facebook
       
@@ -398,12 +343,14 @@ chrome.runtime.onConnect.addListener((port) => {
         name:user_name
       })
     } else if (request.sender === 'www' && request.instruction === 'update'){
+      // console.timeLog('update')
       UpdateTweetCredibility(request.credList)
     }
   })
 })
 
 function UpdateTweetCredibility (credibilityList: string[]) {
+  console.log(credibilityList)
   credibilityList.map((credibilityItem, index: number) => {
     if (credibilityItem !== '--') {
       const Green = Math.floor(parseInt(credibilityItem) * (2.55))

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
       currentPage.innerText = 'You are currently on Twitter'
       elemFB.parentNode.removeChild(elemFB)
       if (tabUrl.includes('/home')){
-        elemSCRTW.parentNode.removeChild(elemSCRTW)
+        elemSCRTW.parentNode.removeChild(elemSCRTW)        
       }
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
@@ -181,7 +181,7 @@ function connect (method: number) {
             })
             .catch(error => {
               if(JSON.stringify(error.message)== '"Request failed with status code 400"'){
-                window.alert('Error de idioma')
+                window.alert('The credibility analysis is only available for English, Spanish and French')
                 hideSpinner()
               }else{
                 window.alert('Errorf: '+JSON.stringify(error))
