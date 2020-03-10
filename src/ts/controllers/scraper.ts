@@ -103,7 +103,7 @@ chrome.runtime.onConnect.addListener((port) => {
               } else if (x.textContent.match(/^(Naissance)/) === null){
                 locationString = x.textContent
               }else{
-                
+                locationString = ''
               }
             }
           }
@@ -132,15 +132,15 @@ chrome.runtime.onConnect.addListener((port) => {
         value: joinedDateString
       }
 
-      /* const location = {
-        name: 'location',
-        value: locationString
-      } */
+      // const location = {
+      //   name: 'location',
+      //   value: locationString
+      // }
 
-      /* const userLink = {
-        name: 'userLink',
-        value: link
-      } */
+      // const userLink = {
+      //   name: 'userLink',
+      //   value: link
+      // }
 
       // // Create verified object
       const verified = {
@@ -202,12 +202,14 @@ chrome.runtime.onConnect.addListener((port) => {
         following: following.value,
         followers: followers.value,
         lang: language,
-        name:user_name
+        name:user_name,
+        link: data.userLink,
+        location:locationString
       })    
 
 
-      document.addEventListener("scroll", e => {
-        //console.log('scroll')
+      document.addEventListener('scroll', e => {
+        console.log(e)
         tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
 
 
@@ -236,7 +238,7 @@ chrome.runtime.onConnect.addListener((port) => {
           name:user_name
         })    
             
-      });
+      })
 
       port.postMessage({
         instruction: 'scrapTW',

@@ -3,7 +3,6 @@ import '../sass/index.scss'
 import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
 import '../sass/spinner.scss'
 import WorldWhiteWebClient, { Language } from 'www-client-js'
-import { equal } from 'assert'
 const client = new WorldWhiteWebClient(process.env.API_URL)
 
 // interface SelectProtected {
