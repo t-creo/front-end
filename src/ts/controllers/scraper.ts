@@ -207,7 +207,7 @@ chrome.runtime.onConnect.addListener((port) => {
 
 
       document.addEventListener("scroll", e => {
-        console.log('scroll')
+        //console.log('scroll')
         tweetContainers = Array.from(document.querySelectorAll('div[data-testid="tweet"]'))
 
 
@@ -350,7 +350,7 @@ chrome.runtime.onConnect.addListener((port) => {
 })
 
 function UpdateTweetCredibility (credibilityList: string[]) {
-  console.log(credibilityList)
+  //console.log(credibilityList)
   credibilityList.map((credibilityItem, index: number) => {
     if (credibilityItem !== '--') {
       const Green = Math.floor(parseInt(credibilityItem) * (2.55))

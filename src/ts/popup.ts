@@ -147,7 +147,6 @@ function connect (method: number) {
               hideSpinner()
             })
         } else if (response.instruction === 'scrapTW') {
-          console.log('respuesta scraping');
           var lang : Language = getLanguage(response.lang)
           let promiseList : Promise<{credibility : number}>[] = []
           response.tweetTexts.map((tweetText: string) =>
