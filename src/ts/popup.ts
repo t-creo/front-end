@@ -13,7 +13,6 @@ window.addEventListener('load', function load () {
   document.getElementById('submitButton').onclick= getCredibility
   document.getElementById('VerifyPageButtonScraperTW').onclick = ValidateTwitterTweetsScrapper
   document.getElementById('VerifyPageButtonTwitterApi').onclick = ValidateTwitterTweets
-
   document.getElementById('VerifyPageButtonScraperFB').onclick = ValidateFacebookScraper
 
 })
@@ -34,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabUrl = tab.url
  
     const elem = document.querySelector('#PageSensitiveButtons')
+    const elemSCRTW = document.querySelector('#VerifyPageButtonScraperTW')
     const elemFB = document.querySelector('#PageSensitiveButtonsFB')
   
     const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
       elemFB.parentNode.removeChild(elemFB)
+      if (tabUrl.includes('/home')){
+        elemSCRTW.parentNode.removeChild(elemSCRTW)        
+      }
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
       elem.parentNode.removeChild(elem)
@@ -175,9 +178,13 @@ function connect (method: number) {
               hideSpinner()
             })
             .catch(error => {
-              window.alert('Errorf: '+JSON.stringify(error))
-              console.error(error)
-              hideSpinner()
+              if(JSON.stringify(error.message)== '"Request failed with status code 400"'){
+                window.alert('The credibility analysis is only available for English, Spanish and French')
+                hideSpinner()
+              }else{
+                window.alert('Errorf: '+JSON.stringify(error))
+                hideSpinner()
+              }
             })
         } else if (response.instruction === 'scrapFB'){
           var lang : Language = getLanguage(response.lang)
