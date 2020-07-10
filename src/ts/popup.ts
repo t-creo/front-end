@@ -1,6 +1,6 @@
 import './controllers/scraper'
 import '../sass/index.scss'
-import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
+import constants from './constant'
 import '../sass/spinner.scss'
 import WorldWhiteWebClient, { Language } from 'www-client-js'
 const client = new WorldWhiteWebClient(process.env.API_URL)
@@ -18,7 +18,10 @@ window.addEventListener('load', function load () {
 })
 
 document.addEventListener('DOMContentLoaded', function () {
-  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
+  chrome.storage.sync.get([
+    constants.WEIGHT_SPAM, constants.WEIGHT_BAD_WORDS, constants.WEIGHT_MISSPELLING,
+    constants.WEIGHT_TEXT, constants.WEIGHT_USER, constants.WEIGHT_SOCIAL,
+    constants.MAX_FOLLOWERS], function (filterOptions) {
     if (!filterOptions.weightSpam) {
       chrome.storage.sync.set({ weightSpam: 0.44 })
       chrome.storage.sync.set({ weightBadWords: 0.33 })
@@ -31,18 +34,18 @@ document.addEventListener('DOMContentLoaded', function () {
   })
   chrome.tabs.getSelected(null, function (tab) {
     const tabUrl = tab.url
- 
+
     const elem = document.querySelector('#PageSensitiveButtons')
     const elemSCRTW = document.querySelector('#VerifyPageButtonScraperTW')
     const elemFB = document.querySelector('#PageSensitiveButtonsFB')
-  
+
     const currentPage = <HTMLHeadingElement>document.querySelector('#currentPage')
 
     if (tabUrl.includes('https://twitter.com')) {
       currentPage.innerText = 'You are currently on Twitter'
       elemFB.parentNode.removeChild(elemFB)
       if (tabUrl.includes('/home')){
-        elemSCRTW.parentNode.removeChild(elemSCRTW)        
+        elemSCRTW.parentNode.removeChild(elemSCRTW)
       }
     } else if (tabUrl.includes('https://www.facebook.com')) {
       currentPage.innerText = 'You are currently on Facebook'
@@ -62,7 +65,9 @@ function getCredibility () {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, { sender: 'www', instruction: 'scrap' }, function () {
       const tweet = <HTMLTextAreaElement>document.querySelector('#text')
-      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING], function (filterOptions) {
+      chrome.storage.sync.get([
+        constants.WEIGHT_SPAM, constants.WEIGHT_BAD_WORDS,
+        constants.WEIGHT_MISSPELLING], function (filterOptions) {
         const e = <HTMLSelectElement>document.getElementById('language')
         var lang : Language = getLanguage(e.options[e.selectedIndex].value)
         client.getPlainTextCredibility(
@@ -119,7 +124,10 @@ function connect (method: number) {
       port.postMessage({ sender: 'www', instruction: 'scrapFB' })
     }
     port.onMessage.addListener((response) => {
-      chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
+      chrome.storage.sync.get([
+        constants.WEIGHT_SPAM, constants.WEIGHT_BAD_WORDS, constants.WEIGHT_MISSPELLING,
+        constants.WEIGHT_TEXT, constants.WEIGHT_USER, constants.WEIGHT_SOCIAL,
+        constants.MAX_FOLLOWERS], function (filterOptions) {
         if (response.instruction === 'api') {
           let promiseList : Promise<{credibility : number}>[] = response.tweetIds.map((tweetId: number) => client.getTweetCredibility(
             tweetId.toString(),
@@ -131,8 +139,10 @@ function connect (method: number) {
               weightUser: +filterOptions.weightUser
             },
             +filterOptions.maxFollowers))
+          console.time(constants.DEBUG_REQUEST_TIME_LABEL)
           Promise.all(promiseList)
             .then(values => {
+              console.timeEnd(constants.DEBUG_REQUEST_TIME_LABEL)
               port.postMessage({
                 sender: 'www',
                 instruction: 'update',
@@ -141,6 +151,7 @@ function connect (method: number) {
               hideSpinner()
             })
             .catch(error => {
+              console.timeEnd(constants.DEBUG_REQUEST_TIME_LABEL)
               window.alert(JSON.stringify(error))
               console.error(error)
               hideSpinner()
@@ -168,8 +179,10 @@ function connect (method: number) {
                 friendsCount: +response.following
               },
               +filterOptions.maxFollowers)))
+          console.time(constants.DEBUG_REQUEST_TIME_LABEL)
           Promise.all(promiseList)
             .then(values => {
+              console.timeEnd(constants.DEBUG_REQUEST_TIME_LABEL)
               port.postMessage({
                 sender: 'www',
                 instruction: 'update',
@@ -178,6 +191,7 @@ function connect (method: number) {
               hideSpinner()
             })
             .catch(error => {
+              console.timeEnd(constants.DEBUG_REQUEST_TIME_LABEL)
               if(JSON.stringify(error.message)== '"Request failed with status code 400"'){
                 window.alert('The credibility analysis is only available for English, Spanish and French')
                 hideSpinner()
@@ -210,8 +224,10 @@ function connect (method: number) {
               },
               +filterOptions.maxFollowers))
           })
+          console.time(constants.DEBUG_REQUEST_TIME_LABEL)
           Promise.all(promiseList)
             .then(values => {
+              console.timeEnd(constants.DEBUG_REQUEST_TIME_LABEL)
               port.postMessage({
                 sender: 'www',
                 instruction: 'update',
@@ -220,11 +236,11 @@ function connect (method: number) {
               hideSpinner()
             })
             .catch(error => {
+              console.timeEnd(constants.DEBUG_REQUEST_TIME_LABEL)
               window.alert('Error: '+JSON.stringify(error))
               console.error(error)
               hideSpinner()
             })
-          
         }
       })
     })
@@ -244,18 +260,18 @@ function showSpinner(){
     verifyPageTwitterApiBtn.disabled  = true
     verifyBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
     verifyBtn.style.borderColor = 'rgba(255,255,255,.7)'
-  
+
     verifyPageBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
     verifyPageBtn.style.borderColor = 'rgba(255,255,255,.7)'
-  
+
     verifyPageTwitterApiBtn.style.backgroundColor = 'rgba(0,123,255,.7)'
-    verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'  
+    verifyPageTwitterApiBtn.style.borderColor = 'rgba(255,255,255,.7)'
   }else if (verifyPageBtnFB != null){
     verifyPageBtnFB.disabled  = true
     verifyPageBtnFB.style.backgroundColor = 'rgba(0,123,255,.7)'
     verifyPageBtnFB.style.borderColor = 'rgba(255,255,255,.7)'
   }
-  
+
   const spinner = <HTMLDivElement>document.getElementById('sp-content')
   spinner.style.display = 'block'
 }
