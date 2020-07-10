@@ -1,5 +1,4 @@
-import constants from "../constant"
-import { Console } from "console"
+import constants from '../constant'
 
 function formatNumber (string : string) : number {
   let x = string.replace(/ /, '') // 20 K -> 20K
@@ -374,9 +373,9 @@ function UpdateTweetCredibility (credibilityList: string[]) {
       if (RedHex.length < 2) {
         RedHex = '0' + RedHex
       }
-      const FinalColor : string = '#' + RedHex + GreenHex + '00';
+      const FinalColor : string = '#' + RedHex + GreenHex + '00'
       if (tweetContainer != null) {
-        tweetContainer.innerText = 'WWW Credibility: ' + credibilityItem + '%';
+        tweetContainer.innerText = 'WWW Credibility: ' + credibilityItem + '%'
         tweetContainer.style.color = FinalColor
       }
     } else {
