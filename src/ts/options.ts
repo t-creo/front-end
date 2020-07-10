@@ -1,9 +1,12 @@
 import { VerifySum } from './controllers/weightCalculationUtils'
 import '../sass/index.scss'
-import { WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS } from './constant'
+import constants from './constant'
 
 document.addEventListener('DOMContentLoaded', function () {
-  chrome.storage.sync.get([WEIGHT_SPAM, WEIGHT_BAD_WORDS, WEIGHT_MISSPELLING, WEIGHT_TEXT, WEIGHT_USER, WEIGHT_SOCIAL, MAX_FOLLOWERS], function (filterOptions) {
+  chrome.storage.sync.get([
+    constants.WEIGHT_SPAM, constants.WEIGHT_BAD_WORDS,
+    constants.WEIGHT_MISSPELLING, constants.WEIGHT_TEXT, constants.WEIGHT_USER,
+    constants.WEIGHT_SOCIAL, constants.MAX_FOLLOWERS], function (filterOptions) {
     const weightSpam = <HTMLInputElement>document.querySelector('#weightSpam')
     const weightBadWords = <HTMLInputElement>document.querySelector('#weightBadWords')
     const weightMisspelling = <HTMLInputElement>document.querySelector('#weightMisspelling')

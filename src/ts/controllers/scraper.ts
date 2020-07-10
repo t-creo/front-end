@@ -1,3 +1,5 @@
+import constants from "../constant"
+import { Console } from "console"
 
 function formatNumber (string : string) : number {
   let x = string.replace(/ /, '') // 20 K -> 20K
@@ -20,6 +22,7 @@ chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((request) => {
     
     if (request.sender === 'www' && request.instruction === 'api') {
+      console.time(constants.DEBUG_SCRAPING_TIME_LABEL)
       const times = document.querySelectorAll('div[data-testid="tweet"] time')
       const tweetIds = []
 
@@ -42,6 +45,8 @@ chrome.runtime.onConnect.addListener((port) => {
         return element.innerText
       })
 
+      console.timeEnd(constants.DEBUG_SCRAPING_TIME_LABEL)
+
       port.postMessage({
         instruction: 'api',
         tweetIds: tweetIds,
@@ -49,7 +54,7 @@ chrome.runtime.onConnect.addListener((port) => {
         tweetContainers: tweetContainers
       })
     } else if (request.sender === 'www' && request.instruction === 'scrapTW'){
-      // const times = document.querySelectorAll("div[data-testid="tweet"] time")
+      console.time(constants.DEBUG_SCRAPING_USER_TIME_LABEL)
       // init values
       
       let followingNum = ''
@@ -191,6 +196,7 @@ chrome.runtime.onConnect.addListener((port) => {
         return (<HTMLElement>tweetContainer.children[1]).innerText
       })
       
+      console.timeEnd(constants.DEBUG_SCRAPING_USER_TIME_LABEL)
 
       port.postMessage({
         instruction: 'scrapTW',
@@ -353,7 +359,10 @@ chrome.runtime.onConnect.addListener((port) => {
 
 function UpdateTweetCredibility (credibilityList: string[]) {
   //console.log(credibilityList)
+  console.time(constants.DEBUG_RENDERING_RESULTS_TIME_LABEL)
+  console.log('WWW:', 'Number of analyzed tweets:', credibilityList.length)
   credibilityList.map((credibilityItem, index: number) => {
+    const tweetContainer = document.querySelector<HTMLElement>('#TweetNumber' + index)
     if (credibilityItem !== '--') {
       const Green = Math.floor(parseInt(credibilityItem) * (2.55))
       const Red = 255 - Math.floor(parseInt(credibilityItem) * (2.55))
@@ -366,10 +375,15 @@ function UpdateTweetCredibility (credibilityList: string[]) {
         RedHex = '0' + RedHex
       }
       const FinalColor : string = '#' + RedHex + GreenHex + '00';
-      (<HTMLElement>document.querySelector('#TweetNumber' + index)).innerText = 'WWW Credibility: ' + credibilityItem + '%';
-      (<HTMLElement>document.querySelector('#TweetNumber' + index)).style.color = FinalColor
+      if (tweetContainer != null) {
+        tweetContainer.innerText = 'WWW Credibility: ' + credibilityItem + '%';
+        tweetContainer.style.color = FinalColor
+      }
     } else {
-      (<HTMLElement>document.querySelector('#TweetNumber' + index)).innerText = 'WWW Credibility: --'
+      if (tweetContainer != null) {
+        tweetContainer.innerText = 'WWW Credibility: --'
+      }
     }
   })
+  console.timeEnd(constants.DEBUG_RENDERING_RESULTS_TIME_LABEL)
 }
