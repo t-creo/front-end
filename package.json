@@ -1,5 +1,5 @@
 {
-  "name": "world-white-web",
+  "name": "t-creo-front-end",
   "version": "1.8.0",
   "description": "Mini proyecto de desarrollo de software de la Universidad Simón bolívar",
   "scripts": {
@@ -12,18 +12,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/german1608/world-white-web.git"
+    "url": "git+https://github.com/t-creo/front-end.git"
   },
   "keywords": [
-    "world-white-web",
+    "t-creo",
     "chrome-extension"
   ],
   "author": "Ver README.md",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/german1608/world-white-web/issues"
+    "url": "https://github.com/t-creo/front-end/issues"
   },
-  "homepage": "https://github.com/german1608/world-white-web#readme",
+  "homepage": "https://github.com/t-creo/front-end#readme",
   "engines": {
     "node": "10.16.0"
   },
