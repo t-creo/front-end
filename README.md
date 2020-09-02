@@ -1,8 +1,8 @@
-# world-white-web
+# t-creo-front-end
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
-[![Build Status](https://travis-ci.com/german1608/world-white-web.svg?token=aqTuGezTjtpGskdvd7vs&branch=master)](https://travis-ci.com/german1608/world-white-web)
+[![Build Status](https://travis-ci.com/t-creo/front-end.svg?token=aqTuGezTjtpGskdvd7vs&branch=master)](https://travis-ci.com/t-creo/front-end)
 
 MiniProyecto de Desarrollo de Software para la USBve.
 
@@ -17,10 +17,11 @@ MiniProyecto de Desarrollo de Software para la USBve.
 
 * Yudith Cardinale
 * Irvin Dongo
+* Ana Aguilera
 
 ## Instalación del Proyecto
 
-Si te interesa probar directamente la extensión, en la lista de [releases](https://github.com/World-White-Web/www-front-end/releases) de este repositorio tendrás los artefactos para poder probar. Descárgate la última versión, descomprímela y la instalas siguiendo los pasos de la siguiente sección.
+Si te interesa probar directamente la extensión, en la lista de [releases](https://github.com/t-creo/front-end/releases) de este repositorio tendrás los artefactos para poder probar. Descárgate la última versión, descomprímela y la instalas siguiendo los pasos de la siguiente sección.
 
 ### Como instalar la extensión
 
