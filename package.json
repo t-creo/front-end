@@ -1,6 +1,6 @@
 {
   "name": "t-creo-front-end",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Mini proyecto de desarrollo de software de la Universidad Simón bolívar",
   "scripts": {
     "build": "npm run test && NODE_ENV=production node utils/build.js",
