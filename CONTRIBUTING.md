@@ -4,7 +4,7 @@ El proceso de contribuir o desarrollar en este repositorio es un poco protocolar
 
 ## Integración Continua
 
-Este proyecto es el front-end del proyecto World White Web. Es sencillamente una extensión para poder permitirle a las personas saber la credibilidad en tiempo real de lo que estén leyendo en las redes sociales. Hay muchas tareas que se repiten constantemente, entre ellas, la generación de las extensiones a ser descargadas por los usuarios.
+Este proyecto es el front-end del proyecto T-CREo. Es sencillamente una extensión para poder permitirle a las personas saber la credibilidad en tiempo real de lo que estén leyendo en las redes sociales. Hay muchas tareas que se repiten constantemente, entre ellas, la generación de las extensiones a ser descargadas por los usuarios.
 
 Travis-ci es un sistema de integración y despliegue continuo. Se encarga de realizar tareas repetitivas automáticamente con cada interacción en el repositorio. Lo que hace explícitamente lo puedes ver en el archivo .travis.yml del repositorio, sin embargo, a grandes rasgos, la tarea más importante que hace el mismo es la generación de las extensiones ya listas a ser usadas.
 
