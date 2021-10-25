@@ -53,8 +53,8 @@ Cada vez que guardes un archivo, se volverán a transpilar los archivos. Sin emb
 2. En el caso de desarrollar cosas que hagan scraping, es necesario que recargues la página que estés a la que le estés haciendo scraping para que chrome le inserte nuevamente el código a la página a analizar.
 
 #### Para producción
-
 Ejecutar el comando `npm run build` generará un artefacto optimizado para producción. Lo cargas siguiendo los pasos de la sección [Como instalar la extensión](#./como-instalar-la-extensión).
+
 
 ## Como contribuir
 

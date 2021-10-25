@@ -27,7 +27,7 @@ const server =
   new WebpackDevServer(compiler, {
     hot: true,
     contentBase: path.join(__dirname, '../build'),
-    headers: { 'Access-Control-Allow-Origin': '*' },
+    headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept' },
     disableHostCheck: true
   })
 

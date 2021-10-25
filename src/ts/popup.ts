@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function getCredibility () {
+  console.log('buenas')
   showSpinner()
   // Send Message asking for the scaped values
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
