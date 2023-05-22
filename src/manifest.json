@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "T-CREo",
   "version": "1.0",
   "description": "Check for information credibility",
@@ -8,14 +8,16 @@
     "contextMenus",
     "declarativeContent",
     "storage",
-    "tabs",
+    "tabs"
+  ],
+  "host_permissions": [
     "http://localhost/*",
     "http://world-white-web.herokuapp.com/*",
     "http://t-creo.herokuapp.com/*",
     "http://107.170.90.209/*"
   ],
   "options_page": "options.html",
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "get_started16.png",
